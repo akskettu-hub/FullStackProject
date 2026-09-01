@@ -16,11 +16,11 @@ const Greeting = (props: GreetingProps) => {
 };
 
 type LogInProps = {
-  logInStatus: boolean;
   handler: () => void;
 };
 
 const UserLoginPrompt = (props: LogInProps) => {
+  console.log(props);
   return (
     <div>
       <h2>Log In</h2>
@@ -54,7 +54,7 @@ const App = () => {
       {logInStatus ? (
         <Greeting name={name} onLogOut={handleLogout} />
       ) : (
-        <UserLoginPrompt logInStatus={logInStatus} handler={handleLogIn} />
+        <UserLoginPrompt handler={handleLogIn} />
       )}
     </section>
   );
