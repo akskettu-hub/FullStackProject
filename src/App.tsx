@@ -17,26 +17,23 @@ const Greeting = (props: GreetingProps) => {
 
 type LogInProps = {
   setUsername: React.Dispatch<React.SetStateAction<string>>;
-  //loginHasetLogInStatusndler: (name:string) => void;
   setLogInStatus: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const UserLoginPrompt = (props: LogInProps) => {
-  //console.log(props);
   const [usernameInputValue, setUsernameInputValue] = useState("");
   const [passwordInputValue, setPasswordInputValue] = useState("");
+  const [passwordInputType, setPasswordInputType] = useState("password");
 
   const handleUsernameFieldChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ): void => {
-    event.preventDefault();
     setUsernameInputValue(event.target.value);
   };
 
   const handlePasswordFieldChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ): void => {
-    event.preventDefault();
     setPasswordInputValue(event.target.value);
   };
 
@@ -50,22 +47,40 @@ const UserLoginPrompt = (props: LogInProps) => {
     );
   };
 
+  const toggleShowPassword = () => {
+    if (passwordInputType === "password") {
+      setPasswordInputType("text");
+    } else {
+      setPasswordInputType("password");
+    }
+  };
+
   return (
     <div>
       <h2>Log In</h2>
       <div>
         <form onSubmit={onSubmit}>
           <div>
-            <input
-              value={usernameInputValue}
-              onChange={handleUsernameFieldChange}
-            />
+            <label>
+              Username
+              <input
+                value={usernameInputValue}
+                onChange={handleUsernameFieldChange}
+              />
+            </label>
           </div>
           <div>
-            <input
-              value={passwordInputValue}
-              onChange={handlePasswordFieldChange}
-            />
+            <label>
+              Password
+              <input
+                type={passwordInputType}
+                value={passwordInputValue}
+                onChange={handlePasswordFieldChange}
+              />
+              <button type="button" onClick={toggleShowPassword}>
+                Show
+              </button>
+            </label>
           </div>
           <button type="submit">Log in</button>
         </form>
