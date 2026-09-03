@@ -1,15 +1,34 @@
-import React, { useState, type SyntheticEvent } from "react";
+import axios from "axios";
+import React, { useEffect, useState, type SyntheticEvent } from "react";
 
 type GreetingProps = {
   name: string;
-  onLogOut: () => void;
 };
 
 const Greeting = (props: GreetingProps) => {
-  console.log(props);
   return (
     <div>
       <p>Welcome, {props.name}!</p>
+    </div>
+  );
+};
+
+type UserViewProps = {
+  name: string;
+  onLogOut: () => void;
+  docs: Doc[];
+};
+
+const UserView = (props: UserViewProps) => {
+  console.log("props docs", props.docs);
+  return (
+    <div>
+      <Greeting name={props.name} />
+      {props.docs.map((doc) => (
+        <p key={doc.id}>
+          {doc.year}: {doc.textContent}
+        </p>
+      ))}
       <button onClick={props.onLogOut}>Log out</button>
     </div>
   );
@@ -89,15 +108,33 @@ const UserLoginPrompt = (props: LogInProps) => {
   );
 };
 
+type Doc = {
+  id: number;
+  textContent: string;
+  year: number;
+};
+
 const App = () => {
   const [name, setName] = useState<string>("");
   const [logInStatus, setLogInStatus] = useState<boolean>(false);
+  const [docs, setDocs] = useState<Doc[]>([]);
 
   function handleLogout() {
     console.log("log out button clicked.");
     setLogInStatus(false);
     setName("");
   }
+
+  useEffect(() => {
+    console.log("effect");
+
+    axios.get<Doc[]>("http://localhost:3001/docs").then((res) => {
+      console.log("promise fulfilled");
+      const data = res.data;
+      setDocs(data);
+    });
+  }, []);
+  console.log("got", docs.length, "docs");
 
   return (
     <section>
@@ -107,7 +144,7 @@ const App = () => {
         <p>Seek and thou shalt find</p>
       </div>
       {logInStatus ? (
-        <Greeting name={name} onLogOut={handleLogout} />
+        <UserView name={name} onLogOut={handleLogout} docs={docs} />
       ) : (
         <UserLoginPrompt
           setUsername={setName}
