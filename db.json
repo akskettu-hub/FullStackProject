@@ -1,0 +1,19 @@
+{
+  "docs": [
+    {
+      "id": 1,
+      "textContent": "Some text here.",
+      "year": 2005
+    },
+    {
+      "id": 2,
+      "textContent": "Something else in this one",
+      "year": 2025
+    },
+    {
+      "id": 3,
+      "textContent": "Can't think of a third thing.",
+      "year": 2026
+    }
+  ]
+}
