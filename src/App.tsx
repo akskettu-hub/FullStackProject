@@ -128,7 +128,7 @@ const App = () => {
   useEffect(() => {
     console.log("effect");
 
-    axios.get<Doc[]>("http://localhost:3001/docs").then((res) => {
+    axios.get<Doc[]>("http://localhost:3003/api/mock").then((res) => {
       console.log("promise fulfilled");
       const data = res.data;
       setDocs(data);
