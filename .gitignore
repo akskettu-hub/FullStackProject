@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# copied over to monorepo from old backend repo
+.env
+node_modules
+data
