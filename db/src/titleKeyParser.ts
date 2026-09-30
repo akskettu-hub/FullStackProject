@@ -78,37 +78,3 @@ export const parseTitleKey = (
     parseOk: parsedYear.year !== null,
   };
 };
-/*
-const test = [
-  "A 1520S? FO JZOUCHE",
-  "A 1520S FO EFITTON",
-  "A 1530S T WWYBE",
-  "A 1532? FN RWILLOUGHBY",
-  "A 1532? FO RWILLOUGHBY",
-  "D 1538 FO CBRANDON",
-  "D 1530S T WFITZALAN",
-  "A 1530S T JTEWKSBURY",
-  "A 1530? FO AFITZHERBERT",
-  "A 1529 FN EWILLOUGHBY",
-  "A 1530? FN EWILLOUGHBY",
-  "C 1532 FN EWILLOUGHBY",
-  "C 1530? FN EWILLOUGHBY",
-  "C 1530S? FN EWILLOUGHBY",
-  "A 1530S FN EWILLOUGHBY",
-  "A 1529? FO EFITTON",
-  "D 1529? FO TGREY",
-  "D 1530S FO MGREY",
-  "A 1530S FO ALFITZHERBERT",
-  "A 1530? T JBARWICK",
-];
-
-let errors = 0;
-
-test.forEach((element) => {
-  console.log(element);
-  let parsedElement = parseTitleKey(element);
-  if (!parsedElement.parseOk) errors += 1;
-  console.log(parsedElement);
-});
-console.log(errors);
- */
