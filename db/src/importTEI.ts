@@ -8,6 +8,11 @@ const client = new Client({
   connectionString: "postgres://corpus:corpus@localhost:5432/corpus_dev",
 });
 
+const titleStmtsToArray = (stmt: string | string[] | undefined) => {
+  if (stmt === undefined) return [];
+  return Array.isArray(stmt) ? stmt : [stmt];
+};
+
 async function main() {
   await client.connect();
   console.log("Connected to database");
@@ -25,6 +30,16 @@ async function main() {
       [collection["@_xml:id"], collection["@_titleStmt"]],
     );
     const collectionId = collectionRes.rows[0].id;
+
+    const fileDescTitleStmt = collection.teiHeader?.fileDesc?.titleStmt;
+    const fileDescTitleStmts = titleStmtsToArray(fileDescTitleStmt);
+
+    for (let i = 0; i < fileDescTitleStmts.length; i++) {
+      await client.query(
+        `INSERT INTO collection_title_statements (collection_id, seq, text) VALUES ($1, $2, $3)`,
+        [collectionId, i, fileDescTitleStmts[i]],
+      );
+    }
 
     const teiEntries = Array.isArray(collection.TEI)
       ? collection.TEI
