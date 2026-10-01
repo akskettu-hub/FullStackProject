@@ -7,11 +7,10 @@ const App = () => {
   const [name, setName] = useState<string>("");
   const [logInStatus, setLogInStatus] = useState<boolean>(false);
 
-  function handleLogout() {
-    console.log("log out button clicked.");
+  const handleLogout = (): void => {
     setLogInStatus(false);
     setName("");
-  }
+  };
 
   return (
     <section>
