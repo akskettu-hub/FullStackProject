@@ -1,12 +1,22 @@
 import express from "express";
-import Collection from "../models/collections.ts";
+import { Collection, CollectionTitleStatement } from "../models/index.ts";
 import { describeError } from "../utils/errors.ts";
 
 const router = express.Router();
 
 router.get("/", async (_req, res) => {
   try {
-    const collections: Collection[] = await Collection.findAll();
+    const collections: Collection[] = await Collection.findAll({
+      include: [
+        {
+          model: CollectionTitleStatement,
+          as: "titleStatements",
+          attributes: ["seq", "text"],
+          order: [["seq", "ASC"]],
+        },
+      ],
+      order: [["xml_id", "ASC"]],
+    });
     //res.header("Access-Control-Allow-Origin", "*");
     res.json(collections);
   } catch (e) {
