@@ -17,7 +17,7 @@ router.get("/", async (_req, res) => {
       ],
       order: [["xml_id", "ASC"]],
     });
-    //res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Origin", "*");
     res.json(collections);
   } catch (e) {
     const { message, detail, code } = describeError(e);
