@@ -1,5 +1,6 @@
 import Collection from "./collections.ts";
 import CollectionTitleStatement from "./collectionTitleStatement.ts";
+import User from "./users.ts";
 
 Collection.hasMany(CollectionTitleStatement, {
   foreignKey: "collection_id",
@@ -10,4 +11,4 @@ CollectionTitleStatement.belongsTo(Collection, {
   foreignKey: "collection_id",
 });
 
-export { Collection, CollectionTitleStatement };
+export { Collection, CollectionTitleStatement, User };
