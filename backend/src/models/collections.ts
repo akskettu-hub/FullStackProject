@@ -11,10 +11,7 @@ Collection.init(
     },
     xml_id: {
       type: DataTypes.TEXT,
-    },
-    title_stmt: {
-      type: DataTypes.TEXT,
-      allowNull: true,
+      allowNull: false,
     },
   },
   {
