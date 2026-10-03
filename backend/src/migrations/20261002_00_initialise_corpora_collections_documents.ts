@@ -27,8 +27,6 @@ ALTER TABLE documents
   ADD COLUMN relationship_code TEXT,
   ADD COLUMN correspondent_code TEXT,
   ADD COLUMN title_key_parse_ok BOOLEAN DEFAULT FALSE;
-
-
  */
 
 import { DataTypes } from "sequelize";
