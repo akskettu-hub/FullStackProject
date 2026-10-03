@@ -44,6 +44,7 @@ export const up: Migration = async ({
     xml_id: {
       type: DataTypes.TEXT,
       allowNull: false,
+      unique: true,
     },
   });
   await QueryInterface.createTable("documents", {
@@ -113,6 +114,6 @@ export const up: Migration = async ({
 export const down: Migration = async ({
   context: QueryInterface,
 }): Promise<void> => {
-  await QueryInterface.dropTable("collections");
-  await QueryInterface.dropTable("documents");
+  await QueryInterface.dropTable("collections", { cascade: true });
+  await QueryInterface.dropTable("documents", { cascade: true });
 };
