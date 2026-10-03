@@ -5,6 +5,7 @@
     "start": "tsc && node --experimental-transform-types src/index.ts",
     "dev": "concurrently \"tsc --watch\" \"node --watch-path=./src --experimental-transform-types src/index.ts\"",
     "lint": "eslint .",
+    "migration:up": "node ./src/utils/runMigrations.ts",
     "migration:down": "node ./src/utils/rollback.ts"
   },
   "devDependencies": {
