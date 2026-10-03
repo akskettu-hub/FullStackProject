@@ -26,8 +26,8 @@ async function main() {
 
     const collection = doc.teiCollection;
     const collectionRes = await client.query(
-      `INSERT INTO collections (xml_id, title_stmt) VALUES ($1, $2) ON CONFLICT (xml_id) DO UPDATE SET xml_id = EXCLUDED.xml_id RETURNING id`,
-      [collection["@_xml:id"], collection["@_titleStmt"]],
+      `INSERT INTO collections (xml_id) VALUES ($1) ON CONFLICT (xml_id) DO UPDATE SET xml_id = EXCLUDED.xml_id RETURNING id`,
+      [collection["@_xml:id"]],
     );
     const collectionId = collectionRes.rows[0].id;
 
