@@ -24,6 +24,14 @@ export const runMigrations = async (): Promise<void> => {
   });
 };
 
+export const rollbackMigration = async (): Promise<void> => {
+  await sequelize.authenticate();
+  const rollbacks = await migrator.down();
+  console.log("Ran rollback", {
+    files: rollbacks.map((rb) => rb.name),
+  });
+};
+
 export const connectToDatabase = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
