@@ -5,6 +5,8 @@ import { connectToDatabase } from "./utils/db.ts";
 import mockRouter from "./routes/mock.ts";
 import collectionsRouter from "./routes/collections.ts";
 import usersRouter from "./routes/users.ts";
+import corporaRouter from "./routes/corpora.ts";
+
 import { errorHandler } from "./middleware/errors.ts";
 
 const app = express();
@@ -17,6 +19,7 @@ app.use(express.json());
 app.use("/api/mock", mockRouter);
 app.use("/api/collections", collectionsRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/corpora", corporaRouter);
 
 app.use(errorHandler);
 
