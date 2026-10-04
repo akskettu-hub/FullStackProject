@@ -1,10 +1,20 @@
 // Mostly LLM generated: Claude Sonet 5
-import { Client } from "pg";
+import { Client, Pool } from "pg";
 import { XMLParser } from "fast-xml-parser";
 import fs from "node:fs";
 import { parseTitleKey } from "./titleKeyParser.ts";
+import type {
+  CorpusName,
+  CorpusXmlDir,
+  xmlCollectionInfo,
+} from "./importCEEC400.ts";
 
+/*
 const client = new Client({
+  connectionString: "postgres://corpus:corpus@localhost:5432/corpus_dev",
+});
+ */
+export const pool = new Pool({
   connectionString: "postgres://corpus:corpus@localhost:5432/corpus_dev",
 });
 
@@ -13,11 +23,25 @@ const titleStmtsToArray = (stmt: string | string[] | undefined) => {
   return Array.isArray(stmt) ? stmt : [stmt];
 };
 
-async function main() {
-  await client.connect();
-  console.log("Connected to database");
-  if (typeof process.argv[2] == "string") {
-    const xml = fs.readFileSync(process.argv[2], "utf-8");
+export const insertCorpus = async (
+  corpusName: CorpusName,
+): Promise<{ id: number; inserted: Boolean }> => {
+  const res = await pool.query(
+    `INSERT INTO corpora (name, imported)
+    VALUES ($1, now()) 
+    ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
+    RETURNING id, (xmax=0) AS inserted`,
+    [corpusName],
+  );
+  return res.rows[0];
+};
+
+export const intsertXmlCollection = async (
+  collectionInfo: xmlCollectionInfo,
+) => {
+  console.log(`Importing ${collectionInfo.corpus}...`);
+  if (typeof collectionInfo.path == "string") {
+    const xml = fs.readFileSync(collectionInfo.path, "utf-8");
     const parser = new XMLParser({
       ignoreAttributes: false,
       attributeNamePrefix: "@_",
@@ -25,9 +49,12 @@ async function main() {
     const doc = parser.parse(xml);
 
     const collection = doc.teiCollection;
-    const collectionRes = await client.query(
-      `INSERT INTO collections (xml_id) VALUES ($1) ON CONFLICT (xml_id) DO UPDATE SET xml_id = EXCLUDED.xml_id RETURNING id`,
-      [collection["@_xml:id"]],
+    console.log(collection["@_xml:id"], collectionInfo.corpus_id);
+    const collectionRes = await pool.query(
+      `INSERT INTO collections (xml_id, in_corpus) 
+      VALUES ($1, $2) 
+      ON CONFLICT (xml_id) DO UPDATE SET xml_id = EXCLUDED.xml_id RETURNING id`,
+      [collection["@_xml:id"], collectionInfo.corpus_id],
     );
     const collectionId = collectionRes.rows[0].id;
 
@@ -35,7 +62,7 @@ async function main() {
     const fileDescTitleStmts = titleStmtsToArray(fileDescTitleStmt);
 
     for (let i = 0; i < fileDescTitleStmts.length; i++) {
-      await client.query(
+      await pool.query(
         `INSERT INTO collection_title_statements (collection_id, seq, text) VALUES ($1, $2, $3)`,
         [collectionId, i, fileDescTitleStmts[i]],
       );
@@ -55,7 +82,7 @@ async function main() {
           `Could not parse Q-line for ${tei["@_xml:id"]}: ${titleKeyRaw}`,
         );
 
-      await client.query(
+      await pool.query(
         `INSERT INTO documents (collection_id, xml_id, title_key, author_key, text_type, lang, raw_xml, authenticity, year, year_raw, year_is_decade_suggestion, year_is_uncertain,
      relationship_code, correspondent_code, title_key_parse_ok)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
@@ -79,9 +106,10 @@ async function main() {
       );
     }
   }
-  await client.end();
-}
+};
+/*
 main().catch((e) => {
   console.error("import failed:", e);
   process.exit(1);
 });
+  */
