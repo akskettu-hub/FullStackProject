@@ -13,6 +13,10 @@ Collection.init(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    in_corpus: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
   },
   {
     sequelize,

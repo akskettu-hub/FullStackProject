@@ -1,5 +1,6 @@
 import Collection from "./collections.ts";
 import CollectionTitleStatement from "./collectionTitleStatement.ts";
+import Corpus from "./corpora.ts";
 import User from "./users.ts";
 
 Collection.hasMany(CollectionTitleStatement, {
@@ -11,4 +12,13 @@ CollectionTitleStatement.belongsTo(Collection, {
   foreignKey: "collection_id",
 });
 
-export { Collection, CollectionTitleStatement, User };
+Corpus.hasMany(Collection, {
+  foreignKey: "in_corpus",
+  as: "collections",
+});
+
+Collection.belongsTo(Corpus, {
+  foreignKey: "in_corpus",
+});
+
+export { Collection, CollectionTitleStatement, User, Corpus };
