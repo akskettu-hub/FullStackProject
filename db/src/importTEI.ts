@@ -1,19 +1,10 @@
 // Mostly LLM generated: Claude Sonet 5
-import { Client, Pool } from "pg";
+import { Pool } from "pg";
 import { XMLParser } from "fast-xml-parser";
 import fs from "node:fs";
 import { parseTitleKey } from "./titleKeyParser.ts";
-import type {
-  CorpusName,
-  CorpusXmlDir,
-  xmlCollectionInfo,
-} from "./importCEEC400.ts";
+import type { CorpusName, xmlCollectionInfo } from "./importCEEC400.ts";
 
-/*
-const client = new Client({
-  connectionString: "postgres://corpus:corpus@localhost:5432/corpus_dev",
-});
- */
 export const pool = new Pool({
   connectionString: "postgres://corpus:corpus@localhost:5432/corpus_dev",
 });
@@ -21,6 +12,19 @@ export const pool = new Pool({
 const titleStmtsToArray = (stmt: string | string[] | undefined) => {
   if (stmt === undefined) return [];
   return Array.isArray(stmt) ? stmt : [stmt];
+};
+
+export const insertCorpusCollection = async (
+  corpusCollectionName: string,
+): Promise<{ id: number; inserted: Boolean }> => {
+  const res = await pool.query(
+    `INSERT INTO corpus_collections (name)
+    VALUES ($1) 
+    ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
+    RETURNING id, (xmax=0) AS inserted`,
+    [corpusCollectionName],
+  );
+  return res.rows[0];
 };
 
 export const insertCorpus = async (
@@ -36,9 +40,20 @@ export const insertCorpus = async (
   return res.rows[0];
 };
 
+export const associateCorpusWithCorpusCollection = async (
+  corpusId: number,
+  corpusCollectionid: number,
+): Promise<void> => {
+  await pool.query(
+    `INSERT INTO corpora_in_corpus_collection (corpus_id, corpus_collection_id)
+    VALUES ($1, $2)`,
+    [corpusId, corpusCollectionid],
+  );
+};
+
 export const intsertXmlCollection = async (
   collectionInfo: xmlCollectionInfo,
-) => {
+): Promise<void> => {
   console.log(`Importing ${collectionInfo.corpus}...`);
   if (typeof collectionInfo.path == "string") {
     const xml = fs.readFileSync(collectionInfo.path, "utf-8");

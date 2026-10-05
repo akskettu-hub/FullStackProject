@@ -3,7 +3,13 @@
 import fs from "node:fs";
 import path from "node:path";
 import { exit } from "node:process";
-import { insertCorpus, intsertXmlCollection, pool } from "./importTEI.ts";
+import {
+  associateCorpusWithCorpusCollection,
+  insertCorpus,
+  insertCorpusCollection,
+  intsertXmlCollection,
+  pool,
+} from "./importTEI.ts";
 
 const ceec400RepoPath = "./data/CEEC-400/";
 const ls = fs.readdirSync(ceec400RepoPath);
@@ -43,13 +49,29 @@ export type xmlCollectionInfo = {
   path: string;
 };
 
+const { id, inserted } = await insertCorpusCollection("CEEC-400");
+if (!inserted) {
+  console.warn("Corpus collection already imported. Skipping...");
+}
+console.log(`Corpus collection inserted. id: ${id}, inserted: ${inserted}`);
+const corpusCollectionId: number = id;
+const corpusCollectionInserted: Boolean = inserted;
+
 for (const dir of xmlDirs) {
   const { id, inserted } = await insertCorpus(dir.name);
   if (!inserted) {
     console.warn(`import for ${dir.name} failed... Skipping.`);
   }
   console.log(`id: ${id}, inserted: ${inserted}`);
+
   if (dir.name == "CEEC") {
+    if (corpusCollectionInserted && inserted) {
+      console.warn(
+        "Corpus and corpus collection already inserted. Skipping association...",
+      );
+    } else {
+      await associateCorpusWithCorpusCollection(id, corpusCollectionId);
+    }
     console.log(dir.path);
     const xmlFiles = fs.readdirSync(dir.path);
     for (const file of xmlFiles) {
