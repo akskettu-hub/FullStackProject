@@ -16,3 +16,6 @@ export const UserSchema = UserFields.extend({
 
 export const UserUpdateSchema = UserFields.partial();
 export type UserUpdate = z.infer<typeof UserUpdateSchema>;
+
+export const UserIdSchema = z.coerce.number().int().positive();
+export const UsersSchema = z.array(UserSchema);
