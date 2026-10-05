@@ -2,7 +2,6 @@
 //
 import fs from "node:fs";
 import path from "node:path";
-import { exit } from "node:process";
 import {
   associateCorpusWithCorpusCollection,
   insertCorpus,
