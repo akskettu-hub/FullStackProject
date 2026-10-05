@@ -13,7 +13,9 @@ const router = express.Router();
 router.get("/", async (_req, res): Promise<void> => {
   const users = await UserModel.findAll();
 
-  res.status(200).json(UsersSchema.parse(users.map((u) => u.toJSON())));
+  res
+    .status(200)
+    .json(UsersSchema.parse(users.map((u): unknown => u.toJSON()))); // NOTE: unknown given as return type to placate eslint on return type. Parse validates data anyway.
 });
 
 router.get("/:id", async (req, res): Promise<void> => {
