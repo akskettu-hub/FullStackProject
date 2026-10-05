@@ -14,7 +14,7 @@ CollectionModel.init(
       allowNull: false,
     },
     in_corpus: {
-      type: DataTypes.TEXT,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
   },
