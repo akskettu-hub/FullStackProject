@@ -1,8 +1,8 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../utils/db.ts";
 
-class Collection extends Model {}
-Collection.init(
+class CollectionModel extends Model {}
+CollectionModel.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -22,9 +22,9 @@ Collection.init(
     sequelize,
     underscored: true,
     timestamps: false,
-    modelName: "Collection",
+    modelName: "CollectionModel",
     tableName: "collections",
   },
 );
 
-export default Collection;
+export default CollectionModel;

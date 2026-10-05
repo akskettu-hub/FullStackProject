@@ -1,8 +1,8 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../utils/db.ts";
 
-class Corpus extends Model {}
-Corpus.init(
+class CorpusModel extends Model {}
+CorpusModel.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -22,9 +22,9 @@ Corpus.init(
     sequelize,
     underscored: true,
     timestamps: false,
-    modelName: "Corpus",
+    modelName: "CorpusModel",
     tableName: "corpora",
   },
 );
 
-export default Corpus;
+export default CorpusModel;

@@ -1,8 +1,8 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../utils/db.ts";
 
-class User extends Model {}
-User.init(
+class UserModel extends Model {}
+UserModel.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -33,9 +33,9 @@ User.init(
     sequelize,
     underscored: true,
     timestamps: false,
-    modelName: "User",
+    modelName: "UserModel",
     tableName: "users",
   },
 );
 
-export default User;
+export default UserModel;

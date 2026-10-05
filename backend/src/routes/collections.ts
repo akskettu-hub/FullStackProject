@@ -1,13 +1,16 @@
 import express from "express";
-import { Collection, CollectionTitleStatement } from "../models/index.ts";
+import {
+  CollectionModel,
+  CollectionTitleStatementModel,
+} from "../models/index.ts";
 
 const router = express.Router();
 
 router.get("/", async (_req, res) => {
-  const collections: Collection[] = await Collection.findAll({
+  const collections: CollectionModel[] = await CollectionModel.findAll({
     include: [
       {
-        model: CollectionTitleStatement,
+        model: CollectionTitleStatementModel,
         as: "titleStatements",
         attributes: ["seq", "text"],
         order: [["seq", "ASC"]],

@@ -1,24 +1,29 @@
-import Collection from "./collections.ts";
-import CollectionTitleStatement from "./collectionTitleStatement.ts";
-import Corpus from "./corpora.ts";
-import User from "./users.ts";
+import CollectionModel from "./collections.ts";
+import CollectionTitleStatementModel from "./collectionTitleStatement.ts";
+import CorpusModel from "./corpora.ts";
+import UserModel from "./users.ts";
 
-Collection.hasMany(CollectionTitleStatement, {
+CollectionModel.hasMany(CollectionTitleStatementModel, {
   foreignKey: "collection_id",
   as: "titleStatements",
 });
 
-CollectionTitleStatement.belongsTo(Collection, {
+CollectionTitleStatementModel.belongsTo(CollectionModel, {
   foreignKey: "collection_id",
 });
 
-Corpus.hasMany(Collection, {
+CorpusModel.hasMany(CollectionModel, {
   foreignKey: "in_corpus",
   as: "collections",
 });
 
-Collection.belongsTo(Corpus, {
+CollectionModel.belongsTo(CorpusModel, {
   foreignKey: "in_corpus",
 });
 
-export { Collection, CollectionTitleStatement, User, Corpus };
+export {
+  CollectionModel,
+  CollectionTitleStatementModel,
+  UserModel,
+  CorpusModel,
+};

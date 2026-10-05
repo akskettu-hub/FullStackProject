@@ -1,17 +1,17 @@
 import express from "express";
 import { z } from "zod";
-import { User } from "../models/index.ts";
+import { UserModel } from "../models/index.ts";
 
 const router = express.Router();
 
 router.get("/", async (_req, res) => {
-  const users: User[] = await User.findAll();
+  const users: UserModel[] = await UserModel.findAll();
   res.header("Access-Control-Allow-Origin", "*");
   res.json(users);
 });
 
 router.get("/:id", async (req, res) => {
-  const user: User | null = await User.findByPk(req.params.id);
+  const user: UserModel | null = await UserModel.findByPk(req.params.id);
   res.header("Access-Control-Allow-Origin", "*");
   if (user) {
     res.json(user);
@@ -31,7 +31,7 @@ router.post("/", async (req, res) => {
   if (!parsedBody) {
     res.status(400).json({ error: z.treeifyError(parsedBody) });
   }
-  const user: User = await User.create(parsedBody.data);
+  const user: UserModel = await UserModel.create(parsedBody.data);
   res.status(201).json(user);
 });
 
