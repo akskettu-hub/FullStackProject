@@ -1,4 +1,5 @@
 {
+  "name": "@mono/backend",
   "type": "module",
   "scripts": {
     "tsc": "tsc --noEmit src/index.ts ",

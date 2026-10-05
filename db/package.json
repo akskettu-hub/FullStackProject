@@ -1,6 +1,6 @@
 {
+  "name": "@mono/db",
   "type": "module",
-  "name": "corpusimport",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
