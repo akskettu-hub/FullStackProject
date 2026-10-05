@@ -4,7 +4,6 @@ import getMockData from "../services/mockService.ts";
 const router = express.Router();
 
 router.get("/", (_req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
   res.send(getMockData());
 });
 

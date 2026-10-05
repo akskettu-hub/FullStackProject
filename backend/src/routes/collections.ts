@@ -47,7 +47,6 @@ router.get("/titleStmts", async (_req, res): Promise<void> => {
     ],
     order: [["xml_id", "ASC"]],
   });
-  res.header("Access-Control-Allow-Origin", "*");
   res.json(collections);
 });
 
