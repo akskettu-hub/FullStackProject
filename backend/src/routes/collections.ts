@@ -7,6 +7,7 @@ import {
   CollectionIdSchema,
   CollectionSchema,
   CollectionsSchema,
+  CollectionsWithTitleStmtsSchema,
 } from "../../../types/src/index.ts";
 
 const router = express.Router();
@@ -26,6 +27,7 @@ router.get("/id/:id", async (req, res): Promise<void> => {
     res.status(400).json({ error: "Invalid collection id" });
     return;
   }
+
   const collection = await CollectionModel.findByPk(id.data);
   if (!collection) {
     res.status(404).json({ error: "Collection not found" });
@@ -42,12 +44,19 @@ router.get("/titleStmts", async (_req, res): Promise<void> => {
         model: CollectionTitleStatementModel,
         as: "titleStatements",
         attributes: ["seq", "text"],
+        separate: true,
         order: [["seq", "ASC"]],
       },
     ],
     order: [["xml_id", "ASC"]],
   });
-  res.json(collections);
+  res
+    .status(200)
+    .json(
+      CollectionsWithTitleStmtsSchema.parse(
+        collections.map((c): unknown => c.toJSON()),
+      ),
+    );
 });
 
 export default router;
