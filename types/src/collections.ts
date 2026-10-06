@@ -29,3 +29,8 @@ export type CollectionWithTitleStmts = z.infer<
 export const CollectionsWithTitleStmtsSchema = z.array(
   CollectionWithTitleStmtsSchema,
 );
+
+export const CollectionInCorpusSchema = z.object({
+  id: z.number().int().positive(),
+  xml_id: z.string().min(1).max(32),
+});
