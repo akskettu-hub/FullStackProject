@@ -7,15 +7,19 @@ import {
   UserSchema,
   UsersSchema,
 } from "../../../types/src/index.ts";
+import { parseResponse } from "../utils/errors.ts";
 
 const router = express.Router();
 
 router.get("/", async (_req, res): Promise<void> => {
   const users = await UserModel.findAll();
 
-  res
-    .status(200)
-    .json(UsersSchema.parse(users.map((u): unknown => u.toJSON()))); // NOTE: unknown given as return type to placate eslint on return type. Parse validates data anyway.
+  res.status(200).json(
+    parseResponse(
+      UsersSchema,
+      users.map((u): unknown => u.toJSON()),
+    ),
+  );
 });
 
 router.get("/:id", async (req, res): Promise<void> => {
@@ -31,7 +35,7 @@ router.get("/:id", async (req, res): Promise<void> => {
     return;
   }
 
-  res.status(200).json(UserSchema.parse(user.toJSON()));
+  res.status(200).json(parseResponse(UserSchema, user.toJSON()));
 });
 
 router.post("/", async (req, res): Promise<void> => {
@@ -41,7 +45,7 @@ router.post("/", async (req, res): Promise<void> => {
     return;
   }
   const user: UserModel = await UserModel.create(parsedBody.data);
-  res.status(201).json(UserSchema.parse(user.toJSON()));
+  res.status(201).json(parseResponse(UserSchema, user.toJSON()));
 });
 
 export default router;
