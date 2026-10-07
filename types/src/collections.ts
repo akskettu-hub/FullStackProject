@@ -20,7 +20,7 @@ export const CollectionIdSchema = z.coerce.number().int().positive();
 export const CollectionsSchema = z.array(CollectionSchema);
 
 export const CollectionWithTitleStmtsSchema = CollectionSchema.extend({
-  titleStmts: z.array(CollectionTitleStmtFields),
+  titleStatements: z.array(CollectionTitleStmtFields),
 });
 
 export type CollectionWithTitleStmts = z.infer<
