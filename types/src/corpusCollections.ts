@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { CorpusInCorpusCollectionSchema } from "./corpora.ts";
 
 export const CorpusCollectionFields = z.object({
   name: z.string().min(1).max(32),
@@ -17,12 +16,7 @@ export type CorpusCollectionUpdate = z.infer<typeof NewCorpusCollectionSchema>;
 
 export const CorpusCollectionsSchema = z.array(CorpusCollectionSchema);
 
-export const CorpusCollectionWithCorporaSchema = CorpusCollectionSchema.extend({
-  corpora: z.array(CorpusInCorpusCollectionSchema),
+export const CorpusCollectionToCorpusSchema = z.object({
+  id: z.number().int().positive(),
+  name: z.string().min(1).max(32),
 });
-export type CorpusCollectionWithCorpora = z.infer<
-  typeof CorpusCollectionWithCorporaSchema
->;
-export const CorpusCollectionsWithCorporaSchema = z.array(
-  CorpusCollectionWithCorporaSchema,
-);
