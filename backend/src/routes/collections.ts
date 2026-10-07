@@ -9,6 +9,7 @@ import {
   CollectionsSchema,
   CollectionsWithTitleStmtsSchema,
 } from "../../../types/src/index.ts";
+import { parseResponse } from "../utils/errors.ts";
 
 const router = express.Router();
 
@@ -50,13 +51,12 @@ router.get("/titleStmts", async (_req, res): Promise<void> => {
     ],
     order: [["xml_id", "ASC"]],
   });
-  res
-    .status(200)
-    .json(
-      CollectionsWithTitleStmtsSchema.parse(
-        collections.map((c): unknown => c.toJSON()),
-      ),
-    );
+  res.status(200).json(
+    parseResponse(
+      CollectionsWithTitleStmtsSchema,
+      collections.map((c): unknown => c.toJSON()),
+    ),
+  );
 });
 
 export default router;

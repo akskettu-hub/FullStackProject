@@ -1,5 +1,6 @@
 // Completely LLM generated: Claude Sonnet 5 medium.
 import { BaseError as SequelizeBaseError } from "sequelize";
+import type z from "zod";
 
 interface PgOriginalError {
   message: string;
@@ -29,3 +30,41 @@ export function describeError(err: unknown): {
   }
   return { message: String(err) };
 }
+
+export const summariseZodIssues = (
+  error: z.ZodError,
+  maxGroups: number = 5,
+): string => {
+  const groups = new Map<string, { message: string; count: number }>();
+
+  for (const issue of error.issues) {
+    const path = issue.path
+      .map((p) => (typeof p === "number" ? "[]" : String(p)))
+      .join(".");
+    const key = `${path} | ${issue.message}`;
+    const group = groups.get(key);
+
+    if (group) group.count++;
+    else groups.set(key, { message: `${path}: ${issue.message}`, count: 1 });
+  }
+
+  const lines = [...groups.values()]
+    .slice(0, maxGroups)
+    .map((g) => `${g.message} (x${g.count})`);
+  const hidden = groups.size - lines.length;
+  if (hidden > 0) lines.push(`...and ${hidden} more kinds of issue`);
+  return lines.join("\n");
+};
+
+export class ResponseValidationError extends Error {}
+
+export const parseResponse = <S extends z.ZodType>(
+  schema: S,
+  data: unknown,
+): z.infer<S> => {
+  const result = schema.safeParse(data);
+  if (!result.success) {
+    throw new ResponseValidationError(summariseZodIssues(result.error));
+  }
+  return result.data;
+};

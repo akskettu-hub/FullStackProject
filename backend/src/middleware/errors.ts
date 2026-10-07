@@ -1,6 +1,6 @@
 // Mostly LLM generated: Claude Sonnet 5.5 Medium
 import type { ErrorRequestHandler } from "express";
-import { describeError } from "../utils/errors.ts";
+import { describeError, ResponseValidationError } from "../utils/errors.ts";
 import { UniqueConstraintError, ValidationError } from "sequelize";
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
@@ -24,6 +24,11 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 
   if (err instanceof ValidationError) {
     return res.status(400).json({ error: message });
+  }
+
+  if (err instanceof ResponseValidationError) {
+    console.error(`Response failed shcema validation:\n${err.message}`);
+    return res.status(500).json({ error: "Internal server error" });
   }
 
   res.status(500).json({ error: message }); // TODO: raw messages should not be returned in prod
