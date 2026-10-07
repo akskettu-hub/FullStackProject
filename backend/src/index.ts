@@ -7,6 +7,7 @@ import mockRouter from "./routes/mock.ts";
 import collectionsRouter from "./routes/collections.ts";
 import usersRouter from "./routes/users.ts";
 import corporaRouter from "./routes/corpora.ts";
+import corpusCollectionsRouter from "./routes/corpusCollections.ts";
 
 import { errorHandler } from "./middleware/errors.ts";
 
@@ -21,6 +22,7 @@ app.use("/api/mock", mockRouter);
 app.use("/api/collections", collectionsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/corpora", corporaRouter);
+app.use("/api/corpusCollections", corpusCollectionsRouter);
 
 app.use(errorHandler);
 

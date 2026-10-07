@@ -26,3 +26,8 @@ export type CorpusWithCollections = z.infer<typeof CorpusWithCollectionsSchema>;
 export const CorporaWithCollectionsSchema = z.array(
   CorpusWithCollectionsSchema,
 );
+
+export const CorpusInCorpusCollectionSchema = z.object({
+  id: z.number().int().positive(),
+  name: z.string().min(1).max(32),
+});
