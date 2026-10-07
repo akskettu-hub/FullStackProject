@@ -1,8 +1,13 @@
 import express from "express";
-import { CollectionModel, CorpusModel } from "../models/index.ts";
+import {
+  CollectionModel,
+  CorpusCollectionModel,
+  CorpusModel,
+} from "../models/index.ts";
 import {
   CorporaSchema,
   CorporaWithCollectionsSchema,
+  CorporaWithCorpusCollectionsSchema,
 } from "../../../types/src/index.ts";
 
 const router = express.Router();
@@ -31,6 +36,30 @@ router.get("/collections", async (_req, res) => {
     .status(200)
     .json(
       CorporaWithCollectionsSchema.parse(
+        corpora.map((c): unknown => c.toJSON()),
+      ),
+    );
+});
+
+router.get("/wCorpusCollections", async (_req, res): Promise<void> => {
+  const corpora: CorpusModel[] = await CorpusModel.findAll({
+    include: [
+      {
+        model: CorpusCollectionModel,
+        as: "corpus_collections",
+        through: { attributes: [] },
+      },
+    ],
+    order: [
+      ["id", "ASC"],
+      [{ model: CorpusCollectionModel, as: "corpus_collections" }, "id", "ASC"],
+    ],
+  });
+
+  res
+    .status(200)
+    .json(
+      CorporaWithCorpusCollectionsSchema.parse(
         corpora.map((c): unknown => c.toJSON()),
       ),
     );
