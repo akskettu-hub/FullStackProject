@@ -16,9 +16,12 @@ const router = express.Router();
 router.get("/", async (_req, res): Promise<void> => {
   const collections = await CollectionModel.findAll();
 
-  res
-    .status(200)
-    .json(CollectionsSchema.parse(collections.map((c): unknown => c.toJSON())));
+  res.status(200).json(
+    parseResponse(
+      CollectionsSchema,
+      collections.map((c): unknown => c.toJSON()),
+    ),
+  );
 });
 
 router.get("/id/:id", async (req, res): Promise<void> => {
@@ -35,7 +38,7 @@ router.get("/id/:id", async (req, res): Promise<void> => {
     return;
   }
 
-  res.status(200).json(CollectionSchema.parse(collection.toJSON()));
+  res.status(200).json(parseResponse(CollectionSchema, collection.toJSON()));
 });
 
 router.get("/titleStmts", async (_req, res): Promise<void> => {
