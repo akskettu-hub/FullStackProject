@@ -33,7 +33,9 @@ const validationFail = (
   return { valid: false, errors: [{ code, message }] };
 };
 
-export const validateCollection = (collectionCollectionXmlPath: string) => {
+export const validateCollection = async (
+  collectionCollectionXmlPath: string,
+) => {
   let xml: string;
   try {
     xml = fs.readFileSync(collectionCollectionXmlPath, "utf-8");
@@ -102,13 +104,3 @@ export const validateCollection = (collectionCollectionXmlPath: string) => {
   if (errors.length > 0) return { valid: false, errors };
   return { valid: true, data: { titleStmts, teiEntries } };
 };
-
-const result = validateCollection("./data/CEEC-400/CEEC-xml/FALLEN.xml");
-
-if (!result.valid) {
-  result.errors?.forEach((e) => console.error(`${e.code}: ${e.message}`));
-} else {
-  console.log(
-    `Validation Success: ${result.data?.teiEntries.length} tei, ${result.data?.titleStmts.length} titleStmts`,
-  );
-}
