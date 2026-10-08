@@ -1,6 +1,7 @@
-import { XMLParser } from "fast-xml-parser";
-import fs from "node:fs";
+//import { XMLParser } from "fast-xml-parser";
+//import fs from "node:fs";
 
+/*
 const xml = fs.readFileSync(process.argv[2], "utf-8");
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -12,14 +13,15 @@ const doc = parser.parse(xml);
 const collection = doc.teiCollection;
 const fileDescTitleStmt = collection.teiHeader?.fileDesc?.titleStmt;
 
-export const titleStmtsToArray = (stmt: string | string[] | undefined) => {
-  if (stmt === undefined) return [];
-  return Array.isArray(stmt) ? stmt : [stmt];
-};
-
 console.log(collection["@_xml:id"]);
 for (const stmt of titleStmtsToArray(fileDescTitleStmt)) {
   console.log(stmt);
   console.log("==");
 }
 console.log(typeof fileDescTitleStmt);
+ */
+
+export const titleStmtsToArray = (stmt: string | string[] | undefined) => {
+  if (stmt === undefined) return [];
+  return Array.isArray(stmt) ? stmt : [stmt];
+};
