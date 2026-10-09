@@ -1,6 +1,7 @@
 import { XMLParser, XMLValidator } from "fast-xml-parser";
 import fs from "node:fs";
 import { titleStmtsToArray } from "./importCollectionTitleStmt.ts";
+import { checkTeiEntries } from "./validateTEI.ts";
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -100,6 +101,9 @@ export const validateCollection = async (
       message: "No <TEI> elements found in collection",
     });
   }
+
+  const teiEntriesCheckResult = checkTeiEntries(teiEntries);
+  console.log(teiEntriesCheckResult);
 
   if (errors.length > 0) return { valid: false, errors };
   return { valid: true, data: { titleStmts, teiEntries } };
