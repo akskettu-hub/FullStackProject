@@ -1,10 +1,15 @@
 // Mostly LLM generated: Claude Sonnet 5.5 medium
 import { XMLParser, XMLValidator } from "fast-xml-parser";
+import { Pool } from "pg";
 import fs from "node:fs";
+import { z } from "zod";
+
 import { titleStmtsToArray } from "./importCollectionTitleStmt.ts";
 import { checkTeiEntries } from "./validateTEI.ts";
-import { NewCollectionSchema } from "../../types/src/index.ts";
-import { Pool } from "pg";
+import {
+  NewCollectionSchema,
+  NewCollectionTitleStmtSchema,
+} from "../../types/src/index.ts";
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -146,6 +151,7 @@ export const importCollections = async (
     // NOTE: We don't really want to go into this if we can't validate Tei Entries.
     // TODO: collection and title statements need to be validated before they can be imported. These should block importing.
     const d = r.data;
+
     const collectionResult = await pool.query(
       `INSERT INTO collections (xml_id, in_corpus) 
       VALUES ($1, $2) 
