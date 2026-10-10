@@ -146,6 +146,7 @@ export const checkTeiEntries = (teiEntries: unknown[]) => {
 };
 
 // TODO: test this
+// TODO: add schema for TEI entries.
 export const importTeiEntries = async (
   pool: Pool,
   collectionId: number,
