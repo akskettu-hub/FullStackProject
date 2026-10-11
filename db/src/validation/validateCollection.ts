@@ -2,14 +2,12 @@
 import { XMLParser, XMLValidator } from "fast-xml-parser";
 import { Pool } from "pg";
 import fs from "node:fs";
-import { z } from "zod";
+//import { z } from "zod";
 
-import { titleStmtsToArray } from "./importCollectionTitleStmt.ts";
-import { checkTeiEntries } from "./validateTEI.ts";
 import {
   NewCollectionSchema,
   NewCollectionTitleStmtSchema,
-} from "../../types/src/index.ts";
+} from "../../../types/src/index.ts";
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -43,6 +41,11 @@ const validationFail = (
   message: string,
 ): ValidationResult => {
   return { valid: false, collectionPath, errors: [{ code, message }] };
+};
+
+export const titleStmtsToArray = (stmt: string | string[] | undefined) => {
+  if (stmt === undefined) return [];
+  return Array.isArray(stmt) ? stmt : [stmt];
 };
 
 export const validateCollection = (

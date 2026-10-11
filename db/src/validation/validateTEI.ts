@@ -1,6 +1,6 @@
 // Mostly LLM generated: Claude Sonnet 5.5 medium
 import { z } from "zod";
-import { parseTitleKey } from "./titleKeyParser.ts";
+import { parseTitleKey } from "../util/titleKeyParser.ts";
 import { Pool } from "pg";
 const keyed = z.object({ "@_key": z.string().min(1) }).loose();
 
