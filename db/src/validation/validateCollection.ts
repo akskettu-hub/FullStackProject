@@ -2,12 +2,6 @@
 import { XMLParser, XMLValidator } from "fast-xml-parser";
 import { Pool } from "pg";
 import fs from "node:fs";
-//import { z } from "zod";
-
-import {
-  NewCollectionSchema,
-  NewCollectionTitleStmtSchema,
-} from "../../../types/src/index.ts";
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -26,12 +20,13 @@ export type ValidationIssue = {
     | "MISSING_TEI_ENTRIES";
   message: string;
 };
+
 export type ValidatedCollection = {
   xmlId: string | null;
   titleStmts: unknown[];
   teiEntries: unknown[];
 };
-export type ValidationResult =
+export type CollectionValidationResult =
   | { valid: true; collectionPath: string; data: ValidatedCollection }
   | { valid: false; collectionPath: string; errors: ValidationIssue[] };
 
@@ -39,7 +34,7 @@ const validationFail = (
   code: ValidationIssue["code"],
   collectionPath: string,
   message: string,
-): ValidationResult => {
+): CollectionValidationResult => {
   return { valid: false, collectionPath, errors: [{ code, message }] };
 };
 
@@ -50,7 +45,7 @@ export const titleStmtsToArray = (stmt: string | string[] | undefined) => {
 
 export const validateCollection = (
   collectionPath: string,
-): ValidationResult => {
+): CollectionValidationResult => {
   let xml: string;
   try {
     xml = fs.readFileSync(collectionPath, "utf-8");

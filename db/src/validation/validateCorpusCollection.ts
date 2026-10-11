@@ -2,9 +2,13 @@ import path from "node:path";
 import { validateCorpus } from "./validateCorpus.ts";
 import { validateDirectory } from "./validateDirectory.ts";
 
-export const validateCorpusCollection = async () => {
-  const corpusCollectionPath = "./data/CEEC-400/";
+const CORPUS_NAMES = ["CEEC", "CEECE", "CEECSU"] as const;
+export type CorpusName = (typeof CORPUS_NAMES)[number];
 
+export const validateCorpusCollection = async (
+  corpusCollectionPath: string,
+  corpusCollectionName: string,
+) => {
   const validateCorpusCollectionDir = await validateDirectory(
     corpusCollectionPath,
     "corpus collection",
@@ -15,10 +19,17 @@ export const validateCorpusCollection = async () => {
     );
     return;
   }
-  const corpora = ["CEEC-xml", "CEECE-xml", "CEECSU-xml"];
 
-  for (const c of corpora) {
-    await validateCorpus(path.join(corpusCollectionPath, c));
+  for (const c of CORPUS_NAMES) {
+    const fileName = `${c}-xml`;
+
+    const corpusRes = await validateCorpus(
+      path.join(corpusCollectionPath, fileName),
+    );
+
+    if (!corpusRes?.valid) {
+      corpusRes?.errors.forEach((e) => console.error(e.code, e.message));
+    }
   }
 };
 
@@ -35,4 +46,5 @@ export const importCorpusCollection = async () => {
    */
 };
 
-validateCorpusCollection();
+//validateCorpusCollection("./data/CEEC-400/", "CEEC-400");
+validateCorpusCollection("./test/", "CEEC-400");
