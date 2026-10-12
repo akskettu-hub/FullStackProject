@@ -135,7 +135,21 @@ export const validateTEI = (tei: unknown): TeiValidation => {
   };
 };
 
-export const checkTeiEntries = (teiEntries: unknown[]) => {
+export type CheckTeiEntriesResult = {
+  total: number;
+  importable: number;
+  failed: {
+    ok: false;
+    xmlId: string | null;
+    issues: TeiIssue[];
+    record: null;
+  }[];
+  withWarnings: TeiValidation[];
+};
+
+export const checkTeiEntries = (
+  teiEntries: unknown[],
+): CheckTeiEntriesResult => {
   const results = teiEntries.map(validateTEI);
   return {
     total: results.length,
