@@ -1,5 +1,5 @@
 import path from "node:path";
-import { validateCorpus } from "./validateCorpus.ts";
+import { validateCorpus, ValidatedCorpus } from "./validateCorpus.ts";
 import { validateDirectory } from "./validateDirectory.ts";
 import {
   CheckTeiEntriesResult,
@@ -7,23 +7,69 @@ import {
   TeiValidation,
 } from "./validateTEI.ts";
 
+export type CorpusCollectionValidationIssue = {
+  code:
+    "DIR_ISSUE" | "FILE_UNREADABLE" | "CORPUS_ISSUE" | "NO_TEI_CHECKS_FOUND";
+  message: string;
+};
+
+export type ValidatedCorpusCollection = {
+  name: string;
+  corpora: ValidatedCorpus[];
+};
+
+export type CorpusCollectionValidationResult =
+  | {
+      valid: true;
+      corpusCollectionPath: string;
+      data: ValidatedCorpusCollection;
+    }
+  | {
+      valid: false;
+      corpusCollectionPath: string;
+      errors: CorpusCollectionValidationIssue[];
+    };
+
+const fail = (
+  code: CorpusCollectionValidationIssue["code"],
+  corpusCollectionPath: string,
+  message: string,
+): CorpusCollectionValidationResult => {
+  return { valid: false, corpusCollectionPath, errors: [{ code, message }] };
+};
+
+type errorCodeAndMsg = { code: string; message: string };
+
+const errorsToStr = (errors: errorCodeAndMsg[]): string => {
+  return errors
+    .map(
+      (codeAndMsg: errorCodeAndMsg) =>
+        `${codeAndMsg.code}: ${codeAndMsg.message}\n`,
+    )
+    .join("");
+};
+
 const CORPUS_NAMES = ["CEEC", "CEECE", "CEECSU"] as const; //Currently the only extant corpus collection contains these, thus these are hard coded.
 export type CorpusName = (typeof CORPUS_NAMES)[number];
 
 export const validateCorpusCollection = async (
   corpusCollectionPath: string,
   corpusCollectionName: string,
-) => {
+): Promise<CorpusCollectionValidationResult> => {
   const validateCorpusCollectionDir = await validateDirectory(
     corpusCollectionPath,
     "corpus collection",
   );
+  const errors: errorCodeAndMsg[] = [];
+
   if (!validateCorpusCollectionDir.valid) {
-    validateCorpusCollectionDir.errors?.forEach((e) =>
-      console.error(`${e.code}: ${e.message}`),
-    );
-    return;
+    validateCorpusCollectionDir.errors?.forEach((e) => {
+      errors.push({ code: e.code, message: e.message });
+    });
+    return fail("DIR_ISSUE", corpusCollectionPath, errorsToStr(errors));
   }
+
+  const validatedCorpora: ValidatedCorpus[] = [];
 
   for (const c of CORPUS_NAMES) {
     const fileName = `${c}-xml`;
@@ -34,56 +80,38 @@ export const validateCorpusCollection = async (
     );
 
     if (!corpusRes?.valid) {
-      corpusRes?.errors.forEach((e) =>
-        console.error(`${e.code}: ${e.message}`),
-      );
+      corpusRes?.errors.forEach((e) => {
+        errors.push({
+          code: e.code,
+          message: `${c}: ${corpusRes.corpusPath}: ${e.message}`,
+        });
+      });
       continue;
     }
-
-    console.log(`Corpus validation success: ${corpusRes.data.name}`);
-    console.log(
-      `Collections in ${corpusRes.data.name}: ${corpusRes.data.collections.length}`,
-    );
-
-    const teiChecks: CheckTeiEntriesResult[] = corpusRes.data.teiChecks;
-    let totalTei = 0;
-    let totalImportable = 0;
-    let allFailed: {
-      ok: false;
-      xmlId: string | null;
-      issues: TeiIssue[];
-      record: null;
-    }[] = [];
-    let allWithWarnings: TeiValidation[] = [];
-
-    teiChecks.forEach((t) => {
-      totalTei += t.total;
-      totalImportable += t.importable;
-      t.failed.forEach((f) => allFailed.push(f));
-      t.withWarnings.forEach((w) => allWithWarnings.push(w));
-    });
-
-    console.log(
-      `Total TEI in ${corpusRes.data.name}: ${totalTei}, importable: ${totalImportable}`,
-    );
-    if (allFailed.length > 0) {
-      console.log("\nFailed:");
-      allFailed.forEach((f) => {
-        console.error(`${f.xmlId}: ${f.issues.length} issues:`);
-        f.issues.forEach((i) => console.error(i));
-      });
-    }
-
-    if (allWithWarnings.length > 0) {
-      console.log("\nWarnings:");
-      allWithWarnings.forEach((f) => {
-        console.error(`${f.xmlId}: ${f.issues.length} issues:`);
-        f.issues.forEach((i) => console.error(i));
-      });
-    }
-
-    console.log("\n========\n");
+    validatedCorpora.push(corpusRes.data);
   }
+
+  const corpusCollectionValidationIssues: CorpusCollectionValidationIssue[] =
+    [];
+  if (errors.length > 0) {
+    errors.forEach((e) => {
+      corpusCollectionValidationIssues.push({
+        code: "CORPUS_ISSUE",
+        message: e.message,
+      });
+    });
+    return {
+      valid: false,
+      corpusCollectionPath,
+      errors: corpusCollectionValidationIssues,
+    };
+  }
+
+  return {
+    valid: true,
+    corpusCollectionPath,
+    data: { name: corpusCollectionName, corpora: validatedCorpora },
+  };
 };
 
 export const importCorpusCollection = async () => {
@@ -100,4 +128,3 @@ export const importCorpusCollection = async () => {
 };
 
 //validateCorpusCollection("./test/", "CEEC-400");
-validateCorpusCollection("./data/CEEC-400/", "CEEC-400");
