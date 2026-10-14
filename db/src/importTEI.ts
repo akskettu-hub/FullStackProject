@@ -2,7 +2,7 @@
 import { Pool } from "pg";
 import { XMLParser } from "fast-xml-parser";
 import fs from "node:fs";
-import { parseTitleKey } from "./titleKeyParser.ts";
+import { parseTitleKey } from "./util/titleKeyParser.ts";
 import type { CorpusName, xmlCollectionInfo } from "./importCEEC400.ts";
 
 export const pool = new Pool({
@@ -12,7 +12,7 @@ export const pool = new Pool({
 const titleStmtsToArray = (stmt: string | string[] | undefined) => {
   if (stmt === undefined) return [];
   return Array.isArray(stmt) ? stmt : [stmt];
-};
+}; // TODO: Move to util also used by validate collection.
 
 export const insertCorpusCollection = async (
   corpusCollectionName: string,

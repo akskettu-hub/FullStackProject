@@ -4,6 +4,8 @@ import {
 } from "./validateCollection.ts";
 import { checkTeiEntries, CheckTeiEntriesResult } from "./validateTEI.ts";
 import { validateDirectory } from "./validateDirectory.ts";
+import { errorCodeAndMsg, errorsToStr } from "../util/validationErrorsToStr.ts";
+import { CorpusName } from "../types/CorpusNames.ts";
 
 export type CorpusValidationIssue = {
   code:
@@ -16,7 +18,7 @@ export type CorpusValidationIssue = {
 };
 
 export type ValidatedCorpus = {
-  name: string;
+  name: CorpusName;
   collections: CollectionValidationResult[];
   teiChecks: CheckTeiEntriesResult[];
 };
@@ -33,22 +35,10 @@ const fail = (
   return { valid: false, corpusPath, errors: [{ code, message }] };
 };
 
-type errorCodeAndMsg = { code: string; message: string };
-
-const errorsToStr = (errors: errorCodeAndMsg[]): string => {
-  return errors
-    .map(
-      (codeAndMsg: errorCodeAndMsg) =>
-        `${codeAndMsg.code}: ${codeAndMsg.message}\n`,
-    )
-    .join("");
-};
-
 export const validateCorpus = async (
   corpusPath: string,
-  corpusName: string,
+  corpusName: CorpusName,
 ): Promise<CorpusValidationResult> => {
-  // first validate corpus, which just means that the dir exists
   const validateCorpusDir = await validateDirectory(corpusPath, "corpus");
   const errors: errorCodeAndMsg[] = [];
 
@@ -96,21 +86,9 @@ export const validateCorpus = async (
     );
   }
 
-  const validatedCorpus: ValidatedCorpus = {
-    name: corpusName,
-    collections: collections,
-    teiChecks: teiChecks,
+  return {
+    valid: true,
+    corpusPath,
+    data: { name: corpusName, collections, teiChecks },
   };
-
-  return { valid: true, corpusPath, data: validatedCorpus };
 };
-
-// TODO: implement corpus import
-/*
-export const importCorpus = async (
-  corpusCollectionPath: string,
-  corpusDirName: string,
-  corpusCollectionId: number,
-) => {
-};
- */

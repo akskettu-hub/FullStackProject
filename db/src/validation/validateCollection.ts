@@ -2,6 +2,7 @@
 import { XMLParser, XMLValidator } from "fast-xml-parser";
 import { Pool } from "pg";
 import fs from "node:fs";
+import { TeiValidation } from "./validateTEI.ts";
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -23,8 +24,8 @@ export type ValidationIssue = {
 
 export type ValidatedCollection = {
   xmlId: string | null;
-  titleStmts: unknown[];
-  teiEntries: unknown[];
+  titleStmts: string[];
+  teiEntries: TeiValidation[];
 };
 export type CollectionValidationResult =
   | { valid: true; collectionPath: string; data: ValidatedCollection }

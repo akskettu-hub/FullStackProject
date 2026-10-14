@@ -1,11 +1,7 @@
 import path from "node:path";
 import { validateCorpus, ValidatedCorpus } from "./validateCorpus.ts";
 import { validateDirectory } from "./validateDirectory.ts";
-import {
-  CheckTeiEntriesResult,
-  TeiIssue,
-  TeiValidation,
-} from "./validateTEI.ts";
+import { errorCodeAndMsg, errorsToStr } from "../util/validationErrorsToStr.ts";
 
 export type CorpusCollectionValidationIssue = {
   code:
@@ -36,17 +32,6 @@ const fail = (
   message: string,
 ): CorpusCollectionValidationResult => {
   return { valid: false, corpusCollectionPath, errors: [{ code, message }] };
-};
-
-type errorCodeAndMsg = { code: string; message: string };
-
-const errorsToStr = (errors: errorCodeAndMsg[]): string => {
-  return errors
-    .map(
-      (codeAndMsg: errorCodeAndMsg) =>
-        `${codeAndMsg.code}: ${codeAndMsg.message}\n`,
-    )
-    .join("");
 };
 
 const CORPUS_NAMES = ["CEEC", "CEECE", "CEECSU"] as const; //Currently the only extant corpus collection contains these, thus these are hard coded.
