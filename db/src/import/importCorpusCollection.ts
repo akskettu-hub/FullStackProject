@@ -1,14 +1,31 @@
+import { Pool } from "pg";
+import { validateCorpusCollection } from "../validation/validateCorpusCollection.ts";
+import { importCollection } from "./importCollection.ts";
 import {
   associateCorpusWithCorpusCollection,
   insertCorpus,
-  insertCorpusCollection,
-} from "../importTEI.ts";
-import { validateCorpusCollection } from "../validation/validateCorpusCollection.ts";
-import { importCollection } from "./importCollection.ts";
+} from "./importCorpus.ts";
+
+export const pool = new Pool({
+  connectionString: "postgres://corpus:corpus@localhost:5432/corpus_dev",
+});
+
+export const insertCorpusCollection = async (
+  corpusCollectionName: string,
+): Promise<{ id: number; inserted: Boolean }> => {
+  const res = await pool.query(
+    `INSERT INTO corpus_collections (name)
+    VALUES ($1) 
+    ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
+    RETURNING id, (xmax=0) AS inserted`,
+    [corpusCollectionName],
+  );
+  return res.rows[0];
+};
 
 export const importCorpusCollection = async () => {
   const corpusCollectionValidationResult = await validateCorpusCollection(
-    "./test/",
+    "./data/CEEC-400/",
     "CEEC-400",
   );
 
@@ -28,21 +45,23 @@ export const importCorpusCollection = async () => {
   const corpusCollectionInserted: Boolean = inserted;
 
   for (const corpus of corpusCollectionValidationResult.data.corpora) {
-    const { id, inserted } = await insertCorpus(corpus.name);
+    const { id, inserted } = await insertCorpus(corpus.name, pool);
     if (!inserted) {
       console.warn(`import for ${corpus.name} failed... Skipping.`);
     }
     console.log(`id: ${id}, inserted: ${inserted}`);
 
-    if (corpusCollectionInserted && inserted) {
+    if (!corpusCollectionInserted && !inserted) {
       console.warn(
         "Corpus and corpus collection already inserted. Skipping association...",
       );
     } else {
-      await associateCorpusWithCorpusCollection(id, corpusCollectionId);
+      await associateCorpusWithCorpusCollection(id, corpusCollectionId, pool);
     }
     corpus.collections.forEach((col) => {
-      importCollection(pool, col.data, id);
+      if (col.valid) {
+        importCollection(col.data, id, pool);
+      }
     });
   }
 };
