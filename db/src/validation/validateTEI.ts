@@ -1,7 +1,6 @@
 // Mostly LLM generated: Claude Sonnet 5.5 medium
 import { z } from "zod";
 import { parseTitleKey } from "../util/titleKeyParser.ts";
-import { Pool } from "pg";
 const keyed = z.object({ "@_key": z.string().min(1) }).loose();
 
 const teiSchema = z
@@ -157,51 +156,4 @@ export const checkTeiEntries = (
     failed: results.filter((r) => !r.ok),
     withWarnings: results.filter((r) => r.ok && r.issues.length > 0),
   };
-};
-
-// TODO: test this
-// TODO: add schema for TEI entries.
-export const importTeiEntries = async (
-  pool: Pool,
-  collectionId: number,
-  teiEntries: unknown[],
-) => {
-  const results = teiEntries.map(validateTEI);
-
-  for (const r of results) {
-    if (!r.ok) {
-      console.error(`Skipping ${r.xmlId ?? "<missing_id>"}:`, r.issues);
-      continue;
-    }
-
-    for (const w of r.issues)
-      console.warn(`${r.xmlId} ${w.path}: ${w.message}`);
-
-    const d = r.record;
-    await pool.query(
-      `INSERT INTO documents (collection_id, xml_id, title_key, author_key, text_type, lang, raw_xml,
-         authenticity, year, year_raw, year_is_decade_suggestion, year_is_uncertain,
-         relationship_code, correspondent_code, title_key_parse_ok)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
-      [
-        collectionId,
-        d.xmlId,
-        d.titleKey,
-        d.authorKey,
-        d.textType,
-        d.lang,
-        d.rawXml,
-        d.authenticity,
-        d.year,
-        d.yearRaw,
-        d.yearIsDecadeSuggestion,
-        d.yearIsUncertain,
-        d.relationshipCode,
-        d.correspondentCode,
-        d.titleKeyParseOk,
-      ],
-    );
-  }
-
-  return results;
 };

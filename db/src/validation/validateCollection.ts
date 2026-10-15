@@ -1,8 +1,8 @@
 // Mostly LLM generated: Claude Sonnet 5.5 medium
 import { XMLParser, XMLValidator } from "fast-xml-parser";
-import { Pool } from "pg";
 import fs from "node:fs";
-import { TeiValidation } from "./validateTEI.ts";
+import { TeiValidation, validateTEI } from "./validateTEI.ts";
+import { errorsToStr } from "../util/validationErrorsToStr.ts";
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -27,6 +27,7 @@ export type ValidatedCollection = {
   titleStmts: string[];
   teiEntries: TeiValidation[];
 };
+
 export type CollectionValidationResult =
   | { valid: true; collectionPath: string; data: ValidatedCollection }
   | { valid: false; collectionPath: string; errors: ValidationIssue[] };
@@ -83,7 +84,7 @@ export const validateCollection = (
     );
   }
 
-  const doc = parser.parse(xml);
+  const doc: unknown = parser.parse(xml);
   const collection = doc.teiCollection;
 
   if (!collection || typeof collection !== "object") {
@@ -115,16 +116,22 @@ export const validateCollection = (
     });
   }
 
-  const teiEntries = Array.isArray(collection.TEI)
+  const teiEntriesRaw = Array.isArray(collection.TEI)
     ? collection.TEI
-    : [collection.Tei];
+    : [collection.TEI];
 
-  if (teiEntries.length === 0) {
-    errors.push({
-      code: "MISSING_TEI_ENTRIES",
-      message: "No <TEI> elements found in collection",
-    });
+  if (teiEntriesRaw.length === 0) {
+    return validationFail(
+      "MISSING_TEI_ENTRIES",
+      collectionPath,
+      "No <TEI> elements found in collection",
+    );
   }
+
+  const teiEntries: TeiValidation[] = [];
+  teiEntriesRaw.forEach((rawTei: unknown) => {
+    teiEntries.push(validateTEI(rawTei));
+  });
 
   if (errors.length > 0) return { valid: false, collectionPath, errors };
   return {
@@ -132,40 +139,4 @@ export const validateCollection = (
     collectionPath,
     data: { xmlId, titleStmts, teiEntries },
   };
-};
-
-export const importCollections = async (
-  pool: Pool,
-  corpusId: number,
-  collections: string[],
-) => {
-  const results = collections.map(validateCollection);
-
-  for (const r of results) {
-    if (!r.valid) {
-      console.error(`Skipping collection at ${r.collectionPath}: ${r.errors}:`);
-      continue;
-    }
-
-    // NOTE: We don't really want to go into this if we can't validate Tei Entries.
-    // TODO: collection and title statements need to be validated before they can be imported. These should block importing.
-    const d = r.data;
-
-    const collectionResult = await pool.query(
-      `INSERT INTO collections (xml_id, in_corpus) 
-      VALUES ($1, $2) 
-      ON CONFLICT (xml_id) DO UPDATE SET xml_id = EXCLUDED.xml_id RETURNING id`,
-      [d.xmlId, corpusId],
-    ); // TODO: use Schema for new collection
-
-    const collectionId = collectionResult.rows[0].id;
-    const titleStmts = d.titleStmts;
-
-    for (let i = 0; i < titleStmts.length; i++) {
-      await pool.query(
-        `INSERT INTO collection_title_statements (collection_id, seq, text) VALUES ($1, $2, $3)`,
-        [collectionId, i, titleStmts[i]],
-      ); //  TODO: use Schema for new collection title statements
-    }
-  }
 };

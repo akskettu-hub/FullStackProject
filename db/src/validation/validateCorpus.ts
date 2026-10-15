@@ -2,7 +2,6 @@ import {
   CollectionValidationResult,
   validateCollection,
 } from "./validateCollection.ts";
-import { checkTeiEntries, CheckTeiEntriesResult } from "./validateTEI.ts";
 import { validateDirectory } from "./validateDirectory.ts";
 import { errorCodeAndMsg, errorsToStr } from "../util/validationErrorsToStr.ts";
 import { CorpusName } from "../types/CorpusNames.ts";
@@ -20,7 +19,6 @@ export type CorpusValidationIssue = {
 export type ValidatedCorpus = {
   name: CorpusName;
   collections: CollectionValidationResult[];
-  teiChecks: CheckTeiEntriesResult[];
 };
 
 export type CorpusValidationResult =
@@ -50,7 +48,6 @@ export const validateCorpus = async (
   }
 
   const collections: CollectionValidationResult[] = [];
-  const teiChecks = [];
 
   for (const f of validateCorpusDir.files) {
     const result = validateCollection(f);
@@ -62,9 +59,6 @@ export const validateCorpus = async (
       continue;
     }
     collections.push(result);
-
-    const teiEntriesCheckResult = checkTeiEntries(result.data?.teiEntries);
-    teiChecks.push(teiEntriesCheckResult);
   }
 
   const corpusValidationIssues: CorpusValidationIssue[] = [];
@@ -78,17 +72,9 @@ export const validateCorpus = async (
     return { valid: false, corpusPath, errors: corpusValidationIssues };
   }
 
-  if (teiChecks.length < 1) {
-    return fail(
-      "NO_TEI_CHECKS_FOUND",
-      corpusPath,
-      `Length of tei checks: ${teiChecks.length}`,
-    );
-  }
-
   return {
     valid: true,
     corpusPath,
-    data: { name: corpusName, collections, teiChecks },
+    data: { name: corpusName, collections },
   };
 };

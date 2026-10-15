@@ -5,8 +5,7 @@ import {
 
 export const runValidateCorpusCollection =
   async (): Promise<CorpusCollectionValidationResult> => {
-    //const res = await validateCorpusCollection("./data/CEEC-400/", "CEEC-400");
-    const res = await validateCorpusCollection("./test/", "CEEC-400");
+    const res = await validateCorpusCollection("./data/CEEC-400/", "CEEC-400");
     if (res.valid) {
       console.log(`Corpus Collection validation success: ${res.data.name}`);
       res.data.corpora.forEach((c) => {
