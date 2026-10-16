@@ -1,8 +1,39 @@
 // Mostly LLM generated: Claude Sonnet 5.5 medium
 import { XMLParser, XMLValidator } from "fast-xml-parser";
 import fs from "node:fs";
-import { TeiValidation, validateTEI } from "./validateTEI.ts";
-import { errorsToStr } from "../util/validationErrorsToStr.ts";
+import { z } from "zod";
+
+import {
+  checkTeiEntries,
+  CheckTeiEntriesResult,
+  TeiValidation,
+  validateTEI,
+} from "./validateTEI.ts";
+import { toArray } from "../util/toArray.ts";
+
+const TeiCollectionSchema = z.object({
+  teiCollection: z
+    .object({
+      "@_xml:id": z.string().min(1),
+      teiHeader: z
+        .object({
+          fileDesc: z
+            .object({
+              titleStmt: z // One or more of these
+                .preprocess(
+                  toArray,
+                  z
+                    .array(z.string().min(1))
+                    .min(1, "Collection should have one or more titleStmts"),
+                ),
+            })
+            .loose(),
+        })
+        .loose(),
+      TEI: z.preprocess(toArray, z.array(z.unknown())),
+    })
+    .loose(),
+});
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -15,6 +46,8 @@ export type ValidationIssue = {
     | "NOT_A_FILE"
     | "FILE_UNREADABLE"
     | "XML_INVALID"
+    | "INVALID_TEI_COLLECTION"
+    | "INVALID_TEI"
     | "MISSING_XML_ID"
     | "MISSING_COLLECTION"
     | "MISSING_TITLE_STMT"
@@ -26,6 +59,7 @@ export type ValidatedCollection = {
   xmlId: string | null;
   titleStmts: string[];
   teiEntries: TeiValidation[];
+  teiChecks: CheckTeiEntriesResult;
 };
 
 export type CollectionValidationResult =
@@ -38,11 +72,6 @@ const validationFail = (
   message: string,
 ): CollectionValidationResult => {
   return { valid: false, collectionPath, errors: [{ code, message }] };
-};
-
-export const titleStmtsToArray = (stmt: string | string[] | undefined) => {
-  if (stmt === undefined) return [];
-  return Array.isArray(stmt) ? stmt : [stmt];
 };
 
 export const validateCollection = (
@@ -84,24 +113,27 @@ export const validateCollection = (
     );
   }
 
-  const doc: unknown = parser.parse(xml);
-  const collection = doc.teiCollection;
+  const parsedTeiCollection = TeiCollectionSchema.safeParse(parser.parse(xml));
+  //doc.teiCollection
 
-  if (!collection || typeof collection !== "object") {
+  if (!parsedTeiCollection.success) {
     return validationFail(
-      "MISSING_COLLECTION",
+      "INVALID_TEI_COLLECTION",
       collectionPath,
-      "Root element <teiCollection> not found",
+      parsedTeiCollection.error.message,
     );
   }
+  const { teiCollection } = parsedTeiCollection.data;
 
-  const fileDescTitleStmt = collection.teiHeader?.fileDesc?.titleStmt;
-  const titleStmts = titleStmtsToArray(fileDescTitleStmt);
+  //const fileDescTitleStmt = collection.teiHeader?.fileDesc?.titleStmt;
+  const titleStmts = teiCollection.teiHeader.fileDesc.titleStmt;
 
   const errors: ValidationIssue[] = [];
 
   const xmlId =
-    typeof collection["@_xml:id"] === "string" ? collection["@_xml:id"] : null;
+    typeof teiCollection["@_xml:id"] === "string"
+      ? teiCollection["@_xml:id"]
+      : null;
   if (!xmlId) {
     errors.push({
       code: "MISSING_XML_ID",
@@ -116,27 +148,36 @@ export const validateCollection = (
     });
   }
 
-  const teiEntriesRaw = Array.isArray(collection.TEI)
-    ? collection.TEI
-    : [collection.TEI];
+  const teiEntries: TeiValidation[] = teiCollection.TEI.map(validateTEI);
 
-  if (teiEntriesRaw.length === 0) {
-    return validationFail(
-      "MISSING_TEI_ENTRIES",
-      collectionPath,
-      "No <TEI> elements found in collection",
-    );
+  if (teiEntries.length === 0) {
+    errors.push({
+      code: "MISSING_TEI_ENTRIES",
+      message: "No <TEI> elements found in collection",
+    });
   }
 
+  /*
   const teiEntries: TeiValidation[] = [];
   teiEntriesRaw.forEach((rawTei: unknown) => {
     teiEntries.push(validateTEI(rawTei));
   });
+   */
+  const teiChecks: CheckTeiEntriesResult = checkTeiEntries(teiEntries);
+
+  if (teiChecks.failed.length > 0) {
+    teiChecks.failed.forEach((f) => {
+      errors.push({
+        code: "INVALID_TEI",
+        message: `${f.xmlId ? f.xmlId : "<Missing xml:id>"} failed validation with ${f.issues.length}`,
+      });
+    });
+  }
 
   if (errors.length > 0) return { valid: false, collectionPath, errors };
   return {
     valid: true,
     collectionPath,
-    data: { xmlId, titleStmts, teiEntries },
+    data: { xmlId, titleStmts, teiEntries, teiChecks },
   };
 };

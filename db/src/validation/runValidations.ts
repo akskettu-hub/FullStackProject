@@ -1,40 +1,92 @@
+import { CollectionValidationResult } from "./validateCollection.ts";
+import { CorpusValidationResult } from "./validateCorpus.ts";
 import {
   CorpusCollectionValidationResult,
   validateCorpusCollection,
 } from "./validateCorpusCollection.ts";
+import { CheckTeiEntriesResult } from "./validateTEI.ts";
+export const printCorpusCollectionIssues = (
+  result: CorpusCollectionValidationResult,
+) => {
+  if (!result.valid) {
+    result.errors.forEach((e) => {
+      console.error(e.code, e.message);
+    });
+    return;
+  }
+};
+
+export const printCorpusIssues = (result: CorpusValidationResult) => {
+  if (!result.valid) {
+    result.errors.forEach((e) => {
+      console.error(e.code, e.message);
+    });
+  }
+  return;
+};
+
+export const printCollectionIssues = (result: CollectionValidationResult) => {
+  if (!result.valid) {
+    result.errors.forEach((e) => {
+      console.error(e.code, e.message);
+    });
+  }
+  return;
+};
+
+export const printTeiIssues = (result: CheckTeiEntriesResult) => {
+  if (result.failed.length > 0) {
+    result.failed.forEach((e) => {
+      console.error(`${e.xmlId} issues:`);
+      e.issues.forEach((i) => console.error(i.severity, i.message));
+    });
+  }
+  return;
+};
+
+export const printTeiWarnings = (result: CheckTeiEntriesResult) => {
+  if (result.withWarnings.length > 0) {
+    result.withWarnings.forEach((w) => {
+      console.warn(`${w.xmlId} with warnings:`);
+      w.issues.map((i) => console.warn(i));
+    });
+  }
+};
 
 export const runValidateCorpusCollection =
   async (): Promise<CorpusCollectionValidationResult> => {
     const res = await validateCorpusCollection("./data/CEEC-400/", "CEEC-400");
-    if (res.valid) {
-      console.log(`Corpus Collection validation success: ${res.data.name}`);
-      res.data.corpora.forEach((c) => {
-        console.log(
-          `${c.name}: ${c.collections.length} collections, ${c.teiChecks.reduce((acc, cur) => acc + cur.importable, 0)}/${c.teiChecks.reduce((acc, cur) => acc + cur.total, 0)} tei importable`,
-        );
-        const failed = c.teiChecks.filter((t) => t.failed.length > 0);
-        if (failed.length > 0) {
-          failed.forEach((f) => {
-            f.failed.forEach((fa) =>
-              console.error(`${fa.xmlId}: ${fa.issues}`),
-            );
-          });
-        }
 
-        const warnings = c.teiChecks.filter((t) => t.withWarnings.length > 0);
-        if (warnings.length > 0) {
-          warnings.forEach((f) => {
-            f.withWarnings.forEach((w) => {
-              console.warn(`${w.xmlId}: importable with issues`);
-              console.warn(w.issues);
-            });
-          });
-        }
+    if (res.valid) {
+      res.data.corpora.forEach((corpus) => {
+        //Corpus level
+        //Each corpus should be valid
+        let validCollections = 0;
+        let validTei = 0;
+        let totalTei = 0;
+        corpus.collections.forEach((collection) => {
+          //Collection level
+          if (collection.valid) {
+            validCollections += 1;
+            validTei += collection.data.teiChecks.importable;
+            totalTei += collection.data.teiChecks.total;
+            printTeiIssues(collection.data.teiChecks);
+            printTeiWarnings(collection.data.teiChecks);
+          } else {
+            console.error(
+              `Collection Validation Fail: ${collection.collectionPath}`,
+            );
+            printCollectionIssues(collection);
+          }
+        });
+        console.log(
+          `${corpus.name}: ${validCollections}/${corpus.collections.length} valid. ${validTei}/${totalTei} importable.`,
+        );
       });
     } else {
-      console.error("Corpus Collection validation failed:");
-      res.errors.forEach((e) => console.error(`${e.code}: ${e.message}`));
+      printCorpusCollectionIssues(res);
     }
+
     return res;
   };
 

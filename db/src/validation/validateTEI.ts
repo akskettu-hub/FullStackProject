@@ -147,13 +147,12 @@ export type CheckTeiEntriesResult = {
 };
 
 export const checkTeiEntries = (
-  teiEntries: unknown[],
+  teiEntries: TeiValidation[],
 ): CheckTeiEntriesResult => {
-  const results = teiEntries.map(validateTEI);
   return {
-    total: results.length,
-    importable: results.filter((r) => r.ok).length,
-    failed: results.filter((r) => !r.ok),
-    withWarnings: results.filter((r) => r.ok && r.issues.length > 0),
+    total: teiEntries.length,
+    importable: teiEntries.filter((r) => r.ok).length,
+    failed: teiEntries.filter((r) => !r.ok),
+    withWarnings: teiEntries.filter((r) => r.ok && r.issues.length > 0),
   };
 };
