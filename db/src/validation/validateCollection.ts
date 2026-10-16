@@ -66,7 +66,18 @@ export type CollectionValidationResult =
   | { valid: true; collectionPath: string; data: ValidatedCollection }
   | { valid: false; collectionPath: string; errors: ValidationIssue[] };
 
-const validationFail = (
+export const printCollectionIssues = (
+  result: CollectionValidationResult,
+): void => {
+  if (!result.valid) {
+    result.errors.forEach((e) => {
+      console.error(e.code, e.message);
+    });
+  }
+  return;
+};
+
+const fail = (
   code: ValidationIssue["code"],
   collectionPath: string,
   message: string,
@@ -84,19 +95,19 @@ export const validateCollection = (
     const code = (err as NodeJS.ErrnoException).code;
     switch (code) {
       case "ENOENT":
-        return validationFail(
+        return fail(
           "FILE_NOT_FOUND",
           collectionPath,
           `File not found: ${collectionPath}`,
         );
       case "EISDIR":
-        return validationFail(
+        return fail(
           "NOT_A_FILE",
           collectionPath,
           `Path to directory, not file: ${collectionPath}`,
         );
       default:
-        return validationFail(
+        return fail(
           "FILE_UNREADABLE",
           collectionPath,
           `Could not read file: ${collectionPath}: ${code ?? err}`,
@@ -106,7 +117,7 @@ export const validateCollection = (
 
   const xmlCheck = XMLValidator.validate(xml); // TODO: xmlvalidator is depracated, but docs for fast-xml-validator are nowhere to be found. Figure out its usage later
   if (xmlCheck !== true) {
-    return validationFail(
+    return fail(
       "XML_INVALID",
       collectionPath,
       `${xmlCheck.err.msg} (line ${xmlCheck.err.line})`,
@@ -114,10 +125,8 @@ export const validateCollection = (
   }
 
   const parsedTeiCollection = TeiCollectionSchema.safeParse(parser.parse(xml));
-  //doc.teiCollection
-
   if (!parsedTeiCollection.success) {
-    return validationFail(
+    return fail(
       "INVALID_TEI_COLLECTION",
       collectionPath,
       parsedTeiCollection.error.message,
@@ -125,7 +134,6 @@ export const validateCollection = (
   }
   const { teiCollection } = parsedTeiCollection.data;
 
-  //const fileDescTitleStmt = collection.teiHeader?.fileDesc?.titleStmt;
   const titleStmts = teiCollection.teiHeader.fileDesc.titleStmt;
 
   const errors: ValidationIssue[] = [];
@@ -157,14 +165,7 @@ export const validateCollection = (
     });
   }
 
-  /*
-  const teiEntries: TeiValidation[] = [];
-  teiEntriesRaw.forEach((rawTei: unknown) => {
-    teiEntries.push(validateTEI(rawTei));
-  });
-   */
   const teiChecks: CheckTeiEntriesResult = checkTeiEntries(teiEntries);
-
   if (teiChecks.failed.length > 0) {
     teiChecks.failed.forEach((f) => {
       errors.push({

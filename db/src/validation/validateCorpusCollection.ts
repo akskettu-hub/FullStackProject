@@ -4,8 +4,7 @@ import { validateDirectory } from "./validateDirectory.ts";
 import { errorCodeAndMsg, errorsToStr } from "../util/validationErrorsToStr.ts";
 
 export type CorpusCollectionValidationIssue = {
-  code:
-    "DIR_ISSUE" | "FILE_UNREADABLE" | "CORPUS_ISSUE" | "NO_TEI_CHECKS_FOUND";
+  code: "DIR_ISSUE" | "CORPUS_ISSUE";
   message: string;
 };
 
@@ -26,6 +25,17 @@ export type CorpusCollectionValidationResult =
       errors: CorpusCollectionValidationIssue[];
     };
 
+export const printCorpusCollectionIssues = (
+  result: CorpusCollectionValidationResult,
+): void => {
+  if (!result.valid) {
+    result.errors.forEach((e) => {
+      console.error(e.code, e.message);
+    });
+    return;
+  }
+};
+
 const fail = (
   code: CorpusCollectionValidationIssue["code"],
   corpusCollectionPath: string,
@@ -34,7 +44,7 @@ const fail = (
   return { valid: false, corpusCollectionPath, errors: [{ code, message }] };
 };
 
-const CORPUS_NAMES = ["CEEC", "CEECE", "CEECSU"] as const; //Currently the only extant corpus collection contains these, thus these are hard coded.
+const CORPUS_NAMES = ["CEEC", "CEECE", "CEECSU"] as const; //TODO: Figure out how to centralise this
 export type CorpusName = (typeof CORPUS_NAMES)[number];
 
 export const validateCorpusCollection = async (
@@ -98,18 +108,3 @@ export const validateCorpusCollection = async (
     data: { name: corpusCollectionName, corpora: validatedCorpora },
   };
 };
-
-export const importCorpusCollection = async () => {
-  // TODO: implement importing corpus collection
-  /*
-  const corpora = ["CEEC-xml", "CEECE-xml", "CEECSU-xml"];
-
-  const corpusCollectionPath = "./data/CEEC-400/";
-
-  for (const c of corpora) {
-    await importCorpus(path.join(corpusCollectionPath, c));
-  }
-   */
-};
-
-//validateCorpusCollection("./test/", "CEEC-400");

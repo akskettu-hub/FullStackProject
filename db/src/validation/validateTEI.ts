@@ -156,3 +156,22 @@ export const checkTeiEntries = (
     withWarnings: teiEntries.filter((r) => r.ok && r.issues.length > 0),
   };
 };
+
+export const printTeiIssues = (result: CheckTeiEntriesResult) => {
+  if (result.failed.length > 0) {
+    result.failed.forEach((e) => {
+      console.error(`${e.xmlId} issues:`);
+      e.issues.forEach((i) => console.error(i.severity, i.message));
+    });
+  }
+  return;
+};
+
+export const printTeiWarnings = (result: CheckTeiEntriesResult) => {
+  if (result.withWarnings.length > 0) {
+    result.withWarnings.forEach((w) => {
+      console.warn(`${w.xmlId} with warnings:`);
+      w.issues.map((i) => console.warn(i));
+    });
+  }
+};

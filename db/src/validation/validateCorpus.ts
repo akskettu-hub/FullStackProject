@@ -25,6 +25,15 @@ export type CorpusValidationResult =
   | { valid: true; corpusPath: string; data: ValidatedCorpus }
   | { valid: false; corpusPath: string; errors: CorpusValidationIssue[] };
 
+export const printCorpusIssues = (result: CorpusValidationResult): void => {
+  if (!result.valid) {
+    result.errors.forEach((e) => {
+      console.error(e.code, e.message);
+    });
+  }
+  return;
+};
+
 const fail = (
   code: CorpusValidationIssue["code"],
   corpusPath: string,

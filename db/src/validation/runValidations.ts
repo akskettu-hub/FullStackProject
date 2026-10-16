@@ -1,57 +1,10 @@
-import { CollectionValidationResult } from "./validateCollection.ts";
-import { CorpusValidationResult } from "./validateCorpus.ts";
+import { printCollectionIssues } from "./validateCollection.ts";
 import {
   CorpusCollectionValidationResult,
+  printCorpusCollectionIssues,
   validateCorpusCollection,
 } from "./validateCorpusCollection.ts";
-import { CheckTeiEntriesResult } from "./validateTEI.ts";
-export const printCorpusCollectionIssues = (
-  result: CorpusCollectionValidationResult,
-) => {
-  if (!result.valid) {
-    result.errors.forEach((e) => {
-      console.error(e.code, e.message);
-    });
-    return;
-  }
-};
-
-export const printCorpusIssues = (result: CorpusValidationResult) => {
-  if (!result.valid) {
-    result.errors.forEach((e) => {
-      console.error(e.code, e.message);
-    });
-  }
-  return;
-};
-
-export const printCollectionIssues = (result: CollectionValidationResult) => {
-  if (!result.valid) {
-    result.errors.forEach((e) => {
-      console.error(e.code, e.message);
-    });
-  }
-  return;
-};
-
-export const printTeiIssues = (result: CheckTeiEntriesResult) => {
-  if (result.failed.length > 0) {
-    result.failed.forEach((e) => {
-      console.error(`${e.xmlId} issues:`);
-      e.issues.forEach((i) => console.error(i.severity, i.message));
-    });
-  }
-  return;
-};
-
-export const printTeiWarnings = (result: CheckTeiEntriesResult) => {
-  if (result.withWarnings.length > 0) {
-    result.withWarnings.forEach((w) => {
-      console.warn(`${w.xmlId} with warnings:`);
-      w.issues.map((i) => console.warn(i));
-    });
-  }
-};
+import { printTeiIssues, printTeiWarnings } from "./validateTEI.ts";
 
 export const runValidateCorpusCollection =
   async (): Promise<CorpusCollectionValidationResult> => {
@@ -60,7 +13,6 @@ export const runValidateCorpusCollection =
     if (res.valid) {
       res.data.corpora.forEach((corpus) => {
         //Corpus level
-        //Each corpus should be valid
         let validCollections = 0;
         let validTei = 0;
         let totalTei = 0;
@@ -70,7 +22,16 @@ export const runValidateCorpusCollection =
             validCollections += 1;
             validTei += collection.data.teiChecks.importable;
             totalTei += collection.data.teiChecks.total;
-            printTeiIssues(collection.data.teiChecks);
+            if (collection.data.teiChecks.failed.length > 0)
+              console.error(
+                `ERROR: Tei failed: ${collection.data.teiChecks.failed.length}`,
+              );
+            printTeiIssues(collection.data.teiChecks); // Should always print nothing because collection should fail if there are tei errors, here for diagonstics
+
+            if (collection.data.teiChecks.withWarnings.length > 0)
+              console.warn(
+                `WARN: Tei with warnings: ${collection.data.teiChecks.withWarnings.length}`,
+              );
             printTeiWarnings(collection.data.teiChecks);
           } else {
             console.error(
