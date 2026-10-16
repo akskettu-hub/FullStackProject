@@ -1,5 +1,9 @@
 {
   "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "npm run lint --workspaces --if-present"
+  },
   "workspaces": [
     "types",
     "db",
@@ -7,6 +11,10 @@
     "frontend"
   ],
   "devDependencies": {
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "eslint": "^10.9.1",
+    "typescript-eslint": "^8.69.0"
   }
 }
