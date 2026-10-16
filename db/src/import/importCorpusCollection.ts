@@ -23,6 +23,7 @@ export const insertCorpusCollection = async (
   return res.rows[0];
 };
 
+// TODO: Needs error handling
 export const importCorpusCollection = async () => {
   const corpusCollectionValidationResult = await validateCorpusCollection(
     "./data/CEEC-400/",
@@ -40,16 +41,15 @@ export const importCorpusCollection = async () => {
   if (!inserted) {
     console.warn("Corpus collection already imported. Skipping...");
   }
-  console.log(`Corpus collection inserted. id: ${id}, inserted: ${inserted}`);
+
   const corpusCollectionId: number = id;
   const corpusCollectionInserted: Boolean = inserted;
 
   for (const corpus of corpusCollectionValidationResult.data.corpora) {
     const { id, inserted } = await insertCorpus(corpus.name, pool);
     if (!inserted) {
-      console.warn(`import for ${corpus.name} failed... Skipping.`);
+      console.warn(`Corpus ${corpus.name} already imported... Skipping.`);
     }
-    console.log(`id: ${id}, inserted: ${inserted}`);
 
     if (!corpusCollectionInserted && !inserted) {
       console.warn(
@@ -58,10 +58,12 @@ export const importCorpusCollection = async () => {
     } else {
       await associateCorpusWithCorpusCollection(id, corpusCollectionId, pool);
     }
-    corpus.collections.forEach((col) => {
+    console.log("Importing Collections...");
+    corpus.collections.forEach(async (col) => {
       if (col.valid) {
-        importCollection(col.data, id, pool);
+        await importCollection(col.data, id, pool);
       }
     });
   }
+  await pool.end();
 };

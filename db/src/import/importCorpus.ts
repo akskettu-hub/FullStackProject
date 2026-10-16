@@ -1,6 +1,7 @@
 import { Pool } from "pg";
 import { CorpusName } from "../types/CorpusNames.ts";
 
+// TODO: Needs error handling
 export const insertCorpus = async (
   corpusName: CorpusName,
   pool: Pool,
@@ -16,6 +17,7 @@ export const insertCorpus = async (
   return res.rows[0];
 };
 
+// TODO: Needs error handling
 export const associateCorpusWithCorpusCollection = async (
   corpusId: number,
   corpusCollectionid: number,

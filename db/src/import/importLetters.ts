@@ -1,6 +1,7 @@
 import { Pool } from "pg";
 import { DocumentRecord } from "../validation/validateTEI.ts";
 
+// TODO: Needs error handling
 export const importLetters = async (
   pool: Pool,
   teiEntries: DocumentRecord[],
@@ -8,7 +9,6 @@ export const importLetters = async (
 ) => {
   try {
     teiEntries.forEach(async (t) => {
-      console.log(`Importing letter: ${t.xmlId}`);
       await pool.query(
         `INSERT INTO documents (collection_id, xml_id, title_key, author_key, text_type, lang, raw_xml, authenticity, year, year_raw, year_is_decade_suggestion, year_is_uncertain,
      relationship_code, correspondent_code, title_key_parse_ok)
