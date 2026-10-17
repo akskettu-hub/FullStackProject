@@ -1,8 +1,10 @@
 {
   "name": "@mono/backend",
   "type": "module",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "tsc": "tsc --noEmit src/index.ts ",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
     "start": "tsc && node --experimental-transform-types src/index.ts",
     "dev": "concurrently \"tsc --watch\" \"node --watch-path=./src --experimental-transform-types src/index.ts\"",
     "lint": "eslint .",
