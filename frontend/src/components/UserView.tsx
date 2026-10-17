@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactElement } from "react";
 import CollectionList from "./CollectionList";
-import axios from "axios";
+import mockService from "../services/mock.tsx";
 
 type GreetingProps = {
   name: string;
 };
 
-const Greeting = (props: GreetingProps) => {
+const Greeting = (props: GreetingProps): ReactElement => {
   return (
     <div>
       <p>Welcome, {props.name}!</p>
@@ -14,7 +14,7 @@ const Greeting = (props: GreetingProps) => {
   );
 };
 
-type Doc = {
+export type Doc = {
   id: number;
   textContent: string;
   year: number;
@@ -25,15 +25,19 @@ type UserViewProps = {
   onLogOut: () => void;
 };
 
-const UserView = (props: UserViewProps) => {
+const UserView = (props: UserViewProps): ReactElement => {
   const [docs, setDocs] = useState<Doc[]>([]);
 
   useEffect(() => {
-    axios.get<Doc[]>("http://localhost:3003/api/mock").then((res) => {
-      console.log("promise fulfilled");
-      const data = res.data;
-      setDocs(data);
-    });
+    const cancelled = false;
+    mockService
+      .getAll()
+      .then((data) => {
+        if (!cancelled) setDocs(data);
+      })
+      .catch((e: unknown) => {
+        console.error("Failed to load docs", e);
+      });
   }, []);
 
   console.log("got", docs.length, "docs");

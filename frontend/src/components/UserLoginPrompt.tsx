@@ -1,11 +1,11 @@
-import { useState, type SyntheticEvent } from "react";
+import { useState, type ReactElement, type SyntheticEvent } from "react";
 
 type LogInProps = {
   setUsername: React.Dispatch<React.SetStateAction<string>>;
   setLogInStatus: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const UserLoginPrompt = (props: LogInProps) => {
+const UserLoginPrompt = (props: LogInProps): ReactElement => {
   const [usernameInputValue, setUsernameInputValue] = useState("");
   const [passwordInputValue, setPasswordInputValue] = useState("");
   const [passwordInputType, setPasswordInputType] = useState("password");
@@ -32,7 +32,7 @@ const UserLoginPrompt = (props: LogInProps) => {
     );
   };
 
-  const toggleShowPassword = () => {
+  const toggleShowPassword = (): void => {
     if (passwordInputType === "password") {
       setPasswordInputType("text");
     } else {

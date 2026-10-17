@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, type ReactElement } from "react";
 
 import UserLoginPrompt from "./components/UserLoginPrompt";
 import UserView from "./components/UserView";
 
-const App = () => {
+const App = (): ReactElement => {
   const [name, setName] = useState<string>("");
   const [logInStatus, setLogInStatus] = useState<boolean>(false);
 

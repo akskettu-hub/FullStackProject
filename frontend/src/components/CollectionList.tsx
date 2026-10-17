@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactElement } from "react";
 
 interface TitleStatement {
   seq: number;
@@ -12,7 +12,7 @@ interface Collection {
   titleStatements: TitleStatement[];
 }
 
-const CollectionList = () => {
+const CollectionList = (): ReactElement => {
   const [collections, setCollections] = useState<Collection[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,7 +24,9 @@ const CollectionList = () => {
         return res.data;
       })
       .then((data: Collection[]) => setCollections(data))
-      .catch((e) => setError(e));
+      .catch((e: unknown) =>
+        setError(typeof e === "string" ? e : "Unknown Error."),
+      );
   }, []);
 
   if (!collections) return <p>Error loading collections: {error}</p>;
