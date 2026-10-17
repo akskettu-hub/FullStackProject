@@ -1,7 +1,9 @@
 import path from "node:path";
-import { validateCorpus, ValidatedCorpus } from "./validateCorpus.ts";
+import type { ValidatedCorpus } from "./validateCorpus.ts";
+import { validateCorpus } from "./validateCorpus.ts";
 import { validateDirectory } from "./validateDirectory.ts";
-import { errorCodeAndMsg, errorsToStr } from "../util/validationErrorsToStr.ts";
+import type { errorCodeAndMsg } from "../util/validationErrorsToStr.ts";
+import { errorsToStr } from "../util/validationErrorsToStr.ts";
 
 export type CorpusCollectionValidationIssue = {
   code: "DIR_ISSUE" | "CORPUS_ISSUE";

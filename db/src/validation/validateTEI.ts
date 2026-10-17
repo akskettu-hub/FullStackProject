@@ -29,6 +29,8 @@ const teiSchema = z
   })
   .loose();
 
+const xmlIdSchema = z.object({ "@_xml:id": z.string() });
+
 export type TeiIssue = {
   severity: "error" | "warning";
   path: string;
@@ -59,17 +61,16 @@ export type TeiValidation =
   | { ok: false; xmlId: string | null; issues: TeiIssue[]; record: null };
 
 export const validateTEI = (tei: unknown): TeiValidation => {
-  const xmlIdTest =
-    typeof (tei as any)?.["@_xml:id"] === "string"
-      ? (tei as any)?.["@_xml:id"]
-      : null;
+  // Id is checked independently of rest of parsing so that in the case of fail, it's easier to figure out where the problem is
+  const idParse = xmlIdSchema.safeParse(tei);
+  const xmlId = idParse.success ? idParse.data["@_xml:id"] : null;
 
   // check tei element structure
   const result = teiSchema.safeParse(tei);
   if (!result.success) {
     return {
       ok: false,
-      xmlId: xmlIdTest,
+      xmlId: xmlId,
       record: null,
       issues: result.error.issues.map((i) => ({
         severity: "error" as const,
@@ -157,7 +158,7 @@ export const checkTeiEntries = (
   };
 };
 
-export const printTeiIssues = (result: CheckTeiEntriesResult) => {
+export const printTeiIssues = (result: CheckTeiEntriesResult): void => {
   if (result.failed.length > 0) {
     result.failed.forEach((e) => {
       console.error(`${e.xmlId} issues:`);
@@ -167,7 +168,7 @@ export const printTeiIssues = (result: CheckTeiEntriesResult) => {
   return;
 };
 
-export const printTeiWarnings = (result: CheckTeiEntriesResult) => {
+export const printTeiWarnings = (result: CheckTeiEntriesResult): void => {
   if (result.withWarnings.length > 0) {
     result.withWarnings.forEach((w) => {
       console.warn(`${w.xmlId} with warnings:`);

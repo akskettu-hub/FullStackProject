@@ -1,3 +1,3 @@
 import { importCorpusCollection } from "./importCorpusCollection.ts";
 
-importCorpusCollection();
+void importCorpusCollection();

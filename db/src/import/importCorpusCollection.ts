@@ -12,8 +12,8 @@ export const pool = new Pool({
 
 export const insertCorpusCollection = async (
   corpusCollectionName: string,
-): Promise<{ id: number; inserted: Boolean }> => {
-  const res = await pool.query(
+): Promise<{ id: number; inserted: boolean }> => {
+  const res = await pool.query<{ id: number; inserted: boolean }>(
     `INSERT INTO corpus_collections (name)
     VALUES ($1) 
     ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
@@ -24,7 +24,7 @@ export const insertCorpusCollection = async (
 };
 
 // TODO: Needs error handling
-export const importCorpusCollection = async () => {
+export const importCorpusCollection = async (): Promise<void> => {
   const corpusCollectionValidationResult = await validateCorpusCollection(
     "./data/CEEC-400/",
     "CEEC-400",
@@ -43,7 +43,7 @@ export const importCorpusCollection = async () => {
   }
 
   const corpusCollectionId: number = id;
-  const corpusCollectionInserted: Boolean = inserted;
+  const corpusCollectionInserted: boolean = inserted;
 
   for (const corpus of corpusCollectionValidationResult.data.corpora) {
     const { id, inserted } = await insertCorpus(corpus.name, pool);
@@ -59,11 +59,11 @@ export const importCorpusCollection = async () => {
       await associateCorpusWithCorpusCollection(id, corpusCollectionId, pool);
     }
     console.log("Importing Collections...");
-    corpus.collections.forEach(async (col) => {
+    for (const col of corpus.collections) {
       if (col.valid) {
         await importCollection(col.data, id, pool);
       }
-    });
+    }
   }
   await pool.end();
 };

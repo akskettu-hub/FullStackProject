@@ -1,6 +1,6 @@
 import { printCollectionIssues } from "./validateCollection.ts";
+import type { CorpusCollectionValidationResult } from "./validateCorpusCollection.ts";
 import {
-  CorpusCollectionValidationResult,
   printCorpusCollectionIssues,
   validateCorpusCollection,
 } from "./validateCorpusCollection.ts";
@@ -51,4 +51,4 @@ export const runValidateCorpusCollection =
     return res;
   };
 
-runValidateCorpusCollection();
+void runValidateCorpusCollection();

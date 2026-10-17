@@ -1,10 +1,9 @@
-import {
-  CollectionValidationResult,
-  validateCollection,
-} from "./validateCollection.ts";
+import type { CollectionValidationResult } from "./validateCollection.ts";
+import { validateCollection } from "./validateCollection.ts";
 import { validateDirectory } from "./validateDirectory.ts";
-import { errorCodeAndMsg, errorsToStr } from "../util/validationErrorsToStr.ts";
-import { CorpusName } from "../types/CorpusNames.ts";
+import type { errorCodeAndMsg } from "../util/validationErrorsToStr.ts";
+import { errorsToStr } from "../util/validationErrorsToStr.ts";
+import type { CorpusName } from "../types/CorpusNames.ts";
 
 export type CorpusValidationIssue = {
   code:

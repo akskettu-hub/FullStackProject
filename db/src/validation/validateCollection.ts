@@ -3,12 +3,8 @@ import { XMLParser, XMLValidator } from "fast-xml-parser";
 import fs from "node:fs";
 import { z } from "zod";
 
-import {
-  checkTeiEntries,
-  CheckTeiEntriesResult,
-  TeiValidation,
-  validateTEI,
-} from "./validateTEI.ts";
+import type { CheckTeiEntriesResult, TeiValidation } from "./validateTEI.ts";
+import { checkTeiEntries, validateTEI } from "./validateTEI.ts";
 import { toArray } from "../util/toArray.ts";
 
 const TeiCollectionSchema = z.object({

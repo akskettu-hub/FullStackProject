@@ -1,13 +1,13 @@
-import { Pool } from "pg";
-import { CorpusName } from "../types/CorpusNames.ts";
+import type { Pool } from "pg";
+import type { CorpusName } from "../types/CorpusNames.ts";
 
 // TODO: Needs error handling
 export const insertCorpus = async (
   corpusName: CorpusName,
   pool: Pool,
-): Promise<{ id: number; inserted: Boolean }> => {
+): Promise<{ id: number; inserted: boolean }> => {
   console.log(`Importing Corpus ${corpusName}...`);
-  const res = await pool.query(
+  const res = await pool.query<{ id: number; inserted: boolean }>(
     `INSERT INTO corpora (name, imported)
     VALUES ($1, now()) 
     ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
