@@ -2,25 +2,24 @@ name: Deploymen Pipeline
 
 on:
   push:
-    braches:
+    branches:
       - main
 
-    jobs:
-      deployment_pipeline:
-        runs-on: ubuntu-latest
-
+jobs:
+  deployment_pipeline:
+    runs-on: ubuntu-latest
       steps:
-            - uses: actions/checkout@v6
-            - uses: actions/setup-node@v6
-              with:
-                node-version: "22"
+        - uses: actions/checkout@v6
+        - uses: actions/setup-node@v6
+          with:
+            node-version: "22"
 
-            - name: Say Hello
-              run: echo "Hello"
+        - name: Say Hello
+          run: echo "Hello"
 
-            - name: Install Dependencies
-              run: npm install
+        - name: Install Dependencies
+          run: npm install
 
-            - name: Lint
-              run: npm run lint
+        - name: Lint
+          run: npm run lint
 
