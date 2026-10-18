@@ -3,7 +3,6 @@ import { env } from "./utils/config.ts";
 import { connectToDatabase } from "./utils/db.ts";
 import cors from "cors";
 
-import mockRouter from "./routes/mock.ts";
 import collectionsRouter from "./routes/collections.ts";
 import usersRouter from "./routes/users.ts";
 import corporaRouter from "./routes/corpora.ts";
@@ -18,7 +17,6 @@ app.get("/ping", (_req, res) => {
 });
 app.use(cors());
 app.use(express.json());
-app.use("/api/mock", mockRouter);
 app.use("/api/collections", collectionsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/corpora", corporaRouter);
