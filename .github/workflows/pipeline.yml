@@ -2,8 +2,10 @@ name: Deploymen Pipeline
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
 
 jobs:
   deployment_pipeline:
@@ -18,7 +20,7 @@ jobs:
         run: echo "Hello"
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
       - name: Typecheck
         run: npm run typecheck
