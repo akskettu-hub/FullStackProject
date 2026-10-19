@@ -18,7 +18,7 @@ const CollectionList = (): ReactElement => {
 
   useEffect(() => {
     axios
-      .get<Collection[]>("http://localhost:3003/api/collections")
+      .get<Collection[]>("http://localhost:3003/api/collections/titleStmts")
       .then((res) => {
         console.log("promise fulfilled");
         return res.data;

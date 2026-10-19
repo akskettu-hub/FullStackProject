@@ -36,3 +36,7 @@ export type CorpusCollectionWithCorpora = z.infer<
 export const CorpusCollectionsWithCorporaSchema = z.array(
   CorpusCollectionWithCorporaSchema,
 );
+
+export type CorpusCollectionsWithCorpora = z.infer<
+  typeof CorpusCollectionsWithCorporaSchema
+>;

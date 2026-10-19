@@ -2,6 +2,8 @@ import { useState, type ReactElement } from "react";
 
 import UserLoginPrompt from "./components/UserLoginPrompt";
 import UserView from "./components/UserView";
+import { Link, Route, Routes } from "react-router-dom";
+import ExploreCorporaPage from "./components/ExploreCorporaPage";
 
 const App = (): ReactElement => {
   const [name, setName] = useState<string>("");
@@ -12,6 +14,8 @@ const App = (): ReactElement => {
     setName("");
   };
 
+  if (logInStatus) console.log("logged in.");
+
   return (
     <section>
       <div>
@@ -19,14 +23,28 @@ const App = (): ReactElement => {
         <h2>A Full Stack Project</h2>
         <p>Seek and thou shalt find</p>
       </div>
-      {logInStatus ? (
-        <UserView name={name} onLogOut={handleLogout} />
-      ) : (
-        <UserLoginPrompt
-          setUsername={setName}
-          setLogInStatus={setLogInStatus}
+      <nav>
+        <Link to="/">Home</Link> | <Link to="/login">Login</Link> |{" "}
+        <Link to="/corpora">Corpora</Link>
+      </nav>
+
+      <Routes>
+        <Route
+          path="/"
+          element={<UserView name={name} onLogOut={handleLogout} />}
         />
-      )}
+        <Route
+          path="/login"
+          element={
+            <UserLoginPrompt
+              setUsername={setName}
+              setLogInStatus={setLogInStatus}
+            />
+          }
+        />
+        <Route path="/corpora" element={<ExploreCorporaPage />} />
+        <Route path="/*" element={<h1>404 - Not found, mate</h1>} />
+      </Routes>
     </section>
   );
 };
