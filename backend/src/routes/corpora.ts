@@ -4,11 +4,23 @@ import {
   CorpusCollectionModel,
   CorpusModel,
 } from "../models/index.ts";
+/*
 import {
   CorporaSchema,
   CorporaWithCollectionsSchema,
   CorporaWithCorpusCollectionsSchema,
+  CorpusSummary,
+  IdSchema,
 } from "../../../types/src/index.ts";
+ */
+import { col, fn } from "sequelize";
+import type { CorpusSummary } from "@mono/types";
+import {
+  CorporaSchema,
+  CorporaWithCollectionsSchema,
+  CorporaWithCorpusCollectionsSchema,
+  IdSchema,
+} from "@mono/types";
 
 const router = express.Router();
 
@@ -39,6 +51,56 @@ router.get("/collections", async (_req, res) => {
         corpora.map((c): unknown => c.toJSON()),
       ),
     );
+});
+
+/*
+type CorpusSummaryRow = {
+  id: number;
+  name: string;
+  collectionCount: number;
+};
+ */
+
+router.get("/:id/summary", async (req, res) => {
+  const idCheck = IdSchema.safeParse(Number(req.params.id));
+
+  if (!idCheck.success) {
+    res.status(400).json({ error: "Invalid id" });
+    return;
+  }
+  const id = idCheck.data;
+
+  const corpus = (await CorpusModel.findOne({
+    where: { id },
+    attributes: [
+      "id",
+      "name",
+      [fn("COUNT", fn("DISTINCT", col("collections.id"))), "collectionCount"],
+      //[fn("COUNT", col("collections->letters.id")), "letterCount"]
+    ],
+    include: [
+      {
+        model: CollectionModel,
+        as: "collections",
+        attributes: [],
+        required: false,
+      },
+    ],
+    group: ["CorpusModel.id"],
+    subQuery: false,
+    raw: true,
+  })) as unknown as CorpusSummary | null;
+
+  if (!corpus) {
+    res.status(404).json({ error: "Corpus not found" });
+    return;
+  }
+
+  res.status(200).json({
+    id: corpus.id,
+    name: corpus.name,
+    collectionCount: Number(corpus.collectionCount),
+  });
 });
 
 router.get("/wCorpusCollections", async (_req, res): Promise<void> => {

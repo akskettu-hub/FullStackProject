@@ -4,6 +4,7 @@ import type {
 } from "@mono/types";
 import { useEffect, useState, type ReactElement } from "react";
 import { fetchCorpusCollection } from "../services/corpusCollections";
+import CorpusCard from "./CorpusCard";
 
 type CorpusCollectionCardProps = {
   corpusCollection: CorpusCollectionWithCorpora;
@@ -17,7 +18,7 @@ const CorpusCollectionCard = (
       <strong>{props.corpusCollection.name}</strong>
       <li key={props.corpusCollection.id}>
         {props.corpusCollection.corpora.map((c) => (
-          <p key={c.id}>{c.name}</p>
+          <CorpusCard key={c.id} id={c.id} />
         ))}
       </li>
     </div>

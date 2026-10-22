@@ -40,3 +40,9 @@ export const CorpusCollectionsWithCorporaSchema = z.array(
 export type CorpusCollectionsWithCorpora = z.infer<
   typeof CorpusCollectionsWithCorporaSchema
 >;
+
+export const CorpusSummarySchema = CorpusInCorpusCollectionSchema.extend({
+  collectionCount: z.number(),
+});
+
+export type CorpusSummary = z.infer<typeof CorpusSummarySchema>;
