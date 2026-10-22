@@ -12,6 +12,7 @@ import {
 } from "@mono/types";
 import { col, fn } from "sequelize";
 import type { CorpusSummary } from "@mono/types";
+import LetterModel from "../models/letters.ts";
 
 const router = express.Router();
 
@@ -59,7 +60,9 @@ router.get("/:id/summary", async (req, res): Promise<void> => {
       "id",
       "name",
       [fn("COUNT", fn("DISTINCT", col("collections.id"))), "collectionCount"],
-      //[fn("COUNT", col("collections->letters.id")), "letterCount"]
+      [fn("COUNT", col("collections->letters.id")), "letterCount"],
+      [fn("MIN", col("collections->letters.year")), "minYear"],
+      [fn("MAX", col("collections->letters.year")), "maxYear"],
     ],
     include: [
       {
@@ -67,6 +70,14 @@ router.get("/:id/summary", async (req, res): Promise<void> => {
         as: "collections",
         attributes: [],
         required: false,
+        include: [
+          {
+            model: LetterModel,
+            as: "letters",
+            attributes: [],
+            required: false,
+          },
+        ],
       },
     ],
     group: ["CorpusModel.id"],
@@ -83,6 +94,9 @@ router.get("/:id/summary", async (req, res): Promise<void> => {
     id: corpus.id,
     name: corpus.name,
     collectionCount: Number(corpus.collectionCount),
+    letterCount: Number(corpus.letterCount),
+    minYear: corpus.minYear,
+    maxYear: corpus.maxYear,
   });
 });
 

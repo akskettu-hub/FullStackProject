@@ -31,7 +31,11 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
   return (
     <div>
       <strong>{corpusSummary.name}</strong>
-      <p>{corpusSummary.collectionCount}</p>
+      <p>Collections: {corpusSummary.collectionCount}</p>
+      <p>Letters: {corpusSummary.letterCount}</p>
+      <p>
+        Years: {corpusSummary.minYear}–{corpusSummary.maxYear}
+      </p>
     </div>
   );
 };
