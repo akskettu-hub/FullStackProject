@@ -3,6 +3,7 @@ import CollectionTitleStatementModel from "./collectionTitleStatement.ts";
 import CorpusModel from "./corpora.ts";
 import CorporaInCorpusCollectionModel from "./corporaInCorpusCollections.ts";
 import CorpusCollectionModel from "./corpusCollections.ts";
+import LetterModel from "./letters.ts";
 import UserModel from "./users.ts";
 
 CollectionModel.hasMany(CollectionTitleStatementModel, {
@@ -12,6 +13,16 @@ CollectionModel.hasMany(CollectionTitleStatementModel, {
 
 CollectionTitleStatementModel.belongsTo(CollectionModel, {
   foreignKey: "collection_id",
+});
+
+CollectionModel.hasMany(LetterModel, {
+  foreignKey: "collection_id",
+  as: "letters",
+});
+
+LetterModel.belongsTo(CollectionModel, {
+  foreignKey: "collection_id",
+  as: "collection",
 });
 
 CorpusModel.hasMany(CollectionModel, {

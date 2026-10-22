@@ -5,3 +5,4 @@ export * from "./collectionTitleStmt.ts";
 export * from "./corpusCollections.ts";
 export * from "./corpusRelations.ts";
 export * from "./shared.ts";
+export * from "./letters.ts";

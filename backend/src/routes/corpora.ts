@@ -4,23 +4,14 @@ import {
   CorpusCollectionModel,
   CorpusModel,
 } from "../models/index.ts";
-/*
-import {
-  CorporaSchema,
-  CorporaWithCollectionsSchema,
-  CorporaWithCorpusCollectionsSchema,
-  CorpusSummary,
-  IdSchema,
-} from "../../../types/src/index.ts";
- */
-import { col, fn } from "sequelize";
-import type { CorpusSummary } from "@mono/types";
 import {
   CorporaSchema,
   CorporaWithCollectionsSchema,
   CorporaWithCorpusCollectionsSchema,
   IdSchema,
 } from "@mono/types";
+import { col, fn } from "sequelize";
+import type { CorpusSummary } from "@mono/types";
 
 const router = express.Router();
 
@@ -53,15 +44,7 @@ router.get("/collections", async (_req, res) => {
     );
 });
 
-/*
-type CorpusSummaryRow = {
-  id: number;
-  name: string;
-  collectionCount: number;
-};
- */
-
-router.get("/:id/summary", async (req, res) => {
+router.get("/:id/summary", async (req, res): Promise<void> => {
   const idCheck = IdSchema.safeParse(Number(req.params.id));
 
   if (!idCheck.success) {
