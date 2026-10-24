@@ -8,6 +8,7 @@ type CorpusCardProps = {
 
 const CorpusCard = (props: CorpusCardProps): ReactElement => {
   // a corpus card should show name years number of collections and number of letters
+  // TODO: A courpus card should ideally also display stats about the corpus, such as number of authors and social variable distribution. Look into displaying graphs, data viz, etc.
   const [corpusSummary, setCorpusSummary] = useState<CorpusSummary | null>(
     null,
   );

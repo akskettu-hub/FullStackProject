@@ -13,6 +13,9 @@ type CorpusCollectionCardProps = {
 const CorpusCollectionCard = (
   props: CorpusCollectionCardProps,
 ): ReactElement => {
+  // TODO: A corpus collection card should display info about the cc, with number of collections, letters, etc.
+  // TODO: Eventually a corpus card should also display stats about social variables, see todo in corpus card element.
+  // TODO: Decide what is a good way to do these queries. Should a Corpus collection card get all the info for the corpora as well? What is a sensible division of labour?
   return (
     <div>
       <strong>{props.corpusCollection.name}</strong>
@@ -46,8 +49,6 @@ const CorpusCollectionsCard = (): ReactElement => {
 
   return (
     <div>
-      <p>Corpus collection card here</p>
-      <p>Corpus collections present {corpusCollections.length}</p>
       {corpusCollections.map((cc): ReactElement => (
         <CorpusCollectionCard key={cc.id} corpusCollection={cc} />
       ))}
