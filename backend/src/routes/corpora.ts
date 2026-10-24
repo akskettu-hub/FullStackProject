@@ -52,6 +52,7 @@ router.get("/:id/summary", async (req, res): Promise<void> => {
     res.status(400).json({ error: "Invalid id" });
     return;
   }
+
   const id = idCheck.data;
 
   const corpus = (await CorpusModel.findOne({

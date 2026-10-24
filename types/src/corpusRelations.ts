@@ -49,3 +49,15 @@ export const CorpusSummarySchema = CorpusInCorpusCollectionSchema.extend({
 });
 
 export type CorpusSummary = z.infer<typeof CorpusSummarySchema>;
+
+export const CorpusCollectionSummarySchema = CorpusCollectionSchema.extend({
+  corpusCount: z.number(),
+  collectionCount: z.number(),
+  letterCount: z.number(),
+  minYear: z.number(),
+  maxYear: z.number(),
+});
+
+export type CorpusCollectionSummary = z.infer<
+  typeof CorpusCollectionSummarySchema
+>;

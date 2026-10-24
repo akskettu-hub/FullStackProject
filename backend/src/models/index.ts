@@ -40,6 +40,7 @@ CorpusCollectionModel.belongsToMany(CorpusModel, {
   otherKey: "corpus_id",
   as: "corpora",
 });
+
 CorpusModel.belongsToMany(CorpusCollectionModel, {
   through: CorporaInCorpusCollectionModel,
   foreignKey: "corpus_id",
