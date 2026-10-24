@@ -11,17 +11,30 @@ export const runValidateCorpusCollection =
     const res = await validateCorpusCollection("./data/CEEC-400/", "CEEC-400");
 
     if (res.valid) {
+      let totalCollections = 0;
+      let totalValidCollections = 0;
+      let totalTei = 0;
+      let totalValidTei = 0;
       res.data.corpora.forEach((corpus) => {
         //Corpus level
-        let validCollections = 0;
-        let validTei = 0;
-        let totalTei = 0;
+        const validCollections = corpus.collections.filter((col) => col.valid);
+        const nValidCollections = validCollections.length;
+        const validTei = validCollections.reduce(
+          (acc, vCol) => acc + vCol.data.teiChecks.importable,
+          0,
+        );
+        const nTei = validCollections.reduce(
+          (acc, vCol) => acc + vCol.data.teiChecks.total,
+          0,
+        );
+
+        totalCollections += corpus.collections.length;
+        totalValidCollections += validCollections.length;
+        totalTei += nTei;
+        totalValidTei += validTei;
         corpus.collections.forEach((collection) => {
           //Collection level
           if (collection.valid) {
-            validCollections += 1;
-            validTei += collection.data.teiChecks.importable;
-            totalTei += collection.data.teiChecks.total;
             if (collection.data.teiChecks.failed.length > 0)
               console.error(
                 `ERROR: Tei failed: ${collection.data.teiChecks.failed.length}`,
@@ -41,9 +54,12 @@ export const runValidateCorpusCollection =
           }
         });
         console.log(
-          `${corpus.name}: ${validCollections}/${corpus.collections.length} valid. ${validTei}/${totalTei} importable.`,
+          `${corpus.name}: ${nValidCollections}/${corpus.collections.length} collections valid. ${validTei}/${nTei} tei importable.`,
         );
       });
+      console.log(
+        `${res.data.name}: ${totalValidCollections}/${totalCollections} collections valid. ${totalValidTei}/${totalTei} tei importable.`,
+      );
     } else {
       printCorpusCollectionIssues(res);
     }
