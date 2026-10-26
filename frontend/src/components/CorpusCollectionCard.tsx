@@ -43,12 +43,11 @@ const CorpusCollectionCard = (
   return (
     <div>
       <strong>{props.corpusCollection.name}</strong>
-      <p>Corpora: {corpusCollectionSummary.corpusCount}</p>
-      <p>Collections: {corpusCollectionSummary.collectionCount}</p>
-      <p>Letters: {corpusCollectionSummary.letterCount}</p>
       <p>
-        Years: {corpusCollectionSummary.minYear}–
-        {corpusCollectionSummary.maxYear}
+        Corpora: {corpusCollectionSummary.corpusCount} | Collections:{" "}
+        {corpusCollectionSummary.collectionCount} | Letters:{" "}
+        {corpusCollectionSummary.letterCount} | Years:{" "}
+        {corpusCollectionSummary.minYear}–{corpusCollectionSummary.maxYear}
       </p>
       <li key={props.corpusCollection.id}>
         {props.corpusCollection.corpora.map((c) => (

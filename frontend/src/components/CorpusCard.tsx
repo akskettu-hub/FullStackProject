@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactElement } from "react";
 import { fetchCorpusSummary } from "../services/corpora";
 import type { CorpusSummary } from "@mono/types";
+import CollectionsCard from "./CollectionsCard";
 
 type CorpusCardProps = {
   id: number;
@@ -13,6 +14,7 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
     null,
   );
   const [error, setError] = useState<string | null>(null);
+  const [loadCollectionCard, setLoadCollectionCard] = useState<boolean>(false);
 
   useEffect(() => {
     fetchCorpusSummary(props.id)
@@ -32,11 +34,19 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
   return (
     <div>
       <strong>{corpusSummary.name}</strong>
-      <p>Collections: {corpusSummary.collectionCount}</p>
-      <p>Letters: {corpusSummary.letterCount}</p>
       <p>
-        Years: {corpusSummary.minYear}–{corpusSummary.maxYear}
+        Collections: {corpusSummary.collectionCount} | Letters:{" "}
+        {corpusSummary.letterCount} | Years: {corpusSummary.minYear}–
+        {corpusSummary.maxYear}
       </p>
+      <button
+        type="button"
+        onClick={() => setLoadCollectionCard(!loadCollectionCard)}
+      >
+        Show Collections
+      </button>
+
+      {loadCollectionCard && <CollectionsCard corpusId={props.id} />}
     </div>
   );
 };

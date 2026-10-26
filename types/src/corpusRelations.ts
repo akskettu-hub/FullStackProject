@@ -4,7 +4,7 @@ import {
   CorpusCollectionSchema,
   CorpusCollectionToCorpusSchema,
 } from "./corpusCollections.ts";
-import { CollectionInCorpusSchema } from "./collections.ts";
+import { CollectionInCorpusSchema, CollectionSchema } from "./collections.ts";
 
 export const CorpusWithCorpusCollectionsSchema = CorpusSchema.extend({
   corpus_collections: z.array(CorpusCollectionToCorpusSchema),
@@ -61,3 +61,14 @@ export const CorpusCollectionSummarySchema = CorpusCollectionSchema.extend({
 export type CorpusCollectionSummary = z.infer<
   typeof CorpusCollectionSummarySchema
 >;
+
+export const CollectionSummarySchema = CollectionSchema.extend({
+  letterCount: z.coerce.number(),
+  minYear: z.number().nullable(),
+  maxYear: z.number().nullable(),
+});
+
+export const CollectionSummariesSchema = z.array(CollectionSummarySchema);
+
+export type CollectionSummary = z.infer<typeof CollectionSummarySchema>;
+export type CollectionSummaries = z.infer<typeof CollectionSummariesSchema>;
