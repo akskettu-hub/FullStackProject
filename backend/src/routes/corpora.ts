@@ -8,11 +8,13 @@ import {
   CorporaSchema,
   CorporaWithCollectionsSchema,
   CorporaWithCorpusCollectionsSchema,
+  CorpusSummarySchema,
   IdSchema,
 } from "@mono/types";
 import { col, fn } from "sequelize";
 import type { CorpusSummary } from "@mono/types";
 import LetterModel from "../models/letters.ts";
+import { parseResponse } from "../utils/errors.ts";
 
 const router = express.Router();
 
@@ -62,6 +64,13 @@ router.get("/:id/summary", async (req, res): Promise<void> => {
       "name",
       [fn("COUNT", fn("DISTINCT", col("collections.id"))), "collectionCount"],
       [fn("COUNT", col("collections->letters.id")), "letterCount"],
+      [
+        fn(
+          "COUNT",
+          fn("DISTINCT", col("collections->letters.correspondent_code")),
+        ),
+        "authorCount",
+      ],
       [fn("MIN", col("collections->letters.year")), "minYear"],
       [fn("MAX", col("collections->letters.year")), "maxYear"],
     ],
@@ -91,14 +100,7 @@ router.get("/:id/summary", async (req, res): Promise<void> => {
     return;
   }
 
-  res.status(200).json({
-    id: corpus.id,
-    name: corpus.name,
-    collectionCount: Number(corpus.collectionCount),
-    letterCount: Number(corpus.letterCount),
-    minYear: corpus.minYear,
-    maxYear: corpus.maxYear,
-  });
+  res.status(200).json(parseResponse(CorpusSummarySchema, corpus));
 });
 
 router.get("/wCorpusCollections", async (_req, res): Promise<void> => {

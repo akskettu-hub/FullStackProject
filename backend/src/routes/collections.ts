@@ -46,6 +46,10 @@ router.get("/:corpusId/summaries", async (req, res): Promise<void> => {
       "xml_id",
       "in_corpus",
       [fn("COUNT", col("letters.id")), "letterCount"],
+      [
+        fn("COUNT", fn("DISTINCT", col("letters.correspondent_code"))),
+        "authorCount",
+      ],
       [fn("MIN", col("letters.year")), "minYear"],
       [fn("MAX", col("letters.year")), "maxYear"],
     ],

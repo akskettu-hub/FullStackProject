@@ -63,6 +63,16 @@ router.get("/:id/summary", async (req, res) => {
         fn("COUNT", fn("DISTINCT", col("corpora->collections->letters.id"))),
         "letterCount",
       ],
+      [
+        fn(
+          "COUNT",
+          fn(
+            "DISTINCT",
+            col("corpora->collections->letters.correspondent_code"),
+          ),
+        ),
+        "authorCount",
+      ],
       [fn("MIN", col("corpora->collections->letters.year")), "minYear"],
       [fn("MAX", col("corpora->collections->letters.year")), "maxYear"],
     ],

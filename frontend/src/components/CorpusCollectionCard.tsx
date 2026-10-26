@@ -46,7 +46,8 @@ const CorpusCollectionCard = (
       <p>
         Corpora: {corpusCollectionSummary.corpusCount} | Collections:{" "}
         {corpusCollectionSummary.collectionCount} | Letters:{" "}
-        {corpusCollectionSummary.letterCount} | Years:{" "}
+        {corpusCollectionSummary.letterCount} | Authors:{" "}
+        {corpusCollectionSummary.authorCount} | Years:{" "}
         {corpusCollectionSummary.minYear}–{corpusCollectionSummary.maxYear}
       </p>
       <li key={props.corpusCollection.id}>

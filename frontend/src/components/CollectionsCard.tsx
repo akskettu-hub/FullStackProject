@@ -11,7 +11,8 @@ const CollecionCard = (props: CollectionCardProps): ReactElement => {
     <div>
       <p>
         <strong>{props.collectionSummary.xml_id}</strong> Letters:{" "}
-        {props.collectionSummary.letterCount} | Years:{" "}
+        {props.collectionSummary.letterCount} | Authors:{" "}
+        {props.collectionSummary.authorCount} | Years:{" "}
         {props.collectionSummary.minYear}–{props.collectionSummary.maxYear}
       </p>
     </div>

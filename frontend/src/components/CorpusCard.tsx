@@ -36,8 +36,8 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
       <strong>{corpusSummary.name}</strong>
       <p>
         Collections: {corpusSummary.collectionCount} | Letters:{" "}
-        {corpusSummary.letterCount} | Years: {corpusSummary.minYear}–
-        {corpusSummary.maxYear}
+        {corpusSummary.letterCount} | Authors: {corpusSummary.authorCount} |
+        Years: {corpusSummary.minYear}–{corpusSummary.maxYear}
       </p>
       <button
         type="button"

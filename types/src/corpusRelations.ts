@@ -42,8 +42,9 @@ export type CorpusCollectionsWithCorpora = z.infer<
 >;
 
 export const CorpusSummarySchema = CorpusInCorpusCollectionSchema.extend({
-  collectionCount: z.number(),
-  letterCount: z.number(),
+  collectionCount: z.coerce.number(),
+  letterCount: z.coerce.number(),
+  authorCount: z.coerce.number(),
   minYear: z.number(),
   maxYear: z.number(),
 });
@@ -54,6 +55,7 @@ export const CorpusCollectionSummarySchema = CorpusCollectionSchema.extend({
   corpusCount: z.coerce.number(),
   collectionCount: z.coerce.number(),
   letterCount: z.coerce.number(),
+  authorCount: z.coerce.number(),
   minYear: z.number(),
   maxYear: z.number(),
 });
@@ -64,6 +66,7 @@ export type CorpusCollectionSummary = z.infer<
 
 export const CollectionSummarySchema = CollectionSchema.extend({
   letterCount: z.coerce.number(),
+  authorCount: z.coerce.number(),
   minYear: z.number().nullable(),
   maxYear: z.number().nullable(),
 });
