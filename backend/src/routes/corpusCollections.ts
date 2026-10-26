@@ -100,17 +100,9 @@ router.get("/:id/summary", async (req, res) => {
     res.status(404).json({ error: "Corpus collection not found" });
     return;
   }
-  res.status(200).json(
-    parseResponse(CorpusCollectionSummarySchema, {
-      id: corpusCollection.id,
-      name: corpusCollection.name,
-      corpusCount: Number(corpusCollection.corpusCount),
-      collectionCount: Number(corpusCollection.collectionCount),
-      letterCount: Number(corpusCollection.letterCount),
-      minYear: Number(corpusCollection.minYear),
-      maxYear: Number(corpusCollection.maxYear),
-    }),
-  );
+  res
+    .status(200)
+    .json(parseResponse(CorpusCollectionSummarySchema, corpusCollection));
 });
 
 /*
