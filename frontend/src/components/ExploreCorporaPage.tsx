@@ -3,9 +3,9 @@ import CorpusCollectionsCard from "./CorpusCollectionCard";
 
 const ExploreCorporaPage = (): ReactElement => {
   return (
-    <div>
+    <main>
       <CorpusCollectionsCard />
-    </div>
+    </main>
   );
 };
 

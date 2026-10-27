@@ -16,6 +16,10 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
   const [error, setError] = useState<string | null>(null);
   const [loadCollectionCard, setLoadCollectionCard] = useState<boolean>(false);
 
+  const showCollectionsButtonLable = loadCollectionCard
+    ? "Hide Collections"
+    : "Show Collections";
+
   useEffect(() => {
     fetchCorpusSummary(props.id)
       .then((data) => {
@@ -32,7 +36,7 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
   if (!corpusSummary) return <p>Loading Corpus summary...</p>;
 
   return (
-    <div>
+    <li>
       <strong>{corpusSummary.name}</strong>
       <p>
         Collections: {corpusSummary.collectionCount} | Letters:{" "}
@@ -43,11 +47,11 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
         type="button"
         onClick={() => setLoadCollectionCard(!loadCollectionCard)}
       >
-        Show Collections
+        {showCollectionsButtonLable}
       </button>
 
       {loadCollectionCard && <CollectionsCard corpusId={props.id} />}
-    </div>
+    </li>
   );
 };
 

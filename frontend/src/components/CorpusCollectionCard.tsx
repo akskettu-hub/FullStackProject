@@ -41,7 +41,7 @@ const CorpusCollectionCard = (
     return <p>Loading Corpus Collection summary...</p>;
 
   return (
-    <div>
+    <li>
       <strong>{props.corpusCollection.name}</strong>
       <p>
         Corpora: {corpusCollectionSummary.corpusCount} | Collections:{" "}
@@ -50,12 +50,12 @@ const CorpusCollectionCard = (
         {corpusCollectionSummary.authorCount} | Years:{" "}
         {corpusCollectionSummary.minYear}–{corpusCollectionSummary.maxYear}
       </p>
-      <li key={props.corpusCollection.id}>
+      <ul key={props.corpusCollection.id}>
         {props.corpusCollection.corpora.map((c) => (
           <CorpusCard key={c.id} id={c.id} />
         ))}
-      </li>
-    </div>
+      </ul>
+    </li>
   );
 };
 
@@ -79,11 +79,13 @@ const CorpusCollectionsCard = (): ReactElement => {
   if (!corpusCollections) return <p>Loading Corpus collections...</p>;
 
   return (
-    <div>
-      {corpusCollections.map((cc): ReactElement => (
-        <CorpusCollectionCard key={cc.id} corpusCollection={cc} />
-      ))}
-    </div>
+    <section>
+      <ul>
+        {corpusCollections.map((cc): ReactElement => (
+          <CorpusCollectionCard key={cc.id} corpusCollection={cc} />
+        ))}
+      </ul>
+    </section>
   );
 };
 

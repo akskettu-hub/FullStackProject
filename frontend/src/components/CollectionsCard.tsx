@@ -8,14 +8,14 @@ type CollectionCardProps = {
 
 const CollecionCard = (props: CollectionCardProps): ReactElement => {
   return (
-    <div>
+    <li>
       <p>
         <strong>{props.collectionSummary.xml_id}</strong> Letters:{" "}
         {props.collectionSummary.letterCount} | Authors:{" "}
         {props.collectionSummary.authorCount} | Years:{" "}
         {props.collectionSummary.minYear}–{props.collectionSummary.maxYear}
       </p>
-    </div>
+    </li>
   );
 };
 
@@ -48,11 +48,11 @@ const CollectionsCard = (props: CollectionsCardProps): ReactElement => {
 
   return (
     <div>
-      <li key={props.corpusId}>
+      <ul key={props.corpusId}>
         {collectionSummaries.map((col) => (
           <CollecionCard key={col.id} collectionSummary={col} />
         ))}
-      </li>
+      </ul>
     </div>
   );
 };
