@@ -6,6 +6,7 @@ import { useEffect, useState, type ReactElement } from "react";
 import { fetchCorpusCollectionSummary } from "../../services/corpusCollections";
 import CorpusCard from "./CorpusCard";
 import AuthorsCard from "./AuthorsCard";
+import { Card } from "@mui/material";
 
 type CorpusCollectionCardProps = {
   corpusCollection: CorpusCollectionWithCorpora;
@@ -44,7 +45,7 @@ const CorpusCollectionCard = (
     return <li>Loading Corpus Collection summary...</li>;
 
   return (
-    <li>
+    <Card variant="outlined">
       <strong>{props.corpusCollection.name}</strong>
       <p>
         Corpora: {corpusCollectionSummary.corpusCount} | Collections:{" "}
@@ -70,7 +71,7 @@ const CorpusCollectionCard = (
           <CorpusCard key={c.id} id={c.id} />
         ))}
       </ul>
-    </li>
+    </Card>
   );
 };
 

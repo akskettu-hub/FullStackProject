@@ -1,6 +1,28 @@
 import { useEffect, useState, type ReactElement } from "react";
 import { fetchAuthors } from "../../services/authors";
-import type { AuthorSummaries } from "@mono/types";
+import type { AuthorSummaries, AuthorSummary } from "@mono/types";
+import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+
+const yearFormat = (v: number | null): string => (v == null ? "?" : String(v));
+
+const columns: GridColDef<AuthorSummary>[] = [
+  { field: "authorKey", headerName: "Author", flex: 1, minWidth: 200 },
+  { field: "letterCount", headerName: "Letters", type: "number", width: 100 },
+  {
+    field: "minYear",
+    headerName: "From",
+    type: "number",
+    width: 90,
+    valueFormatter: yearFormat,
+  },
+  {
+    field: "maxYear",
+    headerName: "To",
+    type: "number",
+    width: 90,
+    valueFormatter: yearFormat,
+  },
+];
 
 type AuthorsCardProps = {
   componentType: "Collection" | "Corpus" | "CorpusCollection";
@@ -27,16 +49,18 @@ const AuthorsCard = (props: AuthorsCardProps): ReactElement => {
   if (error) return <p>Error: {error}</p>;
   if (!authorSummaries) return <p>Loading Author Summaries summary...</p>;
 
-  // TODO: This would be best returned as a table. Look into options.
   return (
-    <ul>
-      {authorSummaries.map((summary) => (
-        <li key={summary.authorKey}>
-          {summary.authorKey}: {summary.letterCount} | {summary.minYear}–
-          {summary.maxYear}
-        </li>
-      ))}
-    </ul>
+    <DataGrid
+      rows={authorSummaries}
+      columns={columns}
+      getRowId={(r) => r.authorKey ?? "unknown"}
+      density="compact"
+      initialState={{
+        sorting: { sortModel: [{ field: "letterCount", sort: "desc" }] },
+        pagination: { paginationModel: { pageSize: 25 } },
+      }}
+      pageSizeOptions={[25, 50, 100]}
+    />
   );
 };
 
