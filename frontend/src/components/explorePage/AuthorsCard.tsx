@@ -27,6 +27,7 @@ const AuthorsCard = (props: AuthorsCardProps): ReactElement => {
   if (error) return <p>Error: {error}</p>;
   if (!authorSummaries) return <p>Loading Author Summaries summary...</p>;
 
+  // TODO: This would be best returned as a table. Look into options.
   return (
     <ul>
       {authorSummaries.map((summary) => (

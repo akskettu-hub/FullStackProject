@@ -5,6 +5,7 @@ import {
   CorpusModel,
 } from "../models/index.ts";
 import {
+  AuthorSummariesSchema,
   CorporaSchema,
   CorporaWithCollectionsSchema,
   CorporaWithCorpusCollectionsSchema,
@@ -12,7 +13,7 @@ import {
   IdSchema,
 } from "@mono/types";
 import { col, fn } from "sequelize";
-import type { CorpusSummary } from "@mono/types";
+import type { AuthorSummaries, CorpusSummary } from "@mono/types";
 import LetterModel from "../models/letters.ts";
 import { parseResponse } from "../utils/errors.ts";
 
@@ -101,6 +102,48 @@ router.get("/:id/summary", async (req, res): Promise<void> => {
   }
 
   res.status(200).json(parseResponse(CorpusSummarySchema, corpus));
+});
+
+router.get("/:id/authors", async (req, res) => {
+  const idCheck = IdSchema.safeParse(req.params.id);
+
+  if (!idCheck.success) {
+    res.status(400).json({ error: "Invalid collection id" });
+    return;
+  }
+
+  const id = idCheck.data;
+
+  const rows = (await LetterModel.findAll({
+    attributes: [
+      ["author_key", "authorKey"],
+      [fn("COUNT", col("LetterModel.id")), "letterCount"],
+      [fn("MIN", col("LetterModel.year")), "minYear"],
+      [fn("MAX", col("LetterModel.year")), "maxYear"],
+    ],
+    include: [
+      {
+        model: CollectionModel,
+        as: "collection",
+        attributes: [],
+        required: true,
+        where: { in_corpus: id },
+      },
+    ],
+    group: ["LetterModel.author_key"],
+    order: [
+      [fn("COUNT", col("LetterModel.id")), "DESC"],
+      ["author_key", "ASC"],
+    ],
+    raw: true,
+  })) as unknown as AuthorSummaries;
+
+  if (!rows) {
+    res.status(404).json({ error: "Collection not found" });
+    return;
+  }
+
+  res.status(200).json(parseResponse(AuthorSummariesSchema, rows));
 });
 
 router.get("/wCorpusCollections", async (_req, res): Promise<void> => {

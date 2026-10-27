@@ -3,8 +3,8 @@ import axios from "axios";
 
 const PATHS = {
   Collection: "collections",
-  Corpus: "corpus",
-  CorpusCollection: "collections",
+  Corpus: "corpora",
+  CorpusCollection: "corpusCollections",
 } as const;
 
 export const fetchAuthors = async (

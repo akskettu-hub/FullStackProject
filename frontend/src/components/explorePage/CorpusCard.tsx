@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactElement } from "react";
 import { fetchCorpusSummary } from "../../services/corpora";
 import type { CorpusSummary } from "@mono/types";
 import CollectionsCard from "./CollectionsCard";
+import AuthorsCard from "./AuthorsCard";
 
 type CorpusCardProps = {
   id: number;
@@ -19,6 +20,12 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
   const showCollectionsButtonLable = loadCollectionCard
     ? "Hide Collections"
     : "Show Collections";
+
+  const [loadAuthorsCard, setLoadAuthorsCard] = useState<boolean>(false);
+
+  const showAuthorsButtonLable = loadAuthorsCard
+    ? "Hide Authors"
+    : "Show Authors";
 
   useEffect(() => {
     fetchCorpusSummary(props.id)
@@ -49,8 +56,17 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
       >
         {showCollectionsButtonLable}
       </button>
+      <button
+        type="button"
+        onClick={() => setLoadAuthorsCard(!loadAuthorsCard)}
+      >
+        {showAuthorsButtonLable}
+      </button>
 
       {loadCollectionCard && <CollectionsCard corpusId={props.id} />}
+      {loadAuthorsCard && (
+        <AuthorsCard componentType="Corpus" componentId={props.id} />
+      )}
     </li>
   );
 };
