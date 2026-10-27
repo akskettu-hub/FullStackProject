@@ -1,23 +1,7 @@
-import type { CollectionSummaries, CollectionSummary } from "@mono/types";
+import type { CollectionSummaries } from "@mono/types";
 import { useEffect, useState, type ReactElement } from "react";
 import { fetchCollectionSummaries } from "../../services/collections";
-
-type CollectionCardProps = {
-  collectionSummary: CollectionSummary;
-};
-
-const CollecionCard = (props: CollectionCardProps): ReactElement => {
-  return (
-    <li>
-      <p>
-        <strong>{props.collectionSummary.xml_id}</strong> Letters:{" "}
-        {props.collectionSummary.letterCount} | Authors:{" "}
-        {props.collectionSummary.authorCount} | Years:{" "}
-        {props.collectionSummary.minYear}–{props.collectionSummary.maxYear}
-      </p>
-    </li>
-  );
-};
+import CollecionCard from "./CollectionCard";
 
 type CollectionsCardProps = {
   corpusId: number;
