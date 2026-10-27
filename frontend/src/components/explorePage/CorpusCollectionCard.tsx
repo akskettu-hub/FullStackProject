@@ -1,13 +1,9 @@
 import type {
   CorpusCollectionSummary,
-  CorpusCollectionsWithCorpora,
   CorpusCollectionWithCorpora,
 } from "@mono/types";
 import { useEffect, useState, type ReactElement } from "react";
-import {
-  fetchCorpusCollection,
-  fetchCorpusCollectionSummary,
-} from "../../services/corpusCollections";
+import { fetchCorpusCollectionSummary } from "../../services/corpusCollections";
 import CorpusCard from "./CorpusCard";
 
 type CorpusCollectionCardProps = {
@@ -36,9 +32,9 @@ const CorpusCollectionCard = (
       });
   }, [props.corpusCollection.id]);
 
-  if (error) return <p>Error: {error}</p>;
+  if (error) return <li>Error: {error}</li>;
   if (!corpusCollectionSummary)
-    return <p>Loading Corpus Collection summary...</p>;
+    return <li>Loading Corpus Collection summary...</li>;
 
   return (
     <li>
@@ -50,7 +46,7 @@ const CorpusCollectionCard = (
         {corpusCollectionSummary.authorCount} | Years:{" "}
         {corpusCollectionSummary.minYear}–{corpusCollectionSummary.maxYear}
       </p>
-      <ul key={props.corpusCollection.id}>
+      <ul>
         {props.corpusCollection.corpora.map((c) => (
           <CorpusCard key={c.id} id={c.id} />
         ))}
@@ -59,34 +55,4 @@ const CorpusCollectionCard = (
   );
 };
 
-const CorpusCollectionsCard = (): ReactElement => {
-  const [corpusCollections, setCorpusCollections] =
-    useState<CorpusCollectionsWithCorpora | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchCorpusCollection()
-      .then((data): void => {
-        setCorpusCollections(data);
-      })
-      .catch((e: unknown) => {
-        setError(
-          e instanceof Error ? e.message : "failed to load Corpus collections",
-        );
-      });
-  }, []);
-  if (error) return <p>Error: {error}</p>;
-  if (!corpusCollections) return <p>Loading Corpus collections...</p>;
-
-  return (
-    <section>
-      <ul>
-        {corpusCollections.map((cc): ReactElement => (
-          <CorpusCollectionCard key={cc.id} corpusCollection={cc} />
-        ))}
-      </ul>
-    </section>
-  );
-};
-
-export default CorpusCollectionsCard;
+export default CorpusCollectionCard;

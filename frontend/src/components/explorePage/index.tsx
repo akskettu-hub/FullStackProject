@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import CorpusCollectionsCard from "./CorpusCollectionCard";
+import CorpusCollectionsCard from "./CorpusCollectionsCard";
 
 const ExploreCorporaPage = (): ReactElement => {
   return (
