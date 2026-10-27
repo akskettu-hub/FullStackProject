@@ -7,11 +7,11 @@ import { parseResponse } from "../utils/errors.ts";
 import type { AuthorSummaries, CollectionSummaries } from "@mono/types";
 import {
   AuthorSummariesSchema,
-  CollectionIdSchema,
   CollectionSchema,
   CollectionsSchema,
   CollectionSummariesSchema,
   CollectionsWithTitleStmtsSchema,
+  CollectionWithTitleStmtsSchema,
   IdSchema,
 } from "@mono/types";
 import { col, fn } from "sequelize";
@@ -79,7 +79,7 @@ router.get("/:corpusId/summaries", async (req, res): Promise<void> => {
 });
 
 router.get("/:id/authors", async (req, res) => {
-  const idCheck = CollectionIdSchema.safeParse(req.params.id);
+  const idCheck = IdSchema.safeParse(req.params.id);
 
   if (!idCheck.success) {
     res.status(400).json({ error: "Invalid collection id" });
@@ -113,7 +113,7 @@ router.get("/:id/authors", async (req, res) => {
 });
 
 router.get("/id/:id", async (req, res): Promise<void> => {
-  const id = CollectionIdSchema.safeParse(req.params.id);
+  const id = IdSchema.safeParse(req.params.id);
 
   if (!id.success) {
     res.status(400).json({ error: "Invalid collection id" });
@@ -148,6 +148,38 @@ router.get("/titleStmts", async (_req, res): Promise<void> => {
       collections.map((c): unknown => c.toJSON()),
     ),
   );
+});
+
+router.get("/:id/titleStmts", async (req, res): Promise<void> => {
+  const idCheck = IdSchema.safeParse(req.params.id);
+
+  if (!idCheck.success) {
+    res.status(400).json({ error: "Invalid collection id" });
+    return;
+  }
+
+  const id = idCheck.data;
+
+  const rows = await CollectionModel.findOne({
+    where: { id },
+    include: [
+      {
+        model: CollectionTitleStatementModel,
+        as: "titleStatements",
+        attributes: ["seq", "text"],
+        separate: true,
+        order: [["seq", "ASC"]],
+      },
+    ],
+    order: [["xml_id", "ASC"]],
+  });
+
+  if (!rows) {
+    res.status(404).json({ error: "Collection not found" });
+    return;
+  }
+
+  res.status(200).json(parseResponse(CollectionWithTitleStmtsSchema, rows));
 });
 
 export default router;
