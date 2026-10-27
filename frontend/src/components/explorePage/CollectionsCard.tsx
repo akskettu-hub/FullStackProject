@@ -1,6 +1,6 @@
 import type { CollectionSummaries, CollectionSummary } from "@mono/types";
 import { useEffect, useState, type ReactElement } from "react";
-import { fetchCollectionSummaries } from "../services/collections";
+import { fetchCollectionSummaries } from "../../services/collections";
 
 type CollectionCardProps = {
   collectionSummary: CollectionSummary;

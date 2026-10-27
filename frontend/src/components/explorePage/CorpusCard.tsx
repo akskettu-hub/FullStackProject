@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from "react";
-import { fetchCorpusSummary } from "../services/corpora";
+import { fetchCorpusSummary } from "../../services/corpora";
 import type { CorpusSummary } from "@mono/types";
 import CollectionsCard from "./CollectionsCard";
 

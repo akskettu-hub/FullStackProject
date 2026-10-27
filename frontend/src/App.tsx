@@ -3,7 +3,7 @@ import { useState, type ReactElement } from "react";
 import UserLoginPrompt from "./components/UserLoginPrompt";
 import UserView from "./components/UserView";
 import { Link, Route, Routes } from "react-router-dom";
-import ExploreCorporaPage from "./components/ExploreCorporaPage";
+import ExploreCorporaPage from "./components/explorePage/index";
 
 const App = (): ReactElement => {
   const [name, setName] = useState<string>("");

@@ -7,7 +7,7 @@ import { useEffect, useState, type ReactElement } from "react";
 import {
   fetchCorpusCollection,
   fetchCorpusCollectionSummary,
-} from "../services/corpusCollections";
+} from "../../services/corpusCollections";
 import CorpusCard from "./CorpusCard";
 
 type CorpusCollectionCardProps = {
