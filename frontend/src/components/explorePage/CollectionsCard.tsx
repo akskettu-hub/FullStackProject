@@ -32,7 +32,7 @@ const CollectionsCard = (props: CollectionsCardProps): ReactElement => {
 
   return (
     <div>
-      <ul key={props.corpusId}>
+      <ul>
         {collectionSummaries.map((col) => (
           <CollecionCard key={col.id} collectionSummary={col} />
         ))}

@@ -32,8 +32,8 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
       });
   }, [props.id]);
 
-  if (error) return <p>Error: {error}</p>;
-  if (!corpusSummary) return <p>Loading Corpus summary...</p>;
+  if (error) return <li>Error: {error}</li>;
+  if (!corpusSummary) return <li>Loading Corpus summary...</li>;
 
   return (
     <li>
