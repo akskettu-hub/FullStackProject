@@ -1,11 +1,18 @@
 import type { CollectionSummary } from "@mono/types";
-import { type ReactElement } from "react";
+import { useState, type ReactElement } from "react";
+import Authors from "./AuthorsCard";
 
 type CollectionCardProps = {
   collectionSummary: CollectionSummary;
 };
 
 const CollecionCard = (props: CollectionCardProps): ReactElement => {
+  const [loadAuthorsCard, setLoadAuthorsCard] = useState<boolean>(false);
+
+  const showAuthorsButtonLable = loadAuthorsCard
+    ? "Hide Authors"
+    : "Show Authors";
+
   return (
     <li>
       <p>
@@ -14,6 +21,19 @@ const CollecionCard = (props: CollectionCardProps): ReactElement => {
         {props.collectionSummary.authorCount} | Years:{" "}
         {props.collectionSummary.minYear}–{props.collectionSummary.maxYear}
       </p>
+
+      <button
+        type="button"
+        onClick={() => setLoadAuthorsCard(!loadAuthorsCard)}
+      >
+        {showAuthorsButtonLable}
+      </button>
+      {loadAuthorsCard && (
+        <Authors
+          componentId={props.collectionSummary.id}
+          componentType="Collection"
+        />
+      )}
     </li>
   );
 };

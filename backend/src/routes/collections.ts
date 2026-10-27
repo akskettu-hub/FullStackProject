@@ -4,8 +4,9 @@ import {
   CollectionTitleStatementModel,
 } from "../models/index.ts";
 import { parseResponse } from "../utils/errors.ts";
-import type { CollectionSummaries } from "@mono/types";
+import type { AuthorSummaries, CollectionSummaries } from "@mono/types";
 import {
+  AuthorSummariesSchema,
   CollectionIdSchema,
   CollectionSchema,
   CollectionsSchema,
@@ -75,6 +76,40 @@ router.get("/:corpusId/summaries", async (req, res): Promise<void> => {
   }
 
   res.status(200).json(parseResponse(CollectionSummariesSchema, collections));
+});
+
+router.get("/:id/authors", async (req, res) => {
+  const idCheck = CollectionIdSchema.safeParse(req.params.id);
+
+  if (!idCheck.success) {
+    res.status(400).json({ error: "Invalid collection id" });
+    return;
+  }
+
+  const id = idCheck.data;
+
+  const rows = (await LetterModel.findAll({
+    where: { collection_id: id },
+    attributes: [
+      ["author_key", "authorKey"],
+      [fn("COUNT", col("id")), "letterCount"],
+      [fn("MIN", col("year")), "minYear"],
+      [fn("MAX", col("year")), "maxYear"],
+    ],
+    group: ["author_key"],
+    order: [
+      [fn("COUNT", col("id")), "DESC"],
+      ["author_key", "ASC"],
+    ],
+    raw: true,
+  })) as unknown as AuthorSummaries;
+
+  if (!rows) {
+    res.status(404).json({ error: "Collection not found" });
+    return;
+  }
+
+  res.status(200).json(parseResponse(AuthorSummariesSchema, rows));
 });
 
 router.get("/id/:id", async (req, res): Promise<void> => {
