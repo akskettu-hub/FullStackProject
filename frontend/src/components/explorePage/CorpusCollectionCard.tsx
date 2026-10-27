@@ -6,7 +6,8 @@ import { useEffect, useState, type ReactElement } from "react";
 import { fetchCorpusCollectionSummary } from "../../services/corpusCollections";
 import CorpusCard from "./CorpusCard";
 import AuthorsCard from "./AuthorsCard";
-import { Card } from "@mui/material";
+import { Card, Stack } from "@mui/material";
+import SummaryStackItem from "./SummaryStackItem";
 
 type CorpusCollectionCardProps = {
   corpusCollection: CorpusCollectionWithCorpora;
@@ -45,15 +46,26 @@ const CorpusCollectionCard = (
     return <li>Loading Corpus Collection summary...</li>;
 
   return (
-    <Card variant="outlined">
-      <strong>{props.corpusCollection.name}</strong>
-      <p>
-        Corpora: {corpusCollectionSummary.corpusCount} | Collections:{" "}
-        {corpusCollectionSummary.collectionCount} | Letters:{" "}
-        {corpusCollectionSummary.letterCount} | Authors:{" "}
-        {corpusCollectionSummary.authorCount} | Years:{" "}
-        {corpusCollectionSummary.minYear}–{corpusCollectionSummary.maxYear}
-      </p>
+    <Card
+      variant="outlined"
+      sx={{ padding: 5, borderLeft: 4, borderLeftColor: "blueviolet" }}
+    >
+      <h3>{props.corpusCollection.name}</h3>
+      <Stack direction="row" spacing={2}>
+        <SummaryStackItem variant="outlined">
+          Corpora: {corpusCollectionSummary.corpusCount}
+        </SummaryStackItem>
+        <SummaryStackItem variant="outlined">
+          Letters: {corpusCollectionSummary.letterCount}
+        </SummaryStackItem>
+        <SummaryStackItem variant="outlined">
+          Authors: {corpusCollectionSummary.authorCount}
+        </SummaryStackItem>
+        <SummaryStackItem variant="outlined">
+          Years: {corpusCollectionSummary.minYear}–
+          {corpusCollectionSummary.maxYear}
+        </SummaryStackItem>
+      </Stack>
       <button
         type="button"
         onClick={() => setLoadAuthorsCard(!loadAuthorsCard)}
@@ -66,11 +78,15 @@ const CorpusCollectionCard = (
           componentId={props.corpusCollection.id}
         />
       )}
-      <ul>
+      <Stack
+        component="ul"
+        spacing={2}
+        sx={{ listStyle: "none", m: 0, p: 0, mt: 2 }}
+      >
         {props.corpusCollection.corpora.map((c) => (
           <CorpusCard key={c.id} id={c.id} />
         ))}
-      </ul>
+      </Stack>
     </Card>
   );
 };
