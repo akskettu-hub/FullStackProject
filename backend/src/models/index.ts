@@ -32,6 +32,7 @@ CorpusModel.hasMany(CollectionModel, {
 
 CollectionModel.belongsTo(CorpusModel, {
   foreignKey: "in_corpus",
+  as: "corpus",
 });
 
 CorpusCollectionModel.belongsToMany(CorpusModel, {

@@ -5,8 +5,9 @@ import {
   CorpusModel,
 } from "../models/index.ts";
 import { parseResponse } from "../utils/errors.ts";
-import type { CorpusCollectionSummary } from "@mono/types";
+import type { AuthorSummaries, CorpusCollectionSummary } from "@mono/types";
 import {
+  AuthorSummariesSchema,
   CorpusCollectionSummarySchema,
   CorpusCollectionsWithCorporaSchema,
   IdSchema,
@@ -115,6 +116,64 @@ router.get("/:id/summary", async (req, res) => {
     .json(parseResponse(CorpusCollectionSummarySchema, corpusCollection));
 });
 
+router.get("/:id/authors", async (req, res) => {
+  const idCheck = IdSchema.safeParse(req.params.id);
+
+  if (!idCheck.success) {
+    res.status(400).json({ error: "Invalid collection id" });
+    return;
+  }
+
+  const id = idCheck.data;
+
+  const rows = (await LetterModel.findAll({
+    attributes: [
+      ["author_key", "authorKey"],
+      [fn("COUNT", col("LetterModel.id")), "letterCount"],
+      [fn("MIN", col("LetterModel.year")), "minYear"],
+      [fn("MAX", col("LetterModel.year")), "maxYear"],
+    ],
+    include: [
+      {
+        model: CollectionModel,
+        as: "collection",
+        attributes: [],
+        required: true,
+        include: [
+          {
+            model: CorpusModel,
+            as: "corpus",
+            attributes: [],
+            required: true,
+            include: [
+              {
+                model: CorpusCollectionModel,
+                as: "corpus_collections",
+                attributes: [],
+                required: true,
+                through: { attributes: [] },
+                where: { id },
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    group: ["LetterModel.author_key"],
+    order: [
+      [fn("COUNT", col("LetterModel.id")), "DESC"],
+      ["author_key", "ASC"],
+    ],
+    raw: true,
+  })) as unknown as AuthorSummaries;
+
+  if (!rows) {
+    res.status(404).json({ error: "Collection not found" });
+    return;
+  }
+
+  res.status(200).json(parseResponse(AuthorSummariesSchema, rows));
+});
 /*
 router.get("/summaries", async (_req, res) => {
   const summaries = await CorpusCollectionModel.findAll({

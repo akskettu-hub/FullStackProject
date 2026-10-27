@@ -5,6 +5,7 @@ import type {
 import { useEffect, useState, type ReactElement } from "react";
 import { fetchCorpusCollectionSummary } from "../../services/corpusCollections";
 import CorpusCard from "./CorpusCard";
+import AuthorsCard from "./AuthorsCard";
 
 type CorpusCollectionCardProps = {
   corpusCollection: CorpusCollectionWithCorpora;
@@ -19,6 +20,12 @@ const CorpusCollectionCard = (
   const [corpusCollectionSummary, setCorpusCollectionSummary] =
     useState<CorpusCollectionSummary | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const [loadAuthorsCard, setLoadAuthorsCard] = useState<boolean>(false);
+
+  const showAuthorsButtonLable = loadAuthorsCard
+    ? "Hide Authors"
+    : "Show Authors";
 
   useEffect(() => {
     fetchCorpusCollectionSummary(props.corpusCollection.id)
@@ -46,6 +53,18 @@ const CorpusCollectionCard = (
         {corpusCollectionSummary.authorCount} | Years:{" "}
         {corpusCollectionSummary.minYear}–{corpusCollectionSummary.maxYear}
       </p>
+      <button
+        type="button"
+        onClick={() => setLoadAuthorsCard(!loadAuthorsCard)}
+      >
+        {showAuthorsButtonLable}
+      </button>
+      {loadAuthorsCard && (
+        <AuthorsCard
+          componentType="CorpusCollection"
+          componentId={props.corpusCollection.id}
+        />
+      )}
       <ul>
         {props.corpusCollection.corpora.map((c) => (
           <CorpusCard key={c.id} id={c.id} />
