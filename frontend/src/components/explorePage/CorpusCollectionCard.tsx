@@ -6,8 +6,15 @@ import { useEffect, useState, type ReactElement } from "react";
 import { fetchCorpusCollectionSummary } from "../../services/corpusCollections";
 import CorpusCard from "./CorpusCard";
 import AuthorsCard from "./AuthorsCard";
-import { Card, Stack } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Card,
+  Stack,
+} from "@mui/material";
 import SummaryStackItem from "./SummaryStackItem";
+import { GridExpandMoreIcon } from "@mui/x-data-grid";
 
 type CorpusCollectionCardProps = {
   corpusCollection: CorpusCollectionWithCorpora;
@@ -23,12 +30,6 @@ const CorpusCollectionCard = (
     useState<CorpusCollectionSummary | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const [loadAuthorsCard, setLoadAuthorsCard] = useState<boolean>(false);
-
-  const showAuthorsButtonLable = loadAuthorsCard
-    ? "Hide Authors"
-    : "Show Authors";
-
   useEffect(() => {
     fetchCorpusCollectionSummary(props.corpusCollection.id)
       .then((data) => {
@@ -41,9 +42,18 @@ const CorpusCollectionCard = (
       });
   }, [props.corpusCollection.id]);
 
-  if (error) return <li>Error: {error}</li>;
+  if (error)
+    return (
+      <Card variant="outlined" sx={{ p: 2 }}>
+        Error: {error}
+      </Card>
+    );
   if (!corpusCollectionSummary)
-    return <li>Loading Corpus Collection summary...</li>;
+    return (
+      <Card variant="outlined" sx={{ p: 2 }}>
+        Loading Corpus Collection summary...
+      </Card>
+    );
 
   return (
     <Card
@@ -51,7 +61,7 @@ const CorpusCollectionCard = (
       sx={{ padding: 5, borderLeft: 4, borderLeftColor: "blueviolet" }}
     >
       <h3>{props.corpusCollection.name}</h3>
-      <Stack direction="row" spacing={2}>
+      <Stack direction="row" spacing={2} sx={{ marginBottom: 1.5 }}>
         <SummaryStackItem variant="outlined">
           Corpora: {corpusCollectionSummary.corpusCount}
         </SummaryStackItem>
@@ -66,18 +76,19 @@ const CorpusCollectionCard = (
           {corpusCollectionSummary.maxYear}
         </SummaryStackItem>
       </Stack>
-      <button
-        type="button"
-        onClick={() => setLoadAuthorsCard(!loadAuthorsCard)}
-      >
-        {showAuthorsButtonLable}
-      </button>
-      {loadAuthorsCard && (
-        <AuthorsCard
-          componentType="CorpusCollection"
-          componentId={props.corpusCollection.id}
-        />
-      )}
+
+      <Accordion slotProps={{ transition: { unmountOnExit: true } }}>
+        <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
+          <h4>Authors</h4>
+        </AccordionSummary>
+        <AccordionDetails>
+          <AuthorsCard
+            componentType="CorpusCollection"
+            componentId={props.corpusCollection.id}
+          />
+        </AccordionDetails>
+      </Accordion>
+
       <Stack
         component="ul"
         spacing={2}

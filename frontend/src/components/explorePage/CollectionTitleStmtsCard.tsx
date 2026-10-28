@@ -29,12 +29,11 @@ const CollectionTitleStmtsCard = (
   if (!titleStmts) return <p>Loading Collection title statements summary...</p>;
 
   return (
-    <ul>
-      <p>Sources and Editorial Notes:</p>
+    <div>
       {titleStmts.titleStatements.map((stmt) => (
-        <li key={stmt.seq}>{stmt.text}</li>
+        <p key={stmt.seq}>{stmt.text}</p>
       ))}
-    </ul>
+    </div>
   );
 };
 

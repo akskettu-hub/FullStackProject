@@ -24,17 +24,6 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
     null,
   );
   const [error, setError] = useState<string | null>(null);
-  const [loadCollectionCard, setLoadCollectionCard] = useState<boolean>(false);
-
-  const showCollectionsButtonLable = loadCollectionCard
-    ? "Hide Collections"
-    : "Show Collections";
-
-  const [loadAuthorsCard, setLoadAuthorsCard] = useState<boolean>(false);
-
-  const showAuthorsButtonLable = loadAuthorsCard
-    ? "Hide Authors"
-    : "Show Authors";
 
   useEffect(() => {
     fetchCorpusSummary(props.id)
@@ -55,20 +44,21 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
     <Card
       component="li"
       variant="outlined"
-      sx={{ p: 2, borderLeft: 2, borderLeftColor: "green" }}
+      sx={{ p: 2, borderLeft: 4, borderLeftColor: "green" }}
     >
       <h4>{corpusSummary.name}</h4>
-      <Stack direction="row" spacing={2}>
-        <SummaryStackItem>
+      <Stack direction="row" spacing={2} sx={{ marginBottom: 1.5 }}>
+        <SummaryStackItem variant="outlined">
           Collections: {corpusSummary.collectionCount}
         </SummaryStackItem>
-        <SummaryStackItem>
+        <SummaryStackItem variant="outlined">
           Letters: {corpusSummary.letterCount}
         </SummaryStackItem>
-        <SummaryStackItem>
+        <SummaryStackItem variant="outlined">
           Years: {corpusSummary.minYear ?? "?"}–{corpusSummary.maxYear ?? "?"}
         </SummaryStackItem>
       </Stack>
+
       <Accordion slotProps={{ transition: { unmountOnExit: true } }}>
         <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
           <h4>Authors</h4>
@@ -77,22 +67,15 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
           <AuthorsCard componentType="Corpus" componentId={props.id} />
         </AccordionDetails>
       </Accordion>
-      {loadCollectionCard && <CollectionsCard corpusId={props.id} />}
-      {loadAuthorsCard && (
-        <AuthorsCard componentType="Corpus" componentId={props.id} />
-      )}
-      <button
-        type="button"
-        onClick={() => setLoadCollectionCard(!loadCollectionCard)}
-      >
-        {showCollectionsButtonLable}
-      </button>
-      <button
-        type="button"
-        onClick={() => setLoadAuthorsCard(!loadAuthorsCard)}
-      >
-        {showAuthorsButtonLable}
-      </button>
+
+      <Accordion slotProps={{ transition: { unmountOnExit: true } }}>
+        <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
+          <h4>Collections</h4>
+        </AccordionSummary>
+        <AccordionDetails>
+          <CollectionsCard corpusId={props.id} />
+        </AccordionDetails>
+      </Accordion>
     </Card>
   );
 };

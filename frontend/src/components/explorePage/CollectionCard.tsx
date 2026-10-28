@@ -1,51 +1,67 @@
 import type { CollectionSummary } from "@mono/types";
-import { useState, type ReactElement } from "react";
-import Authors from "./AuthorsCard";
+import { type ReactElement } from "react";
 import CollectionTitleStmtsCard from "./CollectionTitleStmtsCard";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Card,
+  Divider,
+  Stack,
+} from "@mui/material";
+import SummaryStackItem from "./SummaryStackItem";
+import AuthorsCard from "./AuthorsCard";
+import { GridExpandMoreIcon } from "@mui/x-data-grid";
 
 type CollectionCardProps = {
   collectionSummary: CollectionSummary;
 };
 
 const CollecionCard = (props: CollectionCardProps): ReactElement => {
-  const [loadStmtsCard, setLoadStmtsCard] = useState<boolean>(false);
-  const showStmtsButtonLable = loadStmtsCard ? "Hide Sources" : "Show Sources";
-
-  const [loadAuthorsCard, setLoadAuthorsCard] = useState<boolean>(false);
-  const showAuthorsButtonLable = loadAuthorsCard
-    ? "Hide Authors"
-    : "Show Authors";
-
   return (
-    <li>
-      <p>
-        <strong>{props.collectionSummary.xml_id}</strong> Letters:{" "}
-        {props.collectionSummary.letterCount} | Authors:{" "}
-        {props.collectionSummary.authorCount} | Years:{" "}
-        {props.collectionSummary.minYear}–{props.collectionSummary.maxYear}
-      </p>
-      {loadStmtsCard && (
-        <CollectionTitleStmtsCard collectionId={props.collectionSummary.id} />
-      )}
+    <Card
+      sx={{
+        marginBottom: 2,
+        paddingLeft: 1,
+        paddingRight: 1,
+        borderLeft: 3,
+        borderLeftColor: "blue",
+      }}
+    >
+      <h5>{props.collectionSummary.xml_id}</h5>
+      <Stack direction="row" spacing={2} sx={{ marginBottom: 1.5 }}>
+        <SummaryStackItem variant="outlined">
+          Letters: {props.collectionSummary.letterCount}
+        </SummaryStackItem>
+        <SummaryStackItem variant="outlined">
+          Years: {props.collectionSummary.minYear}–
+          {props.collectionSummary.maxYear}
+        </SummaryStackItem>
+      </Stack>
 
-      <button type="button" onClick={() => setLoadStmtsCard(!loadStmtsCard)}>
-        {showStmtsButtonLable}
-      </button>
+      <Accordion slotProps={{ transition: { unmountOnExit: true } }}>
+        <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
+          <h4>Authors</h4>
+        </AccordionSummary>
+        <AccordionDetails>
+          <AuthorsCard
+            componentType="Collection"
+            componentId={props.collectionSummary.id}
+          />
+        </AccordionDetails>
+      </Accordion>
 
-      <button
-        type="button"
-        onClick={() => setLoadAuthorsCard(!loadAuthorsCard)}
-      >
-        {showAuthorsButtonLable}
-      </button>
+      <Accordion slotProps={{ transition: { unmountOnExit: true } }}>
+        <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
+          <h4>Sources & Editorial Notes</h4>
+        </AccordionSummary>
+        <AccordionDetails>
+          <CollectionTitleStmtsCard collectionId={props.collectionSummary.id} />
+        </AccordionDetails>
+      </Accordion>
 
-      {loadAuthorsCard && (
-        <Authors
-          componentId={props.collectionSummary.id}
-          componentType="Collection"
-        />
-      )}
-    </li>
+      <Divider sx={{ marginTop: 1.5, marginBottom: 1.5 }} />
+    </Card>
   );
 };
 
