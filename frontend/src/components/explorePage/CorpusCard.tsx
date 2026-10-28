@@ -37,12 +37,27 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
       });
   }, [props.id]);
 
-  if (error) return <li>Error: {error}</li>;
-  if (!corpusSummary) return <li>Loading Corpus summary...</li>;
+  if (error)
+    return (
+      <Card
+        variant="outlined"
+        sx={{ p: 2, borderLeft: 4, borderLeftColor: "green" }}
+      >
+        <p>Error: {error}</p>
+      </Card>
+    );
+  if (!corpusSummary)
+    return (
+      <Card
+        variant="outlined"
+        sx={{ p: 2, borderLeft: 4, borderLeftColor: "green" }}
+      >
+        <p>Loading Corpus summary...</p>
+      </Card>
+    );
 
   return (
     <Card
-      component="li"
       variant="outlined"
       sx={{ p: 2, borderLeft: 4, borderLeftColor: "green" }}
     >
@@ -53,6 +68,9 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
         </SummaryStackItem>
         <SummaryStackItem variant="outlined">
           Letters: {corpusSummary.letterCount}
+        </SummaryStackItem>
+        <SummaryStackItem variant="outlined">
+          Authors: {corpusSummary.authorCount}
         </SummaryStackItem>
         <SummaryStackItem variant="outlined">
           Years: {corpusSummary.minYear ?? "?"}–{corpusSummary.maxYear ?? "?"}
@@ -68,7 +86,9 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
         </AccordionDetails>
       </Accordion>
 
-      <Accordion slotProps={{ transition: { unmountOnExit: true } }}>
+      <Accordion
+        slotProps={{ transition: { timeout: 150, unmountOnExit: true } }}
+      >
         <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
           <h4>Collections</h4>
         </AccordionSummary>

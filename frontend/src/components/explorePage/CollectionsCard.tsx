@@ -2,6 +2,7 @@ import type { CollectionSummaries } from "@mono/types";
 import { useEffect, useState, type ReactElement } from "react";
 import { fetchCollectionSummaries } from "../../services/collections";
 import CollecionCard from "./CollectionCard";
+import { Card } from "@mui/material";
 
 type CollectionsCardProps = {
   corpusId: number;
@@ -26,9 +27,35 @@ const CollectionsCard = (props: CollectionsCardProps): ReactElement => {
       });
   }, [props.corpusId]);
 
-  if (error) return <p>Error: {error}</p>;
+  if (error)
+    return (
+      <Card
+        sx={{
+          marginBottom: 2,
+          paddingLeft: 1,
+          paddingRight: 1,
+          borderLeft: 3,
+          borderLeftColor: "blue",
+        }}
+      >
+        <p>Error: {error}</p>
+      </Card>
+    );
+
   if (!collectionSummaries)
-    return <p>Loading Collection Summaries summary...</p>;
+    return (
+      <Card
+        sx={{
+          marginBottom: 2,
+          paddingLeft: 1,
+          paddingRight: 1,
+          borderLeft: 3,
+          borderLeftColor: "blue",
+        }}
+      >
+        <p>Loading Collection Summaries summary...</p>
+      </Card>
+    );
 
   return (
     <div>

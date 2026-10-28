@@ -1,6 +1,7 @@
 import type { CollectionWithTitleStmts } from "@mono/types";
 import { useEffect, useState, type ReactElement } from "react";
 import { fetchCollectionTitleStmts } from "../../services/collections";
+import { Alert, Box, CircularProgress, Typography } from "@mui/material";
 
 type CollectionTitleStmtsCardProps = {
   collectionId: number;
@@ -25,15 +26,23 @@ const CollectionTitleStmtsCard = (
       });
   }, [props.collectionId]);
 
-  if (error) return <p>Error: {error}</p>;
-  if (!titleStmts) return <p>Loading Collection title statements summary...</p>;
+  if (error) return <Alert severity="error">Error: {error}</Alert>;
+  if (!titleStmts) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", p: 3 }}>
+        <CircularProgress size={24} />
+      </Box>
+    );
+  }
 
   return (
-    <div>
+    <Box>
       {titleStmts.titleStatements.map((stmt) => (
-        <p key={stmt.seq}>{stmt.text}</p>
+        <Typography key={stmt.seq} variant="body2" sx={{ padding: 0.5 }}>
+          {stmt.text}
+        </Typography>
       ))}
-    </div>
+    </Box>
   );
 };
 

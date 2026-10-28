@@ -20,12 +20,12 @@ type CorpusCollectionCardProps = {
   corpusCollection: CorpusCollectionWithCorpora;
 };
 
+// TODO: A corpus collection card should display info about the cc, with number of collections, letters, etc.
+// TODO: Eventually a corpus card should also display stats about social variables, see todo in corpus card element.
+// TODO: Decide what is a good way to do these queries. Should a Corpus collection card get all the info for the corpora as well? What is a sensible division of labour?
 const CorpusCollectionCard = (
   props: CorpusCollectionCardProps,
 ): ReactElement => {
-  // TODO: A corpus collection card should display info about the cc, with number of collections, letters, etc.
-  // TODO: Eventually a corpus card should also display stats about social variables, see todo in corpus card element.
-  // TODO: Decide what is a good way to do these queries. Should a Corpus collection card get all the info for the corpora as well? What is a sensible division of labour?
   const [corpusCollectionSummary, setCorpusCollectionSummary] =
     useState<CorpusCollectionSummary | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -44,19 +44,20 @@ const CorpusCollectionCard = (
 
   if (error)
     return (
-      <Card variant="outlined" sx={{ p: 2 }}>
+      <Card component="article" variant="outlined" sx={{ p: 2 }}>
         Error: {error}
       </Card>
     );
   if (!corpusCollectionSummary)
     return (
-      <Card variant="outlined" sx={{ p: 2 }}>
+      <Card component="article" variant="outlined" sx={{ p: 2 }}>
         Loading Corpus Collection summary...
       </Card>
     );
 
   return (
     <Card
+      component="article"
       variant="outlined"
       sx={{ padding: 5, borderLeft: 4, borderLeftColor: "blueviolet" }}
     >
@@ -89,11 +90,7 @@ const CorpusCollectionCard = (
         </AccordionDetails>
       </Accordion>
 
-      <Stack
-        component="ul"
-        spacing={2}
-        sx={{ listStyle: "none", m: 0, p: 0, mt: 2 }}
-      >
+      <Stack spacing={2}>
         {props.corpusCollection.corpora.map((c) => (
           <CorpusCard key={c.id} id={c.id} />
         ))}

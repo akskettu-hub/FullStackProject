@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactElement } from "react";
 import { fetchAuthors } from "../../services/authors";
 import type { AuthorSummaries, AuthorSummary } from "@mono/types";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import { Alert } from "@mui/material";
 
 const yearFormat = (v: number | null): string => (v == null ? "?" : String(v));
 
@@ -46,12 +47,12 @@ const AuthorsCard = (props: AuthorsCardProps): ReactElement => {
       });
   }, [props.componentId, props.componentType]);
 
-  if (error) return <p>Error: {error}</p>;
-  if (!authorSummaries) return <p>Loading Author Summaries summary...</p>;
+  if (error) return <Alert severity="error">Error: {error}</Alert>;
 
   return (
     <DataGrid
-      rows={authorSummaries}
+      rows={authorSummaries ?? []}
+      loading={!authorSummaries && !error}
       columns={columns}
       getRowId={(r) => r.authorKey ?? "unknown"}
       density="compact"

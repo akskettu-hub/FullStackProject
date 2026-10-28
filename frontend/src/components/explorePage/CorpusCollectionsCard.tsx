@@ -2,6 +2,7 @@ import type { CorpusCollectionsWithCorpora } from "@mono/types";
 import { useEffect, useState, type ReactElement } from "react";
 import { fetchCorpusCollection } from "../../services/corpusCollections";
 import CorpusCollectionCard from "./CorpusCollectionCard";
+import { Stack } from "@mui/material";
 
 const CorpusCollectionsCard = (): ReactElement => {
   const [corpusCollections, setCorpusCollections] =
@@ -24,13 +25,11 @@ const CorpusCollectionsCard = (): ReactElement => {
   if (!corpusCollections) return <p>Loading Corpus collections...</p>;
 
   return (
-    <section>
-      <ul>
-        {corpusCollections.map((cc): ReactElement => (
-          <CorpusCollectionCard key={cc.id} corpusCollection={cc} />
-        ))}
-      </ul>
-    </section>
+    <Stack spacing={2}>
+      {corpusCollections.map((cc): ReactElement => (
+        <CorpusCollectionCard key={cc.id} corpusCollection={cc} />
+      ))}
+    </Stack>
   );
 };
 

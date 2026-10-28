@@ -34,6 +34,9 @@ const CollecionCard = (props: CollectionCardProps): ReactElement => {
           Letters: {props.collectionSummary.letterCount}
         </SummaryStackItem>
         <SummaryStackItem variant="outlined">
+          Authors: {props.collectionSummary.authorCount}
+        </SummaryStackItem>
+        <SummaryStackItem variant="outlined">
           Years: {props.collectionSummary.minYear}–
           {props.collectionSummary.maxYear}
         </SummaryStackItem>
