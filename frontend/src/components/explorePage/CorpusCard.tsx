@@ -9,6 +9,7 @@ import {
   AccordionSummary,
   Card,
   Stack,
+  Typography,
 } from "@mui/material";
 import SummaryStackItem from "./SummaryStackItem";
 import { GridExpandMoreIcon } from "@mui/x-data-grid";
@@ -61,7 +62,9 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
       variant="outlined"
       sx={{ p: 2, borderLeft: 4, borderLeftColor: "green" }}
     >
-      <h4>{corpusSummary.name}</h4>
+      <Typography variant="h6" component="h3">
+        {corpusSummary.name}
+      </Typography>
       <Stack direction="row" spacing={2} sx={{ marginBottom: 1.5 }}>
         <SummaryStackItem variant="outlined">
           Collections: {corpusSummary.collectionCount}

@@ -8,6 +8,7 @@ import {
   Card,
   Divider,
   Stack,
+  Typography,
 } from "@mui/material";
 import SummaryStackItem from "./SummaryStackItem";
 import AuthorsCard from "./AuthorsCard";
@@ -28,7 +29,9 @@ const CollecionCard = (props: CollectionCardProps): ReactElement => {
         borderLeftColor: "blue",
       }}
     >
-      <h5>{props.collectionSummary.xml_id}</h5>
+      <Typography variant="body1" component="h4" sx={{ p: 0.5 }}>
+        {props.collectionSummary.xml_id}
+      </Typography>
       <Stack direction="row" spacing={2} sx={{ marginBottom: 1.5 }}>
         <SummaryStackItem variant="outlined">
           Letters: {props.collectionSummary.letterCount}
