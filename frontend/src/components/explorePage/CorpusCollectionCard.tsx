@@ -6,7 +6,7 @@ import { useEffect, useState, type ReactElement } from "react";
 import { fetchCorpusCollectionSummary } from "../../services/corpusCollections";
 import CorpusCard from "./CorpusCard";
 import AuthorsCard from "./AuthorsCard";
-import { Card, Stack, Typography } from "@mui/material";
+import { Card, Divider, Stack, Typography } from "@mui/material";
 import SummaryStackItem from "./SummaryStackItem";
 
 type CorpusCollectionCardProps = {
@@ -80,6 +80,8 @@ const CorpusCollectionCard = (
         componentType="CorpusCollection"
         componentId={props.corpusCollection.id}
       />
+
+      <Divider sx={{ marginTop: 1.5, marginBottom: 1.5 }} />
 
       <Stack spacing={2}>
         {props.corpusCollection.corpora.map((c) => (

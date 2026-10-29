@@ -1,7 +1,7 @@
 import type { CollectionSummary } from "@mono/types";
 import { type ReactElement } from "react";
 import CollectionTitleStmtsCard from "./CollectionTitleStmtsCard";
-import { Card, Divider, Stack, Typography } from "@mui/material";
+import { Card, Stack, Typography } from "@mui/material";
 import SummaryStackItem from "./SummaryStackItem";
 import AuthorsCard from "./AuthorsCard";
 
@@ -38,8 +38,6 @@ const CollecionCard = (props: CollectionCardProps): ReactElement => {
       />
 
       <CollectionTitleStmtsCard collectionId={props.collectionSummary.id} />
-
-      <Divider sx={{ marginTop: 1.5, marginBottom: 1.5 }} />
     </Card>
   );
 };
