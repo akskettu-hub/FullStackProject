@@ -84,16 +84,7 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
         </SummaryStackItem>
       </Stack>
 
-      <Accordion slotProps={{ transition: { unmountOnExit: true } }}>
-        <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
-          <Typography variant="body1" component="h4">
-            Authors
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <AuthorsCard componentType="Corpus" componentId={props.id} />
-        </AccordionDetails>
-      </Accordion>
+      <AuthorsCard componentType="Corpus" componentId={props.id} />
 
       <Accordion
         slotProps={{ transition: { timeout: 150, unmountOnExit: true } }}

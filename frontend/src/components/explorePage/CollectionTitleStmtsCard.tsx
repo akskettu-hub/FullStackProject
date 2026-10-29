@@ -1,7 +1,16 @@
 import type { CollectionWithTitleStmts } from "@mono/types";
 import { useEffect, useState, type ReactElement } from "react";
 import { fetchCollectionTitleStmts } from "../../services/collections";
-import { Alert, Box, CircularProgress, Typography } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Alert,
+  Box,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
+import { GridExpandMoreIcon } from "@mui/x-data-grid";
 
 type CollectionTitleStmtsCardProps = {
   collectionId: number;
@@ -36,13 +45,22 @@ const CollectionTitleStmtsCard = (
   }
 
   return (
-    <Box>
-      {titleStmts.titleStatements.map((stmt) => (
-        <Typography key={stmt.seq} variant="body2" sx={{ padding: 0.5 }}>
-          {stmt.text}
+    <Accordion slotProps={{ transition: { unmountOnExit: true } }}>
+      <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
+        <Typography variant="body1" component="h4">
+          Sources & Editorial Notes
         </Typography>
-      ))}
-    </Box>
+      </AccordionSummary>
+      <AccordionDetails>
+        <Box>
+          {titleStmts.titleStatements.map((stmt) => (
+            <Typography key={stmt.seq} variant="body2" sx={{ padding: 0.5 }}>
+              {stmt.text}
+            </Typography>
+          ))}
+        </Box>
+      </AccordionDetails>
+    </Accordion>
   );
 };
 

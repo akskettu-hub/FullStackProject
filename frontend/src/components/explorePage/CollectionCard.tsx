@@ -1,18 +1,9 @@
 import type { CollectionSummary } from "@mono/types";
 import { type ReactElement } from "react";
 import CollectionTitleStmtsCard from "./CollectionTitleStmtsCard";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Card,
-  Divider,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Card, Divider, Stack, Typography } from "@mui/material";
 import SummaryStackItem from "./SummaryStackItem";
 import AuthorsCard from "./AuthorsCard";
-import { GridExpandMoreIcon } from "@mui/x-data-grid";
 
 type CollectionCardProps = {
   collectionSummary: CollectionSummary;
@@ -42,26 +33,12 @@ const CollecionCard = (props: CollectionCardProps): ReactElement => {
         </SummaryStackItem>
       </Stack>
 
-      <Accordion slotProps={{ transition: { unmountOnExit: true } }}>
-        <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
-          <h4>Authors</h4>
-        </AccordionSummary>
-        <AccordionDetails>
-          <AuthorsCard
-            componentType="Collection"
-            componentId={props.collectionSummary.id}
-          />
-        </AccordionDetails>
-      </Accordion>
+      <AuthorsCard
+        componentType="Collection"
+        componentId={props.collectionSummary.id}
+      />
 
-      <Accordion slotProps={{ transition: { unmountOnExit: true } }}>
-        <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
-          <h4>Sources & Editorial Notes</h4>
-        </AccordionSummary>
-        <AccordionDetails>
-          <CollectionTitleStmtsCard collectionId={props.collectionSummary.id} />
-        </AccordionDetails>
-      </Accordion>
+      <CollectionTitleStmtsCard collectionId={props.collectionSummary.id} />
 
       <Divider sx={{ marginTop: 1.5, marginBottom: 1.5 }} />
     </Card>

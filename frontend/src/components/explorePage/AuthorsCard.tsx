@@ -1,8 +1,18 @@
 import { useEffect, useState, type ReactElement } from "react";
 import { fetchAuthors } from "../../services/authors";
 import type { AuthorSummaries, AuthorSummary } from "@mono/types";
-import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridExpandMoreIcon,
+  type GridColDef,
+} from "@mui/x-data-grid";
 import { Alert } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Typography,
+} from "@mui/material";
 
 const yearFormat = (v: number | null): string => (v == null ? "?" : String(v));
 
@@ -50,18 +60,27 @@ const AuthorsCard = (props: AuthorsCardProps): ReactElement => {
   if (error) return <Alert severity="error">Error: {error}</Alert>;
 
   return (
-    <DataGrid
-      rows={authorSummaries ?? []}
-      loading={!authorSummaries && !error}
-      columns={columns}
-      getRowId={(r) => r.authorKey ?? "unknown"}
-      density="compact"
-      initialState={{
-        sorting: { sortModel: [{ field: "letterCount", sort: "desc" }] },
-        pagination: { paginationModel: { pageSize: 25 } },
-      }}
-      pageSizeOptions={[25, 50, 100]}
-    />
+    <Accordion>
+      <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
+        <Typography variant="body1" component="h4">
+          Authors
+        </Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <DataGrid
+          rows={authorSummaries ?? []}
+          loading={!authorSummaries && !error}
+          columns={columns}
+          getRowId={(r) => r.authorKey ?? "unknown"}
+          density="compact"
+          initialState={{
+            sorting: { sortModel: [{ field: "letterCount", sort: "desc" }] },
+            pagination: { paginationModel: { pageSize: 25 } },
+          }}
+          pageSizeOptions={[25, 50, 100]}
+        />
+      </AccordionDetails>
+    </Accordion>
   );
 };
 

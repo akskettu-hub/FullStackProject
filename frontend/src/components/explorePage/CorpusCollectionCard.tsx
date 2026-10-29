@@ -6,16 +6,8 @@ import { useEffect, useState, type ReactElement } from "react";
 import { fetchCorpusCollectionSummary } from "../../services/corpusCollections";
 import CorpusCard from "./CorpusCard";
 import AuthorsCard from "./AuthorsCard";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Card,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Card, Stack, Typography } from "@mui/material";
 import SummaryStackItem from "./SummaryStackItem";
-import { GridExpandMoreIcon } from "@mui/x-data-grid";
 
 type CorpusCollectionCardProps = {
   corpusCollection: CorpusCollectionWithCorpora;
@@ -85,19 +77,10 @@ const CorpusCollectionCard = (
         </SummaryStackItem>
       </Stack>
 
-      <Accordion slotProps={{ transition: { unmountOnExit: true } }}>
-        <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
-          <Typography variant="body1" component="h4">
-            Authors
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <AuthorsCard
-            componentType="CorpusCollection"
-            componentId={props.corpusCollection.id}
-          />
-        </AccordionDetails>
-      </Accordion>
+      <AuthorsCard
+        componentType="CorpusCollection"
+        componentId={props.corpusCollection.id}
+      />
 
       <Stack spacing={2}>
         {props.corpusCollection.corpora.map((c) => (
