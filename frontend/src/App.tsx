@@ -8,6 +8,7 @@ import UserLoginPrompt from "./components/UserLoginPrompt";
 import ExplorePageLayout from "./components/ExplorePage/ExplorePageLayout";
 import ExploreAuthorsPage from "./components/ExplorePage/Authors";
 import ExploreCorporaPage from "./components/ExplorePage/Corpora";
+import SearchCorporaPage from "./components/SearchPage";
 
 const App = (): ReactElement => {
   const [name, setName] = useState<string>("");
@@ -40,6 +41,7 @@ const App = (): ReactElement => {
             <Route path="corpora" element={<ExploreCorporaPage />} />
             <Route path="authors" element={<ExploreAuthorsPage />} />
           </Route>
+          <Route path="/search" element={<SearchCorporaPage />} />
           <Route path="/*" element={<h1>404 - Not found, mate</h1>} />
         </Route>
       </Routes>
