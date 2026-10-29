@@ -1,28 +1,24 @@
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { type ReactElement } from "react";
-
-type GreetingProps = {
-  name: string;
-};
-
-const Greeting = (props: GreetingProps): ReactElement => {
-  return (
-    <div>
-      <p>Welcome, {props.name}!</p>
-    </div>
-  );
-};
 
 type HomePageProps = {
   name: string;
 };
 
+// TODO: Typography test: body1 and body2 are too small and not substantially different from subtitle
 const HomePage = (props: HomePageProps): ReactElement => {
   return (
-    <div>
-      <Greeting name={props.name ? props.name : "Mysterious Stranger"} />
+    <Box>
+      <Typography variant="h3">
+        Welcome, {props.name ? props.name : "Mysterious Stranger"}!
+      </Typography>
 
-      <div>
+      <Typography variant="body1">
+        This is the landing page once the user has logged in. Insert overview of
+        app later.
+      </Typography>
+
+      <Box>
         <Typography variant="h1" component="h1">
           Typography Test:
         </Typography>
@@ -45,13 +41,24 @@ const HomePage = (props: HomePageProps): ReactElement => {
           A Full Stack Project h6
         </Typography>
         <Typography variant="body1" component="p">
-          Seek and thou shalt find body 1
+          A Full Stack Project body 1
         </Typography>
         <Typography variant="body2" component="p">
-          Seek and thou shalt find body 2
+          A Full Stack Project body 2
         </Typography>
-      </div>
-    </div>
+        <Typography variant="subtitle1">
+          A Full Stack Project subtitle 1
+        </Typography>
+        <Typography variant="subtitle2">
+          A Full Stack Project subtitle 2
+        </Typography>
+        <Typography variant="button">A Full Stack Project button</Typography>
+        <Typography variant="caption">A Full Stack Project caption</Typography>
+        <Typography variant="overline">
+          A Full Stack Project overline
+        </Typography>
+      </Box>
+    </Box>
   );
 };
 
