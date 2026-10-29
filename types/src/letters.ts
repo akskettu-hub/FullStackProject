@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { IdSchema } from "./shared.ts";
 
 export const LetterFields = z.object({
   collection_id: z.number().int().positive(),
@@ -36,9 +37,18 @@ export const LetterSummarySchema = LetterSchema.omit({
   raw_xml: true,
 });
 
-/*
-export const CollectionInCorpusSchema = z.object({
-  id: z.number().int().positive(),
-  xml_id: z.string().min(1).max(32),
+export const LetterSearchSchema = z.object({
+  corpusIds: z.array(IdSchema).default([]),
+  yearFrom: z.coerce.number().int().optional(),
+  yearTo: z.coerce.number().int().optional(),
+  page: z.coerce.number().int().min(0).default(0),
+  pageSize: z.coerce.number().int().min(1).max(100).default(25),
 });
- */
+
+export type LetterSearch = z.infer<typeof LetterSearchSchema>;
+export const LetterSearchResultSchema = z.object({
+  total: z.number(),
+  rows: z.array(LetterSummarySchema),
+});
+
+export type LetterSearchResult = z.infer<typeof LetterSearchResultSchema>;

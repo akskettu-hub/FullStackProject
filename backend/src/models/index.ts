@@ -56,4 +56,5 @@ export {
   CorpusModel,
   CorpusCollectionModel,
   CorporaInCorpusCollectionModel,
+  LetterModel,
 };

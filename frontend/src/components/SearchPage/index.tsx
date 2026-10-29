@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import { Typography } from "@mui/material";
+import SearchCroporaCard from "./SearchCorporaCard";
 
 const SearchCorporaPage = (): ReactElement => {
   return (
@@ -9,6 +10,7 @@ const SearchCorporaPage = (): ReactElement => {
       </Typography>
 
       <p>This is the search page. Implement later :)</p>
+      <SearchCroporaCard />
     </div>
   );
 };
