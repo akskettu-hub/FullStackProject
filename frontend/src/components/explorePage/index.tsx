@@ -5,9 +5,7 @@ import { Typography } from "@mui/material";
 const ExploreCorporaPage = (): ReactElement => {
   return (
     <main>
-      <Typography variant="h4" component="h1">
-        Explore Corpora
-      </Typography>
+      <Typography variant="h3">Explore Corpora</Typography>
       <CorpusCollectionsCard />
     </main>
   );

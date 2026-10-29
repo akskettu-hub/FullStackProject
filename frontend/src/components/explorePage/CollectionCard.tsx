@@ -17,9 +17,8 @@ const CollecionCard = (props: CollectionCardProps): ReactElement => {
         borderLeftColor: "info.light",
       }}
     >
-      <Typography variant="body1" component="h4" sx={{ p: 0.5 }}>
-        {props.collectionSummary.xml_id}
-      </Typography>
+      <Typography variant="h6">{props.collectionSummary.xml_id}</Typography>
+
       <Stack direction="row" spacing={2} sx={{ marginBottom: 1.5 }}>
         <SummaryStackItem variant="outlined">
           Letters: {props.collectionSummary.letterCount}

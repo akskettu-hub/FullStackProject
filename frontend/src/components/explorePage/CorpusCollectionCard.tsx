@@ -58,9 +58,8 @@ const CorpusCollectionCard = (
         borderLeftColor: "primary.main",
       }}
     >
-      <Typography variant="h5" component="h2">
-        {props.corpusCollection.name}
-      </Typography>
+      <Typography variant="h4">{props.corpusCollection.name}</Typography>
+
       <Stack direction="row" spacing={2} sx={{ marginBottom: 1.5 }}>
         <SummaryStackItem variant="outlined">
           Corpora: {corpusCollectionSummary.corpusCount}

@@ -61,14 +61,11 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
     <Card
       variant="outlined"
       sx={{
-        p: 2,
         borderLeft: 4,
         borderLeftColor: "secondary.main",
       }}
     >
-      <Typography variant="h6" component="h3">
-        {corpusSummary.name}
-      </Typography>
+      <Typography variant="h5">{corpusSummary.name}</Typography>
       <Stack direction="row" spacing={2} sx={{ marginBottom: 1.5 }}>
         <SummaryStackItem variant="outlined">
           Collections: {corpusSummary.collectionCount}
