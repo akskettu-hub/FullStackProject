@@ -5,7 +5,7 @@ import { Container } from "@mui/material";
 import HeaderLayout from "./components/HeaderLayout";
 import HomePage from "./components/HomePage";
 import UserLoginPrompt from "./components/UserLoginPrompt";
-import ExploreCorporaPage from "./components/explorePage/index";
+import ExploreCorporaPage from "./components/ExplorePage/index";
 
 const App = (): ReactElement => {
   const [name, setName] = useState<string>("");
