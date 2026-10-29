@@ -60,7 +60,11 @@ const CorpusCollectionCard = (
     <Card
       component="article"
       variant="outlined"
-      sx={{ padding: 5, borderLeft: 4, borderLeftColor: "blueviolet" }}
+
+      sx={{
+        borderLeft: 4,
+        borderLeftColor: "primary.main",
+      }}
     >
       <Typography variant="h5" component="h2">
         {props.corpusCollection.name}
@@ -83,7 +87,9 @@ const CorpusCollectionCard = (
 
       <Accordion slotProps={{ transition: { unmountOnExit: true } }}>
         <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
-          <h4>Authors</h4>
+          <Typography variant="body1" component="h4">
+            Authors
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <AuthorsCard

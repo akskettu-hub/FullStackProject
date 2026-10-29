@@ -60,7 +60,11 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
   return (
     <Card
       variant="outlined"
-      sx={{ p: 2, borderLeft: 4, borderLeftColor: "green" }}
+      sx={{
+        p: 2,
+        borderLeft: 4,
+        borderLeftColor: "secondary.main",
+      }}
     >
       <Typography variant="h6" component="h3">
         {corpusSummary.name}
@@ -82,7 +86,9 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
 
       <Accordion slotProps={{ transition: { unmountOnExit: true } }}>
         <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
-          <h4>Authors</h4>
+          <Typography variant="body1" component="h4">
+            Authors
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <AuthorsCard componentType="Corpus" componentId={props.id} />
@@ -93,7 +99,9 @@ const CorpusCard = (props: CorpusCardProps): ReactElement => {
         slotProps={{ transition: { timeout: 150, unmountOnExit: true } }}
       >
         <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
-          <h4>Collections</h4>
+          <Typography variant="body1" component="h4">
+            Collections
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <CollectionsCard corpusId={props.id} />

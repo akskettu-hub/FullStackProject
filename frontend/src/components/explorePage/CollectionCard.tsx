@@ -22,11 +22,8 @@ const CollecionCard = (props: CollectionCardProps): ReactElement => {
   return (
     <Card
       sx={{
-        marginBottom: 2,
-        paddingLeft: 1,
-        paddingRight: 1,
-        borderLeft: 3,
-        borderLeftColor: "blue",
+        borderLeft: 4,
+        borderLeftColor: "info.light",
       }}
     >
       <Typography variant="body1" component="h4" sx={{ p: 0.5 }}>
