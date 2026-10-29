@@ -2,8 +2,8 @@ import type { CollectionSummary } from "@mono/types";
 import { type ReactElement } from "react";
 import CollectionTitleStmtsCard from "./CollectionTitleStmtsCard";
 import { Card, Stack, Typography } from "@mui/material";
-import SummaryStackItem from "./SummaryStackItem";
 import AuthorsCard from "./AuthorsCard";
+import SummaryStackItem from "../../UI/SummaryStackItem";
 
 type CollectionCardProps = {
   collectionSummary: CollectionSummary;

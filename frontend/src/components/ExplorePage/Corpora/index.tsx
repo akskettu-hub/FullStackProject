@@ -1,13 +1,15 @@
 import type { ReactElement } from "react";
-import CorpusCollectionsCard from "./CorpusCollectionsCard";
 import { Typography } from "@mui/material";
+import CorpusCollectionsCard from "./CorpusCollectionsCard";
 
 const ExploreCorporaPage = (): ReactElement => {
   return (
-    <main>
-      <Typography variant="h3">Explore Corpora</Typography>
+    <div>
+      <Typography variant="h3" sx={{ paddingBottom: 1 }}>
+        Explore Corpora
+      </Typography>
       <CorpusCollectionsCard />
-    </main>
+    </div>
   );
 };
 

@@ -3,11 +3,11 @@ import type {
   CorpusCollectionWithCorpora,
 } from "@mono/types";
 import { useEffect, useState, type ReactElement } from "react";
-import { fetchCorpusCollectionSummary } from "../../services/corpusCollections";
+import { fetchCorpusCollectionSummary } from "../../../services/corpusCollections";
 import CorpusCard from "./CorpusCard";
 import AuthorsCard from "./AuthorsCard";
 import { Card, Divider, Stack, Typography } from "@mui/material";
-import SummaryStackItem from "./SummaryStackItem";
+import SummaryStackItem from "../../UI/SummaryStackItem";
 
 type CorpusCollectionCardProps = {
   corpusCollection: CorpusCollectionWithCorpora;

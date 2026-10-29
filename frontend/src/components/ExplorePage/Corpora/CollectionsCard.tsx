@@ -1,6 +1,6 @@
 import type { CollectionSummaries } from "@mono/types";
 import { useEffect, useState, type ReactElement } from "react";
-import { fetchCollectionSummaries } from "../../services/collections";
+import { fetchCollectionSummaries } from "../../../services/collections";
 import CollecionCard from "./CollectionCard";
 import { Box, Stack } from "@mui/material";
 

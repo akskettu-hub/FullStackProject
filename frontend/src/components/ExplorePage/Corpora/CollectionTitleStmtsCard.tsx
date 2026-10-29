@@ -1,6 +1,6 @@
 import type { CollectionWithTitleStmts } from "@mono/types";
 import { useEffect, useState, type ReactElement } from "react";
-import { fetchCollectionTitleStmts } from "../../services/collections";
+import { fetchCollectionTitleStmts } from "../../../services/collections";
 import {
   Accordion,
   AccordionDetails,

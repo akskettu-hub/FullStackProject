@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from "react";
-import { fetchAuthors } from "../../services/authors";
+import { fetchAuthors } from "../../../services/authors";
 import type { AuthorSummaries, AuthorSummary } from "@mono/types";
 import {
   DataGrid,

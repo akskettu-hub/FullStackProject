@@ -1,6 +1,6 @@
 import type { CorpusCollectionsWithCorpora } from "@mono/types";
 import { useEffect, useState, type ReactElement } from "react";
-import { fetchCorpusCollection } from "../../services/corpusCollections";
+import { fetchCorpusCollection } from "../../../services/corpusCollections";
 import CorpusCollectionCard from "./CorpusCollectionCard";
 import { Stack } from "@mui/material";
 

@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from "react";
-import { fetchCorpusSummary } from "../../services/corpora";
+import { fetchCorpusSummary } from "../../../services/corpora";
 import type { CorpusSummary } from "@mono/types";
 import CollectionsCard from "./CollectionsCard";
 import AuthorsCard from "./AuthorsCard";
@@ -11,7 +11,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import SummaryStackItem from "./SummaryStackItem";
+import SummaryStackItem from "../../UI/SummaryStackItem";
 import { GridExpandMoreIcon } from "@mui/x-data-grid";
 
 type CorpusCardProps = {
