@@ -8,6 +8,7 @@ import usersRouter from "./routes/users.ts";
 import corporaRouter from "./routes/corpora.ts";
 import corpusCollectionsRouter from "./routes/corpusCollections.ts";
 import lettersRouter from "./routes/letters.ts";
+import searchRouter from "./routes/search.ts";
 
 import { errorHandler } from "./middleware/errors.ts";
 
@@ -23,6 +24,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/corpora", corporaRouter);
 app.use("/api/corpusCollections", corpusCollectionsRouter);
 app.use("/api/letters", lettersRouter);
+app.use("/api/search", searchRouter);
 
 app.use(errorHandler);
 

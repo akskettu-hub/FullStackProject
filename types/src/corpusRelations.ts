@@ -5,6 +5,7 @@ import {
   CorpusCollectionToCorpusSchema,
 } from "./corpusCollections.ts";
 import { CollectionInCorpusSchema, CollectionSchema } from "./collections.ts";
+import { IdSchema } from "./shared.ts";
 
 export const CorpusWithCorpusCollectionsSchema = CorpusSchema.extend({
   corpus_collections: z.array(CorpusCollectionToCorpusSchema),
@@ -40,6 +41,25 @@ export const CorpusCollectionsWithCorporaSchema = z.array(
 export type CorpusCollectionsWithCorpora = z.infer<
   typeof CorpusCollectionsWithCorporaSchema
 >;
+
+export const SearchOptionsSchema = z.array(
+  CorpusCollectionsWithCorporaSchema.element.extend({
+    corpora: z.array(
+      CorpusInCorpusCollectionSchema.extend({
+        minYear: z.number().nullable(),
+        maxYear: z.number().nullable(),
+      }),
+    ),
+  }),
+);
+
+export type SearchOptions = z.infer<typeof SearchOptionsSchema>;
+
+export const YearRangeRowSchema = z.object({
+  id: IdSchema,
+  minYear: z.number().nullable(),
+  maxYear: z.number().nullable(),
+});
 
 export const CorpusSummarySchema = CorpusInCorpusCollectionSchema.extend({
   collectionCount: z.coerce.number(),
