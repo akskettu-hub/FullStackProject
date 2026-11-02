@@ -1,23 +1,18 @@
-import type { SearchOptions, SearchYearSpan } from "@mono/types";
-import { Box } from "@mui/material";
+import type { SearchOptions } from "@mono/types";
+import { Box, Slider } from "@mui/material";
 import type { ReactElement } from "react";
 
 type YearPickerProps = {
+  selectedYears: number[];
   selectedCorpora: Set<number>;
   options: SearchOptions;
-  onChange: (next: SearchYearSpan) => void;
+  onChange: (newValue: number[]) => void;
 };
 
-const YearPicker = (props: YearPickerProps): ReactElement => {
-  const { selectedCorpora, options, onChange } = props;
-
-  if (!selectedCorpora || selectedCorpora.size === 0)
-    return (
-      <Box>
-        <p>Please select a corpus....</p>
-      </Box>
-    );
-
+const minMaxYears = (
+  options: SearchOptions,
+  selectedCorpora: Set<number>,
+): { min: number; max: number } => {
   const years = options
     .flatMap((cc) => cc.corpora)
     .filter((corpus) => selectedCorpora.has(corpus.id))
@@ -25,17 +20,39 @@ const YearPicker = (props: YearPickerProps): ReactElement => {
     .filter((y) => y !== null);
 
   const min = Math.min(...years);
-
   const max = Math.max(...years);
 
-  console.log(min, max);
+  return { min, max };
+};
+
+const YearPicker = (props: YearPickerProps): ReactElement => {
+  const { selectedYears, selectedCorpora, options, onChange } = props;
+  const handleChange = (event: Event, newValue: number[]): void => {
+    onChange(newValue);
+  };
+
+  if (!selectedCorpora || selectedCorpora.size === 0) {
+    return (
+      <Box>
+        <Slider disabled />
+      </Box>
+    );
+  }
+
+  const { min, max } = minMaxYears(options, selectedCorpora);
 
   return (
     <Box>
-      <p>Year picker here.</p>
       <p>
-        {min}-{max}
+        Min: {min}-{max}
       </p>
+      <Slider
+        value={selectedYears}
+        onChange={handleChange}
+        valueLabelDisplay="on"
+        min={min}
+        max={max}
+      />
     </Box>
   );
 };

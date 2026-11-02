@@ -1,4 +1,4 @@
-import type { SearchFilters, SearchOptions, SearchYearSpan } from "@mono/types";
+import type { SearchFilters, SearchOptions } from "@mono/types";
 import { Box, Typography } from "@mui/material";
 import { useState, type ReactElement } from "react";
 import CorpusPicker from "./CorpusPicker";
@@ -13,8 +13,9 @@ const SearchForm = (props: searchFormProps): ReactElement => {
   const [selectedCorpora, setSelectedCorpora] = useState<Set<number>>(
     new Set(),
   );
-  const [selectedYearSpan, setSelectedYearSpan] =
-    useState<SearchYearSpan | null>(null);
+  const [selectedYearSpan, setSelectedYearSpan] = useState<number[]>([
+    850, 2000,
+  ]);
 
   return (
     <Box>
@@ -28,10 +29,14 @@ const SearchForm = (props: searchFormProps): ReactElement => {
       <pre>{JSON.stringify([...selectedCorpora])}</pre>
 
       <YearPicker
+        selectedYears={selectedYearSpan}
         selectedCorpora={selectedCorpora}
         options={props.options}
         onChange={setSelectedYearSpan}
       />
+      <pre>
+        {selectedYearSpan[0]} - {selectedYearSpan[1]}
+      </pre>
     </Box>
   );
 };

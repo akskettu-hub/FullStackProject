@@ -59,7 +59,6 @@ const CorpusPicker = (props: CorpusPickerProps): ReactElement => {
                   onChange={() => toggleCorpusCollection(opt)}
                 />
               }
-              onChange={() => console.log("change")}
             />
             <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
               {opt.corpora.map((corpus) => (
