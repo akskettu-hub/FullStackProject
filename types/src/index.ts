@@ -7,3 +7,4 @@ export * from "./corpusRelations.ts";
 export * from "./shared.ts";
 export * from "./letters.ts";
 export * from "./authors.ts";
+export * from "./search.ts";

@@ -18,8 +18,6 @@ const getCorpusCollectionState = (
   const checked = ids.length > 0 && ids.every((id) => selected.has(id));
   const indeterminate = !checked && ids.some((id) => selected.has(id));
 
-  console.log({ checked, indeterminate });
-
   return { checked, indeterminate };
 };
 

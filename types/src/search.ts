@@ -1,0 +1,8 @@
+import { z } from "zod";
+
+export const SearchYearSpanSchema = z.object({
+  minYear: z.number().min(800).max(2500).nullable(),
+  maxYear: z.number().min(800).max(2500).nullable(),
+});
+
+export type SearchYearSpan = z.infer<typeof SearchYearSpanSchema>;
