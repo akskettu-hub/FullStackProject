@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import { Typography } from "@mui/material";
+import SearchForm from "./SearchForm";
 import SearchCorporaResultCard from "./SearchCorporaResultCard";
 
 const SearchCorporaPage = (): ReactElement => {
@@ -9,7 +10,7 @@ const SearchCorporaPage = (): ReactElement => {
         Search Corpora
       </Typography>
 
-      <p>This is the search page. Implement later :)</p>
+      <SearchForm />
       <SearchCorporaResultCard />
     </div>
   );
