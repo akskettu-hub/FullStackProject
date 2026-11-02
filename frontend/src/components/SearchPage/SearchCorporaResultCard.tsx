@@ -25,7 +25,7 @@ const columns: GridColDef<LetterSearchResult["rows"][number]>[] = [
   { field: "text_type", headerName: "Type", width: 130 },
 ];
 
-const SearchCroporaCard = (): ReactElement => {
+const SearchCorporaResultCard = (): ReactElement => {
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 25,
@@ -82,4 +82,4 @@ const SearchCroporaCard = (): ReactElement => {
   );
 };
 
-export default SearchCroporaCard;
+export default SearchCorporaResultCard;
