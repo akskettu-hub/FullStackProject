@@ -1,6 +1,6 @@
 // Partially LLM generated: Claude Sonnet 5.5 Medium
 import type { SearchFilters, SearchOptions } from "@mono/types";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useMemo, useState, type ReactElement } from "react";
 import CorpusPicker from "./CorpusPicker";
 import YearPicker from "./YearPicker";
@@ -29,7 +29,7 @@ type SearchFormProps = {
 };
 
 const SearchForm = (props: SearchFormProps): ReactElement => {
-  const { options } = props;
+  const { options, onSubmit } = props;
 
   const [selectedCorpora, setSelectedCorpora] = useState<Set<number>>(
     new Set(),
@@ -60,10 +60,21 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
     });
   };
 
+  const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    if (bounds === null) return;
+    const filter: SearchFilters = {
+      corpusIds: [...selectedCorpora],
+      yearFrom: selectedYearSpan[0],
+      yearTo: selectedYearSpan[1],
+    };
+
+    onSubmit(filter);
+  };
+
   return (
-    <Box>
+    <Box component={"form"} onSubmit={handleSubmit}>
       <Typography variant="h4">Search Form</Typography>
-      <p>serch form goes here</p>
       <CorpusPicker
         options={options}
         selected={selectedCorpora}
@@ -79,6 +90,9 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
       <pre>
         {selectedYearSpan[0]} - {selectedYearSpan[1]}
       </pre>
+      <Button type="submit" variant="contained" disabled={bounds === null}>
+        Search
+      </Button>
     </Box>
   );
 };
