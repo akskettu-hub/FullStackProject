@@ -9,13 +9,60 @@ import {
 import { parseResponse } from "../utils/errors.ts";
 import {
   CorpusCollectionsWithCorporaSchema,
+  LetterSearchResultSchema,
+  LetterSearchSchema,
   SearchOptionsSchema,
   YearRangeRowSchema,
 } from "@mono/types";
-import { col, fn } from "sequelize";
+import type { WhereOptions } from "sequelize";
+import { col, fn, Op } from "sequelize";
 import { z } from "zod";
 
 const router = express.Router();
+
+router.get("/", async (req, res) => {
+  const parsedSearchQuery = LetterSearchSchema.safeParse(req.query);
+  if (!parsedSearchQuery.success) {
+    res.status(400).json({ error: "Invalid search, forehead" });
+    return;
+  }
+
+  const { corpusIds, yearFrom, yearTo, page, pageSize } =
+    parsedSearchQuery.data;
+
+  const conditions: WhereOptions[] = [];
+  if (yearFrom !== undefined) conditions.push({ year: { [Op.gte]: yearFrom } });
+  if (yearTo !== undefined) conditions.push({ year: { [Op.lte]: yearTo } });
+
+  const { rows, count } = await LetterModel.findAndCountAll({
+    attributes: { exclude: ["raw_xml"] },
+    where: conditions.length ? { [Op.and]: conditions } : undefined,
+    include: [
+      {
+        model: CollectionModel,
+        as: "collection",
+        attributes: ["id", "xml_id", "in_corpus"],
+        required: true,
+        where: corpusIds.length
+          ? { in_corpus: { [Op.in]: corpusIds } }
+          : undefined,
+      },
+    ],
+    order: [
+      ["year", "ASC"],
+      ["id", "ASC"],
+    ],
+    limit: pageSize,
+    offset: page * pageSize,
+  });
+
+  res.status(200).json(
+    parseResponse(LetterSearchResultSchema, {
+      total: count,
+      rows: rows.map((r): unknown => r.get({ plain: true })),
+    }),
+  );
+});
 
 router.get("/searchOptions", async (_req, res): Promise<void> => {
   const collections = await CorpusCollectionModel.findAll({
