@@ -1,9 +1,9 @@
 import { useState, type ReactElement } from "react";
 import { Box, Typography } from "@mui/material";
-import SearchForm from "./SearchForm";
 import SearchCorporaResultCard from "./SearchCorporaResultCard";
 import { useSearchOptions } from "../../hooks/useSearchOptions";
 import type { SearchFilters } from "@mono/types";
+import SearchForm from "./SearchForm";
 
 const SearchCorporaPage = (): ReactElement => {
   const searchOptions = useSearchOptions();
