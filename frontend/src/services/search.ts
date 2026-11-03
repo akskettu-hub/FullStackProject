@@ -14,7 +14,7 @@ export const fetchSearchOptions = async (): Promise<SearchOptions> => {
   return SearchOptionsSchema.parse(data);
 };
 
-export const fetchSearchLetter = async (
+export const fetchSearchLetters = async (
   params: URLSearchParams,
 ): Promise<LetterSearchResult> => {
   console.log("Params: ", params);

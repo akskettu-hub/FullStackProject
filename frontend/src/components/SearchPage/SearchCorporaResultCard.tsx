@@ -3,12 +3,11 @@ import type {
   LetterSearchResult,
   PaginationModel,
   SearchFilters,
-  SearchQueryParams,
 } from "@mono/types";
-import { useEffect, useState, type ReactElement } from "react";
-import { Box } from "@mui/material";
+import { type ReactElement } from "react";
+import { Alert, Box } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
-import { fetchSearchLetter } from "../../services/search";
+import { useSearchLetters } from "../../hooks/useSearchLetters";
 
 const columns: GridColDef<LetterSearchResult["rows"][number]>[] = [
   { field: "xml_id", headerName: "Letter ID", flex: 1, minWidth: 200 },
@@ -24,12 +23,6 @@ const columns: GridColDef<LetterSearchResult["rows"][number]>[] = [
   { field: "text_type", headerName: "Type", width: 130 },
 ];
 
-const filterToParams = (filter: SearchFilters): SearchQueryParams => ({
-  corpusIds: filter.corpusIds.join(","),
-  yearFrom: String(filter.yearFrom),
-  yearTo: String(filter.yearTo),
-});
-
 type SearchCorporaResultCardProps = {
   appliedFilters: SearchFilters;
   paginationModel: PaginationModel;
@@ -40,54 +33,28 @@ const SearchCorporaResultCard = (
   props: SearchCorporaResultCardProps,
 ): ReactElement => {
   const { appliedFilters, paginationModel, onPaginationModelChange } = props;
-  const [data, setData] = useState<LetterSearchResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const params = new URLSearchParams({
-      ...filterToParams(appliedFilters),
-      page: String(paginationModel.page),
-      pageSize: String(paginationModel.pageSize),
-    });
-
-    fetchSearchLetter(params)
-      .then((data) => {
-        setData(data);
-      })
-      .catch((e: unknown) => {
-        setError(
-          e instanceof Error ? e.message : "failed to load search result :(",
-        );
-      });
-  }, [paginationModel.page, paginationModel.pageSize, appliedFilters]);
-
-  if (error)
-    return (
-      <Box>
-        <p>Error: {error}</p>
-      </Box>
-    );
-  if (!data)
-    return (
-      <Box>
-        <p>Loading Search Results...</p>
-      </Box>
-    );
+  const { data, error, loading } = useSearchLetters(
+    appliedFilters,
+    paginationModel,
+  );
 
   return (
-    <Box sx={{ height: 600 }}>
-      <DataGrid
-        rows={data?.rows ?? []}
-        columns={columns}
-        rowCount={data?.total ?? 0}
-        loading={!data && !error}
-        paginationMode="server"
-        paginationModel={paginationModel}
-        onPaginationModelChange={onPaginationModelChange}
-        pageSizeOptions={[25, 50, 100]}
-        density="compact"
-        disableColumnFilter
-      />
+    <Box>
+      {error && <Alert severity="error">{error}</Alert>}
+      <Box sx={{ height: 600 }}>
+        <DataGrid
+          rows={data?.rows ?? []}
+          columns={columns}
+          rowCount={data?.total ?? 0}
+          loading={loading}
+          paginationMode="server"
+          paginationModel={paginationModel}
+          onPaginationModelChange={onPaginationModelChange}
+          pageSizeOptions={[25, 50, 100]}
+          density="compact"
+          disableColumnFilter
+        />
+      </Box>
     </Box>
   );
 };

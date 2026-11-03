@@ -5,7 +5,7 @@ export const LetterFields = z.object({
   collection_id: z.number().int().positive(),
   xml_id: z.string().min(1).max(32),
   title_key: z.string().min(1).max(32),
-  author_key: z.string().min(1).max(32),
+  author_key: z.string().min(1).max(64),
   text_type: z.string().min(1).max(32),
   lang: z.string().min(1).max(32),
   raw_xml: z.string().min(1),
