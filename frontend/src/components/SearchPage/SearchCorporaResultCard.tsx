@@ -1,15 +1,13 @@
 // Partly LLM generated: Claude Sonnet 5.5 Medium
-import type { LetterSearchResult } from "@mono/types";
+import type {
+  LetterSearchResult,
+  SearchFilters,
+  SearchQueryParams,
+} from "@mono/types";
 import { useEffect, useState, type ReactElement } from "react";
-import { fetchLetterSearch } from "../../services/letters";
 import { Box } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
-
-const HARDCODED_FILTERS = {
-  corpora: "58,60",
-  yearFrom: "1525",
-  yearTo: "1650",
-};
+import { fetchSearchLetter } from "../../services/search";
 
 const columns: GridColDef<LetterSearchResult["rows"][number]>[] = [
   { field: "xml_id", headerName: "Letter ID", flex: 1, minWidth: 200 },
@@ -25,7 +23,20 @@ const columns: GridColDef<LetterSearchResult["rows"][number]>[] = [
   { field: "text_type", headerName: "Type", width: 130 },
 ];
 
-const SearchCorporaResultCard = (): ReactElement => {
+const filterToParams = (filter: SearchFilters): SearchQueryParams => ({
+  corpusIds: filter.corpusIds.join(","),
+  yearFrom: String(filter.yearFrom),
+  yearTo: String(filter.yearTo),
+});
+
+type SearchCorporaResultCardProps = {
+  appliedFilters: SearchFilters;
+};
+
+const SearchCorporaResultCard = (
+  props: SearchCorporaResultCardProps,
+): ReactElement => {
+  const { appliedFilters } = props;
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 25,
@@ -35,12 +46,12 @@ const SearchCorporaResultCard = (): ReactElement => {
 
   useEffect(() => {
     const params = new URLSearchParams({
-      ...HARDCODED_FILTERS,
+      ...filterToParams(appliedFilters),
       page: String(paginationModel.page),
       pageSize: String(paginationModel.pageSize),
     });
 
-    fetchLetterSearch(params)
+    fetchSearchLetter(params)
       .then((data) => {
         setData(data);
       })
@@ -49,7 +60,7 @@ const SearchCorporaResultCard = (): ReactElement => {
           e instanceof Error ? e.message : "failed to load search result :(",
         );
       });
-  }, [paginationModel.page, paginationModel.pageSize]);
+  }, [paginationModel.page, paginationModel.pageSize, appliedFilters]);
 
   if (error)
     return (

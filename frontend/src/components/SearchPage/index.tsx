@@ -35,7 +35,9 @@ const SearchCorporaPage = (): ReactElement => {
         options={searchOptions.options}
         onSubmit={setAppliedFilters}
       />
-      {appliedFilters && <SearchCorporaResultCard />}
+      {appliedFilters && (
+        <SearchCorporaResultCard appliedFilters={appliedFilters} />
+      )}
     </div>
   );
 };
