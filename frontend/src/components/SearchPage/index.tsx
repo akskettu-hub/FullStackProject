@@ -2,7 +2,7 @@ import { useState, type ReactElement } from "react";
 import { Box, Typography } from "@mui/material";
 import SearchCorporaResultCard from "./SearchCorporaResultCard";
 import { useSearchOptions } from "../../hooks/useSearchOptions";
-import type { SearchFilters } from "@mono/types";
+import type { PaginationModel, SearchFilters } from "@mono/types";
 import SearchForm from "./SearchForm";
 
 const SearchCorporaPage = (): ReactElement => {
@@ -10,6 +10,16 @@ const SearchCorporaPage = (): ReactElement => {
   const [appliedFilters, setAppliedFilters] = useState<SearchFilters | null>(
     null,
   );
+
+  const [paginationModel, setPaginationModel] = useState<PaginationModel>({
+    page: 0,
+    pageSize: 25,
+  });
+
+  const handleSubmit = (filters: SearchFilters): void => {
+    setAppliedFilters(filters);
+    setPaginationModel((m) => ({ ...m, page: 0 }));
+  };
 
   if (searchOptions.status === "error")
     return (
@@ -31,12 +41,13 @@ const SearchCorporaPage = (): ReactElement => {
         Search Corpora
       </Typography>
 
-      <SearchForm
-        options={searchOptions.options}
-        onSubmit={setAppliedFilters}
-      />
+      <SearchForm options={searchOptions.options} onSubmit={handleSubmit} />
       {appliedFilters && (
-        <SearchCorporaResultCard appliedFilters={appliedFilters} />
+        <SearchCorporaResultCard
+          appliedFilters={appliedFilters}
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
+        />
       )}
     </div>
   );

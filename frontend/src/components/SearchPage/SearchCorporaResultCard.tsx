@@ -1,6 +1,7 @@
 // Partly LLM generated: Claude Sonnet 5.5 Medium
 import type {
   LetterSearchResult,
+  PaginationModel,
   SearchFilters,
   SearchQueryParams,
 } from "@mono/types";
@@ -31,16 +32,14 @@ const filterToParams = (filter: SearchFilters): SearchQueryParams => ({
 
 type SearchCorporaResultCardProps = {
   appliedFilters: SearchFilters;
+  paginationModel: PaginationModel;
+  onPaginationModelChange: (model: PaginationModel) => void;
 };
 
 const SearchCorporaResultCard = (
   props: SearchCorporaResultCardProps,
 ): ReactElement => {
-  const { appliedFilters } = props;
-  const [paginationModel, setPaginationModel] = useState({
-    page: 0,
-    pageSize: 25,
-  });
+  const { appliedFilters, paginationModel, onPaginationModelChange } = props;
   const [data, setData] = useState<LetterSearchResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -84,7 +83,7 @@ const SearchCorporaResultCard = (
         loading={!data && !error}
         paginationMode="server"
         paginationModel={paginationModel}
-        onPaginationModelChange={setPaginationModel}
+        onPaginationModelChange={onPaginationModelChange}
         pageSizeOptions={[25, 50, 100]}
         density="compact"
         disableColumnFilter

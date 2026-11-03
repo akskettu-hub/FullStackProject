@@ -18,3 +18,5 @@ export type SearchFilters = {
   yearFrom: number;
   yearTo: number;
 };
+
+export type PaginationModel = { page: number; pageSize: number };
