@@ -1,6 +1,6 @@
 // Completely LLM generated: Claude Sonnet 5 medium.
 import { BaseError as SequelizeBaseError } from "sequelize";
-import type z from "zod";
+import type { z } from "zod";
 
 interface PgOriginalError {
   message: string;
@@ -65,6 +65,31 @@ export const parseResponse = <S extends z.ZodType>(
   const result = schema.safeParse(data);
   if (!result.success) {
     throw new ResponseValidationError(summariseZodIssues(result.error));
+  }
+  return result.data;
+};
+
+export class HttpError extends Error {
+  constructor(
+    public readonly status: number,
+    message: string,
+    public readonly details?: unknown,
+  ) {
+    super(message);
+  }
+}
+
+export const parseRequest = <T extends z.ZodType>(
+  schema: T,
+  data: unknown,
+): z.output<T> => {
+  const result = schema.safeParse(data);
+  if (!result.success) {
+    throw new HttpError(
+      400,
+      "Invalid request",
+      summariseZodIssues(result.error),
+    );
   }
   return result.data;
 };
