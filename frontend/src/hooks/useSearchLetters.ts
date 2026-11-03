@@ -2,16 +2,9 @@ import type {
   LetterSearchResult,
   PaginationModel,
   SearchFilters,
-  SearchQueryParams,
 } from "@mono/types";
 import { useEffect, useState } from "react";
-import { fetchSearchLetters } from "../services/search";
-
-const filterToParams = (filter: SearchFilters): SearchQueryParams => ({
-  corpusIds: filter.corpusIds.join(","),
-  yearFrom: String(filter.yearFrom),
-  yearTo: String(filter.yearTo),
-});
+import { fetchSearchLetters, searchFilterToParams } from "../services/search";
 
 export const useSearchLetters = (
   filters: SearchFilters,
@@ -31,7 +24,7 @@ export const useSearchLetters = (
     let ignore = false;
 
     const params = new URLSearchParams({
-      ...filterToParams(filters),
+      ...searchFilterToParams(filters),
       page: String(page),
       pageSize: String(pageSize),
     });

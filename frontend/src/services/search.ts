@@ -2,7 +2,9 @@ import {
   LetterSearchResultSchema,
   SearchOptionsSchema,
   type LetterSearchResult,
+  type SearchFilters,
   type SearchOptions,
+  type SearchQueryParams,
 } from "@mono/types";
 import axios from "axios";
 
@@ -24,3 +26,11 @@ export const fetchSearchLetters = async (
 
   return LetterSearchResultSchema.parse(data);
 };
+
+export const searchFilterToParams = (
+  filter: SearchFilters,
+): SearchQueryParams => ({
+  corpusIds: filter.corpusIds.join(","),
+  yearFrom: String(filter.yearFrom),
+  yearTo: String(filter.yearTo),
+});
