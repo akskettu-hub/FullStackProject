@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { LetterSummarySchema } from "./letters.ts";
+// NOTE: Do not export from this file to anywhere else than index
 
 export const SearchYearSpanSchema = z.object({
   minYear: z.number().min(800).max(2500).nullable(),
@@ -20,3 +22,23 @@ export type SearchFilters = {
 };
 
 export type PaginationModel = { page: number; pageSize: number };
+
+export const LetterSearchSchema = z.object({
+  corpusIds: z
+    .string()
+    .transform((s) => s.split(",").map(Number))
+    .pipe(z.array(z.number().int().positive())), // TODO: it would be better if this checked the id from some central source
+  yearFrom: z.coerce.number().int().optional(),
+  yearTo: z.coerce.number().int().optional(),
+  page: z.coerce.number().int().min(0).default(0),
+  pageSize: z.coerce.number().int().min(1).max(100).default(25),
+});
+
+export type LetterSearch = z.infer<typeof LetterSearchSchema>;
+
+export const LetterSearchResultSchema = z.object({
+  total: z.number(),
+  rows: z.array(LetterSummarySchema),
+});
+
+export type LetterSearchResult = z.infer<typeof LetterSearchResultSchema>;
