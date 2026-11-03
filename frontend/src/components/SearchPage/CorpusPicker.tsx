@@ -3,12 +3,6 @@ import type { SearchOptions } from "@mono/types";
 import { Box, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import type { ReactElement } from "react";
 
-type CorpusPickerProps = {
-  options: SearchOptions;
-  selected: Set<number>;
-  onChange: (next: Set<number>) => void;
-};
-
 const getCorpusCollectionState = (
   options: SearchOptions[number],
   selected: Set<number>,
@@ -19,6 +13,12 @@ const getCorpusCollectionState = (
   const indeterminate = !checked && ids.some((id) => selected.has(id));
 
   return { checked, indeterminate };
+};
+
+type CorpusPickerProps = {
+  options: SearchOptions;
+  selected: Set<number>;
+  onChange: (next: Set<number>) => void;
 };
 
 const CorpusPicker = (props: CorpusPickerProps): ReactElement => {

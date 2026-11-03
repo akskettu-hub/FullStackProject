@@ -1,57 +1,29 @@
-import type { SearchOptions } from "@mono/types";
+// Partially LLM generated: Claude Sonnet 5.5 Medium
 import { Box, Slider } from "@mui/material";
 import type { ReactElement } from "react";
 
 type YearPickerProps = {
-  selectedYears: number[];
-  selectedCorpora: Set<number>;
-  options: SearchOptions;
-  onChange: (newValue: number[]) => void;
-};
-
-const minMaxYears = (
-  options: SearchOptions,
-  selectedCorpora: Set<number>,
-): { min: number; max: number } => {
-  const years = options
-    .flatMap((cc) => cc.corpora)
-    .filter((corpus) => selectedCorpora.has(corpus.id))
-    .flatMap((c) => [c.minYear, c.maxYear])
-    .filter((y) => y !== null);
-
-  const min = Math.min(...years);
-  const max = Math.max(...years);
-
-  return { min, max };
+  bounds: { min: number; max: number } | null;
+  value: [number, number];
+  onChange: (next: [number, number]) => void;
 };
 
 const YearPicker = (props: YearPickerProps): ReactElement => {
-  const { selectedYears, selectedCorpora, options, onChange } = props;
-  const handleChange = (event: Event, newValue: number[]): void => {
-    onChange(newValue);
+  const { bounds, value, onChange } = props;
+  const handleChange = (_event: Event, next: number | number[]): void => {
+    if (Array.isArray(next)) onChange([next[0], next[1]]);
   };
-
-  if (!selectedCorpora || selectedCorpora.size === 0) {
-    return (
-      <Box>
-        <Slider disabled />
-      </Box>
-    );
-  }
-
-  const { min, max } = minMaxYears(options, selectedCorpora);
 
   return (
     <Box>
-      <p>
-        Min: {min}-{max}
-      </p>
       <Slider
-        value={selectedYears}
+        disabled={bounds === null}
+        value={value}
         onChange={handleChange}
         valueLabelDisplay="on"
-        min={min}
-        max={max}
+        min={bounds?.min ?? value[0]}
+        max={bounds?.max ?? value[1]}
+        disableSwap
       />
     </Box>
   );
