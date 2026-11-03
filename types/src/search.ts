@@ -6,3 +6,15 @@ export const SearchYearSpanSchema = z.object({
 });
 
 export type SearchYearSpan = z.infer<typeof SearchYearSpanSchema>;
+
+export type SearchQueryParams = {
+  corpusIds: string;
+  yearFrom: string;
+  yearTo: string;
+};
+
+export type SearchFilters = {
+  corpusIds: number[];
+  yearFrom: number;
+  yearTo: number;
+};

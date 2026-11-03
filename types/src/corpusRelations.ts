@@ -61,12 +61,6 @@ export const YearRangeRowSchema = z.object({
   maxYear: z.number().nullable(),
 });
 
-export type SearchFilters = {
-  corpusIds: number[];
-  yearFrom: number;
-  yearTo: number;
-};
-
 export const CorpusSummarySchema = CorpusInCorpusCollectionSchema.extend({
   collectionCount: z.coerce.number(),
   letterCount: z.coerce.number(),
