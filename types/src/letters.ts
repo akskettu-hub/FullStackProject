@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { IdSchema } from "./shared.ts";
+//import { IdSchema } from "./shared.ts";
 
 export const LetterFields = z.object({
   collection_id: z.number().int().positive(),
@@ -38,7 +38,10 @@ export const LetterSummarySchema = LetterSchema.omit({
 });
 
 export const LetterSearchSchema = z.object({
-  corpusIds: z.array(IdSchema).default([]),
+  corpusIds: z
+    .string()
+    .transform((s) => s.split(",").map(Number))
+    .pipe(z.array(z.number().int().positive())), // TODO: it would be better if this checked the id from some central source
   yearFrom: z.coerce.number().int().optional(),
   yearTo: z.coerce.number().int().optional(),
   page: z.coerce.number().int().min(0).default(0),
@@ -46,6 +49,7 @@ export const LetterSearchSchema = z.object({
 });
 
 export type LetterSearch = z.infer<typeof LetterSearchSchema>;
+
 export const LetterSearchResultSchema = z.object({
   total: z.number(),
   rows: z.array(LetterSummarySchema),

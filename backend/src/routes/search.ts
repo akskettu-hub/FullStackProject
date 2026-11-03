@@ -6,7 +6,7 @@ import {
   CorpusModel,
   LetterModel,
 } from "../models/index.ts";
-import { parseResponse } from "../utils/errors.ts";
+import { parseRequest, parseResponse } from "../utils/errors.ts";
 import {
   CorpusCollectionsWithCorporaSchema,
   LetterSearchResultSchema,
@@ -21,14 +21,8 @@ import { z } from "zod";
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const parsedSearchQuery = LetterSearchSchema.safeParse(req.query);
-  if (!parsedSearchQuery.success) {
-    res.status(400).json({ error: "Invalid search, forehead" });
-    return;
-  }
-
-  const { corpusIds, yearFrom, yearTo, page, pageSize } =
-    parsedSearchQuery.data;
+  const parsedSearchQuery = parseRequest(LetterSearchSchema, req.query);
+  const { corpusIds, yearFrom, yearTo, page, pageSize } = parsedSearchQuery;
 
   const conditions: WhereOptions[] = [];
   if (yearFrom !== undefined) conditions.push({ year: { [Op.gte]: yearFrom } });
