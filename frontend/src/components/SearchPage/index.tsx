@@ -1,9 +1,9 @@
 import { useState, type ReactElement } from "react";
-import { Box, Typography } from "@mui/material";
-import SearchCorporaResultCard from "./SearchCorporaResultCard";
+import { Alert, Box, Typography } from "@mui/material";
 import { useSearchOptions } from "../../hooks/useSearchOptions";
 import type { PaginationModel, SearchFilters } from "@mono/types";
 import SearchForm from "./SearchForm";
+import SearchResults from "./SearchResults";
 
 const SearchCorporaPage = (): ReactElement => {
   const searchOptions = useSearchOptions();
@@ -21,10 +21,11 @@ const SearchCorporaPage = (): ReactElement => {
     setPaginationModel((m) => ({ ...m, page: 0 }));
   };
 
+  // TODO: Errors should be dislplayed in a more sensible manner.
   if (searchOptions.status === "error")
     return (
       <Box>
-        <p>Error: {searchOptions.error}</p>
+        <Alert severity="error">{searchOptions.error}</Alert>
       </Box>
     );
   if (searchOptions.status === "loading")
@@ -34,7 +35,6 @@ const SearchCorporaPage = (): ReactElement => {
       </Box>
     );
 
-  //filters={appliedFilters}
   return (
     <div>
       <Typography variant="h3" sx={{ paddingBottom: 1 }}>
@@ -42,13 +42,11 @@ const SearchCorporaPage = (): ReactElement => {
       </Typography>
 
       <SearchForm options={searchOptions.options} onSubmit={handleSubmit} />
-      {appliedFilters && (
-        <SearchCorporaResultCard
-          appliedFilters={appliedFilters}
-          paginationModel={paginationModel}
-          onPaginationModelChange={setPaginationModel}
-        />
-      )}
+      <SearchResults
+        appliedFilters={appliedFilters}
+        paginationModel={paginationModel}
+        onPaginationModelChange={setPaginationModel}
+      />
     </div>
   );
 };

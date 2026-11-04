@@ -7,7 +7,7 @@ import type {
 import { type ReactElement } from "react";
 import { Alert, Box } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
-import { useSearchLetters } from "../../hooks/useSearchLetters";
+import { useSearchLetters } from "../../../hooks/useSearchLetters";
 
 const columns: GridColDef<LetterSearchResult["rows"][number]>[] = [
   { field: "xml_id", headerName: "Letter ID", flex: 1, minWidth: 200 },
