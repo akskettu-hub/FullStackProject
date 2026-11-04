@@ -1,7 +1,7 @@
 import type { PaginationModel, SearchFilters } from "@mono/types";
 import { Box } from "@mui/material";
 import type { ReactElement } from "react";
-import SearchResultLetterList from "./SearchCorporaResultCard";
+import SearchResultLetterList from "./SearchResultLetterList";
 import SearchResultHistogram from "./SearchResultHistogram";
 type SearchResultsProps = {
   appliedFilters: SearchFilters | null;
