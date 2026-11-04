@@ -52,3 +52,5 @@ export const HistogramResponseSchema = z.object({
   rows: z.array(HistogramRowSchema),
   undated: z.number(),
 });
+
+export type HistogramResponse = z.infer<typeof HistogramResponseSchema>;

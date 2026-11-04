@@ -1,6 +1,8 @@
 import {
+  HistogramResponseSchema,
   LetterSearchResultSchema,
   SearchOptionsSchema,
+  type HistogramResponse,
   type LetterSearchResult,
   type SearchFilters,
   type SearchOptions,
@@ -19,7 +21,6 @@ export const fetchSearchOptions = async (): Promise<SearchOptions> => {
 export const fetchSearchLetters = async (
   params: URLSearchParams,
 ): Promise<LetterSearchResult> => {
-  console.log("Params: ", params);
   const { data } = await axios.get<unknown>(
     `http://localhost:3003/api/search?${params}`,
   );
@@ -34,3 +35,13 @@ export const searchFilterToParams = (
   yearFrom: String(filter.yearFrom),
   yearTo: String(filter.yearTo),
 });
+
+export const fetchSearchResultsHistogram = async (
+  params: URLSearchParams,
+): Promise<HistogramResponse> => {
+  const { data } = await axios.get<unknown>(
+    `http://localhost:3003/api/search/histogram?${params}`,
+  );
+
+  return HistogramResponseSchema.parse(data);
+};

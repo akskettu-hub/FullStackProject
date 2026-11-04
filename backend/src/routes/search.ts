@@ -60,7 +60,7 @@ router.get("/", async (req, res) => {
   );
 });
 
-router.get("/stats", async (req, res) => {
+router.get("/histogram", async (req, res) => {
   const parsedSearchQuery = parseRequest(LetterSearchSchema, req.query);
   const { corpusIds, yearFrom, yearTo } = parsedSearchQuery;
 
