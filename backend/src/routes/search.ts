@@ -9,6 +9,8 @@ import {
 import { parseRequest, parseResponse } from "../utils/errors.ts";
 import {
   CorpusCollectionsWithCorporaSchema,
+  HistogramResponseSchema,
+  HistogramRowSchema,
   LetterSearchResultSchema,
   LetterSearchSchema,
   SearchOptionsSchema,
@@ -56,6 +58,51 @@ router.get("/", async (req, res) => {
       rows: rows.map((r): unknown => r.get({ plain: true })),
     }),
   );
+});
+
+router.get("/stats", async (req, res) => {
+  const parsedSearchQuery = parseRequest(LetterSearchSchema, req.query);
+  const { corpusIds, yearFrom, yearTo } = parsedSearchQuery;
+
+  const conditions: WhereOptions[] = [];
+  if (yearFrom !== undefined) conditions.push({ year: { [Op.gte]: yearFrom } });
+  if (yearTo !== undefined) conditions.push({ year: { [Op.lte]: yearTo } });
+
+  const rawRows = await LetterModel.findAll({
+    where: conditions.length ? { [Op.and]: conditions } : undefined,
+    attributes: [
+      ["year", "year"],
+      [fn("COUNT", fn("DISTINCT", col("LetterModel.id"))), "count"],
+    ],
+    include: [
+      {
+        model: CollectionModel,
+        as: "collection",
+        attributes: [],
+        required: true,
+        where: corpusIds.length
+          ? { in_corpus: { [Op.in]: corpusIds } }
+          : undefined,
+      },
+    ],
+    group: ["LetterModel.year"],
+    order: [[col("year"), "ASC"]],
+    raw: true,
+  });
+
+  const parsed = z.array(HistogramRowSchema).parse(rawRows);
+
+  let undated = 0;
+  const rows: { year: number; count: number }[] = [];
+
+  for (const row of parsed) {
+    if (row.year === null) undated = row.count;
+    else rows.push({ year: row.year, count: row.count });
+  }
+
+  res
+    .status(200)
+    .json(parseResponse(HistogramResponseSchema, { rows, undated }));
 });
 
 router.get("/searchOptions", async (_req, res): Promise<void> => {
