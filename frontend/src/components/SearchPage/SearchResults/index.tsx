@@ -1,7 +1,7 @@
 import type { PaginationModel, SearchFilters } from "@mono/types";
 import { Box } from "@mui/material";
-import SearchCorporaResultCard from "./SearchCorporaResultCard";
 import type { ReactElement } from "react";
+import SearchResultLetterList from "./SearchCorporaResultCard";
 type SearchResultsProps = {
   appliedFilters: SearchFilters | null;
   paginationModel: PaginationModel;
@@ -13,7 +13,7 @@ const SearchResults = (props: SearchResultsProps): ReactElement => {
   return (
     <Box>
       {appliedFilters && (
-        <SearchCorporaResultCard
+        <SearchResultLetterList
           appliedFilters={appliedFilters}
           paginationModel={paginationModel}
           onPaginationModelChange={onPaginationModelChange}

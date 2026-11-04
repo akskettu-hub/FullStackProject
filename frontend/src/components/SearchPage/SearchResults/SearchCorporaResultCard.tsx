@@ -23,14 +23,14 @@ const columns: GridColDef<LetterSearchResult["rows"][number]>[] = [
   { field: "text_type", headerName: "Type", width: 130 },
 ];
 
-type SearchCorporaResultCardProps = {
+type SearchResultLetterListProps = {
   appliedFilters: SearchFilters;
   paginationModel: PaginationModel;
   onPaginationModelChange: (model: PaginationModel) => void;
 };
 
-const SearchCorporaResultCard = (
-  props: SearchCorporaResultCardProps,
+const SearchResultLetterList = (
+  props: SearchResultLetterListProps,
 ): ReactElement => {
   const { appliedFilters, paginationModel, onPaginationModelChange } = props;
   const { data, error, loading } = useSearchLetters(
@@ -59,4 +59,4 @@ const SearchCorporaResultCard = (
   );
 };
 
-export default SearchCorporaResultCard;
+export default SearchResultLetterList;
