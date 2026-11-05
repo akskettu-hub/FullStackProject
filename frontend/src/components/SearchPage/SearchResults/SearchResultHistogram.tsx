@@ -10,8 +10,8 @@ import {
   Select,
 } from "@mui/material";
 import { useMemo, useState, type ReactElement } from "react";
-import { useSearchResultHistogram } from "../../../hooks/useSearchResultChart";
 import { getBins } from "../../../services/search";
+import { useSearchResultHistogram } from "../../../hooks/useSearchResultHistogram";
 
 const BIN_SIZES = [1, 5, 10, 20, 25, 50, 100] as const;
 
