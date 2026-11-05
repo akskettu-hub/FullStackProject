@@ -48,13 +48,13 @@ export const fetchSearchResultsHistogram = async (
 
 export type Bin = { start: number; end: number; count: number };
 
+export const binLabel = (bin: Bin): string =>
+  bin.start === bin.end ? String(bin.start) : `${bin.start}-${bin.end}`;
+
 type HistogramDataset = {
   bin: string;
   count: number;
 }[];
-
-export const binLabel = (bin: Bin): string =>
-  bin.start === bin.end ? String(bin.start) : `${bin.start}-${bin.end}`;
 
 export const getBins = (
   rows: { year: number; count: number }[],

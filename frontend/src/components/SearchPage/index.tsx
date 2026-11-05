@@ -1,5 +1,12 @@
 import { useState, type ReactElement } from "react";
-import { Alert, Box, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Divider,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useSearchOptions } from "../../hooks/useSearchOptions";
 import type { PaginationModel, SearchFilters } from "@mono/types";
 import SearchForm from "./SearchForm";
@@ -21,33 +28,53 @@ const SearchCorporaPage = (): ReactElement => {
     setPaginationModel((m) => ({ ...m, page: 0 }));
   };
 
-  // TODO: Errors should be dislplayed in a more sensible manner.
+  /*
   if (searchOptions.status === "error")
     return (
       <Box>
         <Alert severity="error">{searchOptions.error}</Alert>
       </Box>
     );
+
   if (searchOptions.status === "loading")
     return (
-      <Box>
-        <p>Loading search options...</p>
+      <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+        <CircularProgress aria-label="Loading search options" />
       </Box>
     );
+    */
 
   return (
-    <div>
-      <Typography variant="h3" sx={{ paddingBottom: 1 }}>
-        Search Corpora
-      </Typography>
+    <Stack spacing={2}>
+      <Typography variant="h3">Search Corpora</Typography>
 
-      <SearchForm options={searchOptions.options} onSubmit={handleSubmit} />
-      <SearchResults
-        appliedFilters={appliedFilters}
-        paginationModel={paginationModel}
-        onPaginationModelChange={setPaginationModel}
-      />
-    </div>
+      {searchOptions.status === "error" && (
+        <Box>
+          <Alert severity="error">{searchOptions.error}</Alert>
+        </Box>
+      )}
+
+      {searchOptions.status === "loading" && (
+        <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+          <CircularProgress aria-label="Loading search options" />
+        </Box>
+      )}
+
+      {searchOptions.status === "success" && (
+        <SearchForm options={searchOptions.options} onSubmit={handleSubmit} />
+      )}
+
+      {appliedFilters && (
+        <>
+          <Divider />
+          <SearchResults
+            appliedFilters={appliedFilters}
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+          />
+        </>
+      )}
+    </Stack>
   );
 };
 

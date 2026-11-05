@@ -23,7 +23,7 @@ const SearchResultHistogram = (
   props: SearchResultHistogramProps,
 ): ReactElement => {
   const { appliedFilters } = props;
-  const { data, error } = useSearchResultHistogram(appliedFilters);
+  const { data, error, loading } = useSearchResultHistogram(appliedFilters);
   const [binSize, setBinSize] = useState<number>(20);
 
   const bins = useMemo(
@@ -34,21 +34,7 @@ const SearchResultHistogram = (
   return (
     <Box>
       {error && <Alert severity="error">{error}</Alert>}
-      {data !== null && (
-        <LineChart
-          dataset={bins}
-          xAxis={[
-            {
-              dataKey: "bin",
-              scaleType: "point",
-            },
-          ]}
-          yAxis={[{ width: "auto" }]}
-          series={[{ dataKey: "count", label: "Letters", curve: "linear" }]}
-          height={500}
-          grid={{ vertical: true, horizontal: true }}
-        />
-      )}
+
       <FormControl size="medium">
         <InputLabel id="bin-size-label">Bin size (years)</InputLabel>
         <Select
@@ -64,6 +50,21 @@ const SearchResultHistogram = (
           ))}
         </Select>
       </FormControl>
+      <LineChart
+        dataset={loading ? [] : bins}
+        loading={loading}
+        xAxis={[
+          {
+            dataKey: "bin",
+            scaleType: "point",
+            tickLabelInterval: (_v, i) => i % 5 === 0,
+          },
+        ]}
+        yAxis={[{ width: "auto", min: 0 }]}
+        series={[{ dataKey: "count", label: "Letters", curve: "linear" }]}
+        height={500}
+        grid={{ vertical: true, horizontal: true }}
+      />
     </Box>
   );
 };
