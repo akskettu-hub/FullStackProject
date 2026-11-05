@@ -45,3 +45,37 @@ export const fetchSearchResultsHistogram = async (
 
   return HistogramResponseSchema.parse(data);
 };
+
+export type Bin = { start: number; end: number; count: number };
+
+type HistogramDataset = {
+  bin: string;
+  count: number;
+}[];
+
+export const binLabel = (bin: Bin): string =>
+  bin.start === bin.end ? String(bin.start) : `${bin.start}-${bin.end}`;
+
+export const getBins = (
+  rows: { year: number; count: number }[],
+  size: number,
+): HistogramDataset => {
+  if (rows.length === 0) return [];
+
+  const counts = new Map<number, number>();
+  for (const { year, count } of rows) {
+    const start = Math.floor(year / size) * size;
+    counts.set(start, (counts.get(start) ?? 0) + count);
+  }
+
+  const starts = [...counts.keys()];
+  const first = Math.min(...starts);
+  const last = Math.max(...starts);
+
+  const bins: Bin[] = [];
+
+  for (let start = first; start <= last; start += size) {
+    bins.push({ start, end: start + size - 1, count: counts.get(start) ?? 0 });
+  }
+  return bins.map((bin) => ({ bin: binLabel(bin), count: bin.count }));
+};

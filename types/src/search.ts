@@ -44,7 +44,7 @@ export const LetterSearchResultSchema = z.object({
 export type LetterSearchResult = z.infer<typeof LetterSearchResultSchema>;
 
 export const HistogramRowSchema = z.object({
-  year: z.number().nullable(),
+  year: z.number(),
   count: z.coerce.number(),
 });
 
