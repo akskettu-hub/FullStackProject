@@ -9,7 +9,7 @@ const getYearBounds = (
   options: SearchOptions,
   selectedCorpora: Set<number>,
 ): { min: number; max: number } | null => {
-  const years = options
+  const years = options.corpusCollections
     .flatMap((cc) => cc.corpora)
     .filter((corpus) => selectedCorpora.has(corpus.id))
     .flatMap((c) => [c.minYear, c.maxYear])
@@ -74,7 +74,7 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
   return (
     <Box component={"form"} onSubmit={handleSubmit}>
       <CorpusPicker
-        options={options}
+        options={options.corpusCollections}
         selected={selectedCorpora}
         onChange={handleCorporaChange}
       />

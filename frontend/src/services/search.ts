@@ -12,7 +12,7 @@ import axios from "axios";
 
 export const fetchSearchOptions = async (): Promise<SearchOptions> => {
   const { data } = await axios.get<unknown>(
-    "http://localhost:3003/api/search/searchOptions",
+    "http://localhost:3003/api/search/options",
   );
 
   return SearchOptionsSchema.parse(data);

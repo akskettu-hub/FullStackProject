@@ -4,7 +4,7 @@ import { Box, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import type { ReactElement } from "react";
 
 const getCorpusCollectionState = (
-  options: SearchOptions[number],
+  options: SearchOptions["corpusCollections"][number],
   selected: Set<number>,
 ): { checked: boolean; indeterminate: boolean } => {
   const ids = options.corpora.map((c) => c.id);
@@ -16,7 +16,7 @@ const getCorpusCollectionState = (
 };
 
 type CorpusPickerProps = {
-  options: SearchOptions;
+  options: SearchOptions["corpusCollections"];
   selected: Set<number>;
   onChange: (next: Set<number>) => void;
 };
@@ -31,7 +31,9 @@ const CorpusPicker = (props: CorpusPickerProps): ReactElement => {
     onChange(next);
   };
 
-  const toggleCorpusCollection = (collection: SearchOptions[number]): void => {
+  const toggleCorpusCollection = (
+    collection: SearchOptions["corpusCollections"][number],
+  ): void => {
     const { checked } = getCorpusCollectionState(collection, selected);
     const next = new Set(selected);
     for (const corpus of collection.corpora) {

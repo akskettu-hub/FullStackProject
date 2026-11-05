@@ -28,22 +28,6 @@ const SearchCorporaPage = (): ReactElement => {
     setPaginationModel((m) => ({ ...m, page: 0 }));
   };
 
-  /*
-  if (searchOptions.status === "error")
-    return (
-      <Box>
-        <Alert severity="error">{searchOptions.error}</Alert>
-      </Box>
-    );
-
-  if (searchOptions.status === "loading")
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
-        <CircularProgress aria-label="Loading search options" />
-      </Box>
-    );
-    */
-
   return (
     <Stack spacing={2}>
       <Typography variant="h3">Search Corpora</Typography>

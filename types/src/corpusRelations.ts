@@ -42,7 +42,7 @@ export type CorpusCollectionsWithCorpora = z.infer<
   typeof CorpusCollectionsWithCorporaSchema
 >;
 
-export const SearchOptionsSchema = z.array(
+export const SearchOptionsCorpusCollectionsSchema = z.array(
   CorpusCollectionsWithCorporaSchema.element.extend({
     corpora: z.array(
       CorpusInCorpusCollectionSchema.extend({
@@ -52,6 +52,16 @@ export const SearchOptionsSchema = z.array(
     ),
   }),
 );
+
+export type SearchOptionsCorpusCollections = z.infer<
+  typeof SearchOptionsCorpusCollectionsSchema
+>;
+
+export const SearchOptionsSchema = z.object({
+  corpusCollections: SearchOptionsCorpusCollectionsSchema,
+  authenticity: z.array(z.string()),
+  relationshipCodes: z.array(z.string()),
+});
 
 export type SearchOptions = z.infer<typeof SearchOptionsSchema>;
 
