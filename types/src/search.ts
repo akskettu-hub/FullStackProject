@@ -1,6 +1,38 @@
 import { z } from "zod";
 import { LetterSummarySchema } from "./letters.ts";
+import { CorpusCollectionsWithCorporaSchema } from "./corpusRelations.ts";
+import { CorpusInCorpusCollectionSchema } from "./corpora.ts";
+import { IdSchema } from "./shared.ts";
 // NOTE: Do not export from this file to anywhere else than index
+
+export const SearchOptionsCorpusCollectionsSchema = z.array(
+  CorpusCollectionsWithCorporaSchema.element.extend({
+    corpora: z.array(
+      CorpusInCorpusCollectionSchema.extend({
+        minYear: z.number().nullable(),
+        maxYear: z.number().nullable(),
+      }),
+    ),
+  }),
+);
+
+export type SearchOptionsCorpusCollections = z.infer<
+  typeof SearchOptionsCorpusCollectionsSchema
+>;
+
+export const SearchOptionsSchema = z.object({
+  corpusCollections: SearchOptionsCorpusCollectionsSchema,
+  authenticity: z.array(z.string()),
+  relationshipCodes: z.array(z.string()),
+});
+
+export type SearchOptions = z.infer<typeof SearchOptionsSchema>;
+
+export const YearRangeRowSchema = z.object({
+  id: IdSchema,
+  minYear: z.number().nullable(),
+  maxYear: z.number().nullable(),
+});
 
 export const SearchYearSpanSchema = z.object({
   minYear: z.number().min(800).max(2500).nullable(),
