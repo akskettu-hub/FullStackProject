@@ -4,6 +4,7 @@ import { Alert, Box, Button } from "@mui/material";
 import { useMemo, useState, type ReactElement } from "react";
 import CorpusPicker from "./CorpusPicker";
 import YearPicker from "./YearPicker";
+import AuthenticityPicker from "./AuthenticityPicker";
 
 const getYearBounds = (
   options: SearchOptions,
@@ -37,6 +38,9 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
   const [selectedYearSpan, setSelectedYearSpan] = useState<[number, number]>([
     1400, 1800,
   ]);
+  const [selectedAuthenticity, setSelectedAuthenticity] = useState<Set<string>>(
+    new Set(),
+  );
 
   const bounds = useMemo(
     () => getYearBounds(options, selectedCorpora),
@@ -77,6 +81,14 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
         options={options.corpusCollections}
         selected={selectedCorpora}
         onChange={handleCorporaChange}
+      />
+
+      <pre>{selectedAuthenticity}</pre>
+
+      <AuthenticityPicker
+        options={options.authenticity}
+        selected={selectedAuthenticity}
+        onChange={setSelectedAuthenticity}
       />
 
       <YearPicker

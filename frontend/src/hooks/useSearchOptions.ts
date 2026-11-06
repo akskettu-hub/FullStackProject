@@ -22,9 +22,7 @@ export const useSearchOptions = (): SearchOptionsState => {
           setState({
             status: "error",
             error:
-              e instanceof Error
-                ? e.message
-                : "failed to fetch search options :P",
+              e instanceof Error ? e.message : "Failed to fetch search options",
           });
         }
       });
