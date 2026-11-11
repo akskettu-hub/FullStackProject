@@ -86,3 +86,19 @@ export const HistogramResponseSchema = z.object({
 });
 
 export type HistogramResponse = z.infer<typeof HistogramResponseSchema>;
+
+export const CORPUS_NAMES = ["CEEC", "CEECSU", "CEECE"] as const;
+export type CorpusName = (typeof CORPUS_NAMES)[number];
+
+export const AUTHENTICITY_CODES = ["A", "B", "C", "D"] as const;
+export type AuthenticityCode = (typeof AUTHENTICITY_CODES)[number];
+
+export const AuthenticityCodeOptionsSchema = z.set(z.string());
+export type AuthenticityCodeOptions = z.infer<
+  typeof AuthenticityCodeOptionsSchema
+>;
+
+export const AuthenticityCombinationsAllowedSchema = z.boolean().default(true);
+export type AuthenticityCombinationsAllowed = z.infer<
+  typeof AuthenticityCombinationsAllowedSchema
+>;

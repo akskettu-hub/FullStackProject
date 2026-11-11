@@ -1,5 +1,10 @@
 // Partially LLM generated: Claude Sonnet 5.5 Medium
-import type { SearchFilters, SearchOptions } from "@mono/types";
+import type {
+  AuthenticityCodeOptions,
+  AuthenticityCombinationsAllowed,
+  SearchFilters,
+  SearchOptions,
+} from "@mono/types";
 import { Alert, Box, Button } from "@mui/material";
 import { useMemo, useState, type ReactElement } from "react";
 import CorpusPicker from "./CorpusPicker";
@@ -38,9 +43,11 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
   const [selectedYearSpan, setSelectedYearSpan] = useState<[number, number]>([
     1400, 1800,
   ]);
-  const [selectedAuthenticity, setSelectedAuthenticity] = useState<Set<string>>(
-    new Set(),
-  );
+  const [selectedAuthenticityCodes, setSelectedAuthenticityCodes] =
+    useState<AuthenticityCodeOptions>(new Set());
+
+  const [authenticityCombinationsAllowed, setAuthenticityCombinationsAllowed] =
+    useState<AuthenticityCombinationsAllowed>(true);
 
   const bounds = useMemo(
     () => getYearBounds(options, selectedCorpora),
@@ -83,12 +90,14 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
         onChange={handleCorporaChange}
       />
 
-      <pre>{selectedAuthenticity}</pre>
+      <pre>{selectedAuthenticityCodes}</pre>
 
       <AuthenticityPicker
         options={options.authenticity}
-        selected={selectedAuthenticity}
-        onChange={setSelectedAuthenticity}
+        selected={selectedAuthenticityCodes}
+        onChange={setSelectedAuthenticityCodes}
+        combinationsAllowed={authenticityCombinationsAllowed}
+        setCombinations={setAuthenticityCombinationsAllowed}
       />
 
       <YearPicker
