@@ -8,7 +8,7 @@ import {
   type SearchFilters,
   type SearchOptions,
 } from "@mono/types";
-import { Alert, Box, Button } from "@mui/material";
+import { Alert, Stack, Button, Box } from "@mui/material";
 import { useMemo, useState, type ReactElement } from "react";
 import CorpusPicker from "./CorpusPicker";
 import YearPicker from "./YearPicker";
@@ -96,32 +96,32 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
   };
 
   return (
-    <Box component={"form"} onSubmit={handleSubmit}>
+    <Stack component={"form"} onSubmit={handleSubmit} spacing={3}>
       <CorpusPicker
         options={options.corpusCollections}
         selected={selectedCorpora}
         onChange={handleCorporaChange}
       />
 
-      <AuthenticityPicker
-        selected={selectedAuthenticityCodes}
-        onChange={setSelectedAuthenticityCodes}
-        combinationsAllowed={authenticityCombinationsAllowed}
-        setCombinations={setAuthenticityCombinationsAllowed}
-      />
+      <Stack direction={{ xs: "column", md: "row" }} spacing={4}>
+        <AuthenticityPicker
+          selected={selectedAuthenticityCodes}
+          onChange={setSelectedAuthenticityCodes}
+          combinationsAllowed={authenticityCombinationsAllowed}
+          setCombinations={setAuthenticityCombinationsAllowed}
+        />
 
-      <RelationshipCodePicker
-        selected={selectedRelationshipCodes}
-        onChange={setSelectedRelationshipCodes}
-      />
+        <RelationshipCodePicker
+          selected={selectedRelationshipCodes}
+          onChange={setSelectedRelationshipCodes}
+        />
+      </Stack>
 
       <YearPicker
         bounds={bounds}
         value={selectedYearSpan}
         onChange={setSelectedYearSpan}
       />
-
-      <pre>{selectedRelationshipCodes}</pre>
 
       {bounds === null && (
         <Alert severity="info">Please select a corpus.</Alert>
@@ -139,10 +139,12 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
         </Alert>
       )}
 
-      <Button type="submit" variant="contained" disabled={bounds === null}>
-        Search
-      </Button>
-    </Box>
+      <Box>
+        <Button type="submit" variant="contained" disabled={bounds === null}>
+          Search
+        </Button>
+      </Box>
+    </Stack>
   );
 };
 

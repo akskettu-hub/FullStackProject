@@ -1,6 +1,13 @@
 // Partially LLM generated: Claude Sonnet 5.5 Medium
 import type { SearchOptions } from "@mono/types";
-import { Box, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
+} from "@mui/material";
 import type { ReactElement } from "react";
 import { getSelectionState } from "../../../utils/checkboxSelections";
 
@@ -36,42 +43,45 @@ const CorpusPicker = (props: CorpusPickerProps): ReactElement => {
   };
 
   return (
-    <FormGroup>
-      {options.map((opt) => {
-        const { checked, indeterminate } = getSelectionState(
-          opt.corpora.map((c) => c.id),
-          selected,
-        );
-        return (
-          <Box key={opt.id}>
-            <FormControlLabel
-              label={opt.name}
-              control={
-                <Checkbox
-                  checked={checked}
-                  indeterminate={indeterminate}
-                  onChange={() => toggleCorpusCollection(opt)}
-                />
-              }
-            />
-            <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
-              {opt.corpora.map((corpus) => (
-                <FormControlLabel
-                  key={corpus.id}
-                  label={corpus.name}
-                  control={
-                    <Checkbox
-                      checked={selected.has(corpus.id)}
-                      onChange={() => toggleCorpus(corpus.id)}
-                    />
-                  }
-                />
-              ))}
+    <FormControl component={"fieldset"} variant="standard">
+      <FormLabel component={"legend"}>Corpora</FormLabel>
+      <FormGroup>
+        {options.map((opt) => {
+          const { checked, indeterminate } = getSelectionState(
+            opt.corpora.map((c) => c.id),
+            selected,
+          );
+          return (
+            <Box key={opt.id}>
+              <FormControlLabel
+                label={opt.name}
+                control={
+                  <Checkbox
+                    checked={checked}
+                    indeterminate={indeterminate}
+                    onChange={() => toggleCorpusCollection(opt)}
+                  />
+                }
+              />
+              <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
+                {opt.corpora.map((corpus) => (
+                  <FormControlLabel
+                    key={corpus.id}
+                    label={corpus.name}
+                    control={
+                      <Checkbox
+                        checked={selected.has(corpus.id)}
+                        onChange={() => toggleCorpus(corpus.id)}
+                      />
+                    }
+                  />
+                ))}
+              </Box>
             </Box>
-          </Box>
-        );
-      })}
-    </FormGroup>
+          );
+        })}
+      </FormGroup>
+    </FormControl>
   );
 };
 

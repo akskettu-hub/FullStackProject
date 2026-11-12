@@ -4,7 +4,14 @@ import {
   type AuthenticityCode,
   AUTHENTICITY_CODES,
 } from "@mono/types";
-import { Box, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
+} from "@mui/material";
 import type { ReactElement } from "react";
 import { getSelectionState } from "../../../utils/checkboxSelections";
 
@@ -40,44 +47,47 @@ const AuthenticityPicker = (props: AuthenticityPickerProps): ReactElement => {
   };
 
   return (
-    <FormGroup>
-      <Box>
-        <FormControlLabel
-          label={"Select All"}
-          control={
-            <Checkbox
-              checked={checked}
-              indeterminate={indeterminate}
-              onChange={() => togggleSelectAll()}
-            />
-          }
-        />
-        <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
-          {AUTHENTICITY_CODES.map((code) => (
-            <FormControlLabel
-              key={code}
-              label={code}
-              control={
-                <Checkbox
-                  checked={selected.has(code)}
-                  onChange={() => toggleAuthenticity(code)}
-                />
-              }
-            />
-          ))}
-
+    <FormControl component={"fieldset"} variant="standard">
+      <FormLabel component={"legend"}>Authenticity</FormLabel>
+      <FormGroup>
+        <Box>
           <FormControlLabel
-            label={"Combinations"}
+            label={"Select All"}
             control={
               <Checkbox
-                checked={combinationsAllowed}
-                onChange={() => setCombinations(!combinationsAllowed)}
+                checked={checked}
+                indeterminate={indeterminate}
+                onChange={() => togggleSelectAll()}
               />
             }
           />
+          <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
+            {AUTHENTICITY_CODES.map((code) => (
+              <FormControlLabel
+                key={code}
+                label={code}
+                control={
+                  <Checkbox
+                    checked={selected.has(code)}
+                    onChange={() => toggleAuthenticity(code)}
+                  />
+                }
+              />
+            ))}
+
+            <FormControlLabel
+              label={"Combinations"}
+              control={
+                <Checkbox
+                  checked={combinationsAllowed}
+                  onChange={() => setCombinations(!combinationsAllowed)}
+                />
+              }
+            />
+          </Box>
         </Box>
-      </Box>
-    </FormGroup>
+      </FormGroup>
+    </FormControl>
   );
 };
 
