@@ -41,7 +41,7 @@ const AuthenticityPicker = (props: AuthenticityPickerProps): ReactElement => {
 
   return (
     <FormGroup>
-      <Box key={"authenticity-options-select-all"}>
+      <Box>
         <FormControlLabel
           label={"Select All"}
           control={
@@ -52,10 +52,7 @@ const AuthenticityPicker = (props: AuthenticityPickerProps): ReactElement => {
             />
           }
         />
-        <Box
-          key={"authenticity-options"}
-          sx={{ display: "flex", flexDirection: "column", ml: 3 }}
-        >
+        <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
           {AUTHENTICITY_CODES.map((code) => (
             <FormControlLabel
               key={code}

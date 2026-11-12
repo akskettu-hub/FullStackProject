@@ -97,8 +97,6 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
         onChange={handleCorporaChange}
       />
 
-      <pre>{selectedAuthenticityCodes}</pre>
-
       <AuthenticityPicker
         selected={selectedAuthenticityCodes}
         onChange={setSelectedAuthenticityCodes}
@@ -114,6 +112,12 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
 
       {bounds === null && (
         <Alert severity="info">Please select a corpus.</Alert>
+      )}
+
+      {selectedAuthenticityCodes.size === 0 && (
+        <Alert severity="info">
+          Please select at least one Authenticity option.
+        </Alert>
       )}
 
       <Button type="submit" variant="contained" disabled={bounds === null}>
