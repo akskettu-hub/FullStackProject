@@ -39,11 +39,11 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
   const { options, onSubmit } = props;
 
   const [selectedCorpora, setSelectedCorpora] = useState<Set<number>>(
-    new Set(),
+    () =>
+      new Set(
+        options.corpusCollections.flatMap((cc) => cc.corpora.map((c) => c.id)),
+      ),
   );
-  const [selectedYearSpan, setSelectedYearSpan] = useState<[number, number]>([
-    1400, 1800,
-  ]);
   const [selectedAuthenticityCodes, setSelectedAuthenticityCodes] =
     useState<AuthenticityCodeOptions>(() => new Set(AUTHENTICITY_CODES));
 
@@ -53,6 +53,12 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
   const bounds = useMemo(
     () => getYearBounds(options, selectedCorpora),
     [options, selectedCorpora],
+  );
+
+  const [selectedYearSpan, setSelectedYearSpan] = useState<[number, number]>(
+    bounds?.min !== undefined && bounds?.max !== undefined
+      ? [bounds?.min, bounds?.max]
+      : [1400, 1800],
   );
 
   const handleCorporaChange = (next: Set<number>): void => {
