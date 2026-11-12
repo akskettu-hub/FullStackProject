@@ -1,9 +1,10 @@
 // Partially LLM generated: Claude Sonnet 5.5 Medium
-import type {
-  AuthenticityCodeOptions,
-  AuthenticityCombinationsAllowed,
-  SearchFilters,
-  SearchOptions,
+import {
+  AUTHENTICITY_CODES,
+  type AuthenticityCodeOptions,
+  type AuthenticityCombinationsAllowed,
+  type SearchFilters,
+  type SearchOptions,
 } from "@mono/types";
 import { Alert, Box, Button } from "@mui/material";
 import { useMemo, useState, type ReactElement } from "react";
@@ -44,7 +45,7 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
     1400, 1800,
   ]);
   const [selectedAuthenticityCodes, setSelectedAuthenticityCodes] =
-    useState<AuthenticityCodeOptions>(new Set());
+    useState<AuthenticityCodeOptions>(() => new Set(AUTHENTICITY_CODES));
 
   const [authenticityCombinationsAllowed, setAuthenticityCombinationsAllowed] =
     useState<AuthenticityCombinationsAllowed>(true);
@@ -93,7 +94,6 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
       <pre>{selectedAuthenticityCodes}</pre>
 
       <AuthenticityPicker
-        options={options.authenticity}
         selected={selectedAuthenticityCodes}
         onChange={setSelectedAuthenticityCodes}
         combinationsAllowed={authenticityCombinationsAllowed}

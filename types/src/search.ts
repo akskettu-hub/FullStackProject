@@ -90,10 +90,11 @@ export type HistogramResponse = z.infer<typeof HistogramResponseSchema>;
 export const CORPUS_NAMES = ["CEEC", "CEECSU", "CEECE"] as const;
 export type CorpusName = (typeof CORPUS_NAMES)[number];
 
-export const AUTHENTICITY_CODES = ["A", "B", "C", "D"] as const;
-export type AuthenticityCode = (typeof AUTHENTICITY_CODES)[number];
+export const AUTHENTICITY_CODES = ["A", "B", "C", "D", "E"] as const;
+export const AuthenticityCodeSchema = z.enum(AUTHENTICITY_CODES);
+export type AuthenticityCode = z.infer<typeof AuthenticityCodeSchema>;
 
-export const AuthenticityCodeOptionsSchema = z.set(z.string());
+export const AuthenticityCodeOptionsSchema = z.set(AuthenticityCodeSchema);
 export type AuthenticityCodeOptions = z.infer<
   typeof AuthenticityCodeOptionsSchema
 >;

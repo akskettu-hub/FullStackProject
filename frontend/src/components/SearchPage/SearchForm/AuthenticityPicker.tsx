@@ -1,59 +1,93 @@
-import type {
-  AuthenticityCombinationsAllowed,
-  AuthenticityCodeOptions,
-  SearchOptions,
+import {
+  type AuthenticityCombinationsAllowed,
+  type AuthenticityCodeOptions,
+  type AuthenticityCode,
+  AUTHENTICITY_CODES,
 } from "@mono/types";
 import { Box, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import type { ReactElement } from "react";
 
+const getAuthenticityState = (
+  codes: readonly AuthenticityCode[],
+  selected: AuthenticityCodeOptions,
+): { checked: boolean; indeterminate: boolean } => {
+  const checked = codes.length > 0 && codes.every((o) => selected.has(o));
+  const indeterminate = !checked && codes.some((o) => selected.has(o));
+
+  return { checked, indeterminate };
+};
+
 type AuthenticityPickerProps = {
-  options: SearchOptions["authenticity"];
   selected: AuthenticityCodeOptions;
-  onChange: (next: Set<string>) => void;
+  onChange: (next: Set<AuthenticityCode>) => void;
   combinationsAllowed: AuthenticityCombinationsAllowed;
   setCombinations: (next: boolean) => void;
 };
 
 const AuthenticityPicker = (props: AuthenticityPickerProps): ReactElement => {
-  const { options, selected, onChange, combinationsAllowed, setCombinations } =
-    props;
+  const { selected, onChange, combinationsAllowed, setCombinations } = props;
 
-  const toggleAuthenticity = (authKey: string): void => {
+  const { checked, indeterminate } = getAuthenticityState(
+    AUTHENTICITY_CODES,
+    selected,
+  );
+
+  const toggleAuthenticity = (authKey: AuthenticityCode): void => {
     const next = new Set(selected);
     if (next.has(authKey)) next.delete(authKey);
     else next.add(authKey);
     onChange(next);
   };
 
+  const togggleSelectAll = (): void => {
+    const next = new Set(selected);
+    for (const code of AUTHENTICITY_CODES) {
+      if (checked) next.delete(code);
+      else next.add(code);
+    }
+    onChange(next);
+  };
+
   return (
     <FormGroup>
-      <Box
-        key={"authenticity-options"}
-        sx={{ display: "flex", flexDirection: "column", ml: 3 }}
-      >
-        {options
-          .filter((opt) => opt.length === 1)
-          .map((opt) => (
+      <Box key={"authenticity-options-select-all"}>
+        <FormControlLabel
+          label={"Select All"}
+          control={
+            <Checkbox
+              checked={checked}
+              indeterminate={indeterminate}
+              onChange={() => togggleSelectAll()}
+            />
+          }
+        />
+        <Box
+          key={"authenticity-options"}
+          sx={{ display: "flex", flexDirection: "column", ml: 3 }}
+        >
+          {AUTHENTICITY_CODES.map((code) => (
             <FormControlLabel
-              label={opt}
+              key={code}
+              label={code}
               control={
                 <Checkbox
-                  checked={selected.has(opt)}
-                  onChange={() => toggleAuthenticity(opt)}
+                  checked={selected.has(code)}
+                  onChange={() => toggleAuthenticity(code)}
                 />
               }
             />
           ))}
 
-        <FormControlLabel
-          label={"Combinations"}
-          control={
-            <Checkbox
-              checked={combinationsAllowed}
-              onChange={() => setCombinations(!combinationsAllowed)}
-            />
-          }
-        />
+          <FormControlLabel
+            label={"Combinations"}
+            control={
+              <Checkbox
+                checked={combinationsAllowed}
+                onChange={() => setCombinations(!combinationsAllowed)}
+              />
+            }
+          />
+        </Box>
       </Box>
     </FormGroup>
   );
