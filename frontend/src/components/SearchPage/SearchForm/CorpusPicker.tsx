@@ -2,18 +2,7 @@
 import type { SearchOptions } from "@mono/types";
 import { Box, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import type { ReactElement } from "react";
-
-const getCorpusCollectionState = (
-  options: SearchOptions["corpusCollections"][number],
-  selected: Set<number>,
-): { checked: boolean; indeterminate: boolean } => {
-  const ids = options.corpora.map((c) => c.id);
-
-  const checked = ids.length > 0 && ids.every((id) => selected.has(id));
-  const indeterminate = !checked && ids.some((id) => selected.has(id));
-
-  return { checked, indeterminate };
-};
+import { getSelectionState } from "../../../utils/checkboxSelections";
 
 type CorpusPickerProps = {
   options: SearchOptions["corpusCollections"];
@@ -34,7 +23,10 @@ const CorpusPicker = (props: CorpusPickerProps): ReactElement => {
   const toggleCorpusCollection = (
     collection: SearchOptions["corpusCollections"][number],
   ): void => {
-    const { checked } = getCorpusCollectionState(collection, selected);
+    const { checked } = getSelectionState(
+      collection.corpora.map((c) => c.id),
+      selected,
+    );
     const next = new Set(selected);
     for (const corpus of collection.corpora) {
       if (checked) next.delete(corpus.id);
@@ -46,8 +38,8 @@ const CorpusPicker = (props: CorpusPickerProps): ReactElement => {
   return (
     <FormGroup>
       {options.map((opt) => {
-        const { checked, indeterminate } = getCorpusCollectionState(
-          opt,
+        const { checked, indeterminate } = getSelectionState(
+          opt.corpora.map((c) => c.id),
           selected,
         );
         return (

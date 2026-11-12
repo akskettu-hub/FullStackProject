@@ -6,16 +6,7 @@ import {
 } from "@mono/types";
 import { Box, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import type { ReactElement } from "react";
-
-const getAuthenticityState = (
-  codes: readonly AuthenticityCode[],
-  selected: AuthenticityCodeOptions,
-): { checked: boolean; indeterminate: boolean } => {
-  const checked = codes.length > 0 && codes.every((o) => selected.has(o));
-  const indeterminate = !checked && codes.some((o) => selected.has(o));
-
-  return { checked, indeterminate };
-};
+import { getSelectionState } from "../../../utils/checkboxSelections";
 
 type AuthenticityPickerProps = {
   selected: AuthenticityCodeOptions;
@@ -27,7 +18,7 @@ type AuthenticityPickerProps = {
 const AuthenticityPicker = (props: AuthenticityPickerProps): ReactElement => {
   const { selected, onChange, combinationsAllowed, setCombinations } = props;
 
-  const { checked, indeterminate } = getAuthenticityState(
+  const { checked, indeterminate } = getSelectionState(
     AUTHENTICITY_CODES,
     selected,
   );
