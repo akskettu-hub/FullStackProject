@@ -103,3 +103,12 @@ export const AuthenticityCombinationsAllowedSchema = z.boolean().default(true);
 export type AuthenticityCombinationsAllowed = z.infer<
   typeof AuthenticityCombinationsAllowedSchema
 >;
+
+export const RELATIONSHIP_CODES = ["FN", "FO", "FS", "T", "TC"] as const;
+export const RelationshipCodesSchema = z.enum(RELATIONSHIP_CODES);
+export type RelationshipCode = z.infer<typeof RelationshipCodesSchema>;
+
+export const RelationshipCodeOptionsSchema = z.set(RelationshipCodesSchema);
+export type RelationshipCodeOptions = z.infer<
+  typeof RelationshipCodeOptionsSchema
+>;

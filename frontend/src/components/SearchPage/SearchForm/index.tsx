@@ -1,8 +1,10 @@
 // Partially LLM generated: Claude Sonnet 5.5 Medium
 import {
   AUTHENTICITY_CODES,
+  RELATIONSHIP_CODES,
   type AuthenticityCodeOptions,
   type AuthenticityCombinationsAllowed,
+  type RelationshipCodeOptions,
   type SearchFilters,
   type SearchOptions,
 } from "@mono/types";
@@ -11,6 +13,7 @@ import { useMemo, useState, type ReactElement } from "react";
 import CorpusPicker from "./CorpusPicker";
 import YearPicker from "./YearPicker";
 import AuthenticityPicker from "./AuthenticityPicker";
+import RelationshipCodePicker from "./RelationshipCodePicker";
 
 const getYearBounds = (
   options: SearchOptions,
@@ -46,6 +49,9 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
   );
   const [selectedAuthenticityCodes, setSelectedAuthenticityCodes] =
     useState<AuthenticityCodeOptions>(() => new Set(AUTHENTICITY_CODES));
+
+  const [selectedRelationshipCodes, setSelectedRelationshipCodes] =
+    useState<RelationshipCodeOptions>(() => new Set(RELATIONSHIP_CODES));
 
   const [authenticityCombinationsAllowed, setAuthenticityCombinationsAllowed] =
     useState<AuthenticityCombinationsAllowed>(true);
@@ -104,11 +110,18 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
         setCombinations={setAuthenticityCombinationsAllowed}
       />
 
+      <RelationshipCodePicker
+        selected={selectedRelationshipCodes}
+        onChange={setSelectedRelationshipCodes}
+      />
+
       <YearPicker
         bounds={bounds}
         value={selectedYearSpan}
         onChange={setSelectedYearSpan}
       />
+
+      <pre>{selectedRelationshipCodes}</pre>
 
       {bounds === null && (
         <Alert severity="info">Please select a corpus.</Alert>
@@ -116,7 +129,13 @@ const SearchForm = (props: SearchFormProps): ReactElement => {
 
       {selectedAuthenticityCodes.size === 0 && (
         <Alert severity="info">
-          Please select at least one Authenticity option.
+          Please select at least one Authenticity code.
+        </Alert>
+      )}
+
+      {selectedRelationshipCodes.size === 0 && (
+        <Alert severity="info">
+          Please select at least one Relationship code.
         </Alert>
       )}
 

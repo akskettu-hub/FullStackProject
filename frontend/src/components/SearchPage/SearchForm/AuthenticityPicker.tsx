@@ -23,10 +23,10 @@ const AuthenticityPicker = (props: AuthenticityPickerProps): ReactElement => {
     selected,
   );
 
-  const toggleAuthenticity = (authKey: AuthenticityCode): void => {
+  const toggleAuthenticity = (code: AuthenticityCode): void => {
     const next = new Set(selected);
-    if (next.has(authKey)) next.delete(authKey);
-    else next.add(authKey);
+    if (next.has(code)) next.delete(code);
+    else next.add(code);
     onChange(next);
   };
 
